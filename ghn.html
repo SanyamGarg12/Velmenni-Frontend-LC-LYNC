@@ -36,6 +36,7 @@
 <html>
 <head>
 <meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <script language="JavaScript" src="common.js"></script>
 <script language="JavaScript">
 function onLoadScript()
@@ -100,6 +101,174 @@ function onNDIMChange()
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Cache-Control" content="no-cache">
 <meta http-equiv="Expires" content="Mon, 06 Jan 1990 00:00:01 GMT">
+<style>
+:root {
+  --primary-color: #0066cc;
+  --secondary-color: #004d99;
+  --background-color: #f7f7f7;
+  --text-color: #333333;
+  --border-color: #dddddd;
+  --header-bg-color: white;
+  --footer-bg-color: #e8f5e9;
+  --success-color: #28a745;
+  --warning-color: #ffc107;
+  --danger-color: #dc3545;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  line-height: 1.6;
+  color: var(--text-color);
+  background-color: var(--background-color);
+  padding: 20px;
+}
+
+.section-container {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  margin-bottom: 20px;
+  overflow: hidden;
+}
+
+.section-header {
+  background-color: var(--primary-color);
+  color: white;
+  padding: 15px 20px;
+  font-size: 18px;
+  font-weight: 500;
+}
+
+.section-content {
+  padding: 20px;
+}
+
+.form-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.form-table tr:not(:last-child) {
+  border-bottom: 1px solid var(--border-color);
+}
+
+.form-table td {
+  padding: 12px 8px;
+  vertical-align: middle;
+}
+
+.form-table td:first-child {
+  font-weight: 500;
+  color: var(--text-color);
+}
+
+.form-table td:last-child {
+  text-align: right;
+}
+
+input[type="text"], select {
+  width: 100%;
+  max-width: 300px;
+  padding: 8px 12px;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  font-size: 14px;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+input[type="text"]:focus, select:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 2px rgba(0,102,204,0.1);
+}
+
+.button-group {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+button, input[type="button"], input[type="reset"] {
+  padding: 8px 20px;
+  border-radius: 4px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+input[type="button"] {
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+}
+
+input[type="button"]:hover {
+  background-color: var(--secondary-color);
+}
+
+input[type="reset"] {
+  background-color: white;
+  color: var(--text-color);
+  border: 1px solid var(--border-color);
+}
+
+input[type="reset"]:hover {
+  background-color: #f5f5f5;
+}
+
+input[disabled] {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.status-text {
+  font-size: 14px;
+  color: #666;
+  margin-top: 8px;
+}
+
+.encryption-status {
+  display: inline-block;
+  padding: 6px 12px;
+  border-radius: 4px;
+  font-weight: 500;
+  margin-bottom: 10px;
+}
+
+.encryption-enabled {
+  background-color: var(--success-color);
+  color: white;
+}
+
+.encryption-disabled {
+  background-color: var(--danger-color);
+  color: white;
+}
+
+@media (max-width: 600px) {
+  .form-table td {
+    display: block;
+    width: 100%;
+    text-align: left;
+    padding: 8px;
+  }
+  
+  .form-table td:last-child {
+    text-align: left;
+  }
+  
+  input[type="text"], select {
+    max-width: 100%;
+  }
+}
+</style>
 </head>
 <body bgcolor="white" onLoad="onLoadScript()">
 <script language="JavaScript">
@@ -107,166 +276,155 @@ printErrorMsg("$$LASTERRORMESSAGE$$");
 </script>
 
 <!-- Basic settings -->
-<div style="padding:6px">
-  <table width=520 style="border:3px solid #dddddd">
-  <tr><td colspan=2><b>Basic settings</b></td></tr>
-  <tr><td colspan=2 style="background:#dddddd"></td></tr>
+<div class="section-container">
+  <div class="section-header">Basic Settings</div>
+  <div class="section-content">
+    <form name="BASIC_FORM" method="POST" id="ghn_basic">
+      <input type="hidden" name="CSRFTOKEN" value="$$CSRFTOKEN$$">
+      <input type="hidden" name="REDIRECT" value="ghn.html" target="content">
+      
+      <table class="form-table">
+        <tr>
+          <td>MAC Address</td>
+          <td><span id="ghn_basic_mac">$$SYSTEM.PRODUCTION.MAC_ADDR$$</span></td>
+        </tr>
+        <tr>
+          <td>Device ID</td>
+          <td><span id="ghn_basic_did">$$NODE.GENERAL.DEVICE_ID$$</span></td>
+        </tr>
+        <tr>
+          <td>Domain Name</td>
+          <td>
+            <input type="text" name="NODE.GENERAL.DOMAIN_NAME" value="$$NODE.GENERAL.DOMAIN_NAME$$" id="ghn_basic_domain" maxlength="20">
+          </td>
+        </tr>
+        <tr>
+          <td>Force Node Type</td>
+          <td>
+            <select name="MASTERSELECTION.GENERAL.FORCE_NODE" id="ghn_basic_forcenodetype">
+              <script language="JavaScript">
+              var nt='$$MASTERSELECTION.GENERAL.FORCE_NODE$$';
+              var ntp=nt;
+              var ntt=new Array('END_POINT','DOMAIN_MASTER','AUTOMATIC');
+              var nto=new Array('END_POINT','DOMAIN_MASTER','NONE');
+              selectOptionsWithText(ntp,ntt,nto);
+              </script>
+            </select>
+          </td>
+        </tr>
+        <tr>
+          <td>Node Type*</td>
+          <td><span id="ghn_basic_nodetype">$$NODE.GENERAL.NODE_TYPE$$</span></td>
+        </tr>
+      </table>
+      <p class="status-text">* Node type change can take some time, please refresh page to update state</p>
+      <div class="button-group">
+        <input name="CANCEL" value="Cancel" type="reset" id="ghn_basic_cancel">
+        <input name="OK" value="Save Changes" type="button" id="ghn_basic_ok" onClick="onOKClick(this.form)">
+      </div>
+    </form>
 
-  <tr><td colspan=2></td></tr>
-  <form name="BASIC_FORM" method="POST" id="ghn_basic">
-  <input type="hidden" name="CSRFTOKEN" value="$$CSRFTOKEN$$">
-  <input type="hidden" name="REDIRECT" value="ghn.html" target="content">
-
-  <tr><td>&#8226;MAC address</td><td align="right"><font size=-1 id="ghn_basic_mac">$$SYSTEM.PRODUCTION.MAC_ADDR$$</font></td></tr>
-  <tr><td>&#8226;Device ID</td><td align="right"><font size=-1 id="ghn_basic_did">$$NODE.GENERAL.DEVICE_ID$$</font></td></tr>
-
-  <tr><td>&#8226;Domain Name</td><td align="right">
-  <input type="text" size=30 maxlength=20 name="NODE.GENERAL.DOMAIN_NAME" value="$$NODE.GENERAL.DOMAIN_NAME$$" id="ghn_basic_domain">
-  </td></tr>
-
-  <tr><td>&#8226;Force node Type</td><td align="right">
-  <select name="MASTERSELECTION.GENERAL.FORCE_NODE" id="ghn_basic_forcenodetype">
-  <script language="JavaScript">
-  var nt='$$MASTERSELECTION.GENERAL.FORCE_NODE$$';
-  var ntp=nt;
-  var ntt=new Array('END_POINT','DOMAIN_MASTER','AUTOMATIC');
-  var nto=new Array('END_POINT','DOMAIN_MASTER','NONE');
-  selectOptionsWithText(ntp,ntt,nto);
-  </script>
-  </select>
-  </td></tr>
-  <tr><td>&#8226;Node type*</td><td align="right"><font size=-1 id="ghn_basic_nodetype">$$NODE.GENERAL.NODE_TYPE$$</font></td></tr>
-  <tr><td colspan=2><font size=-1><b>*</b> Node type change can take some time, please refresh page to update state</font></td></tr>
-
-  <tr><td colspan=2></td></tr>
-  <tr><td colspan=2 align="right">
-  <input name="OK" value="Ok" type="button" id="ghn_basic_ok" onClick="onOKClick(this.form)">&nbsp;<input name="CANCEL" value="Cancel" type="reset" id="ghn_basic_cancel">
-  </td></tr>
-  </form>
-
-  <tr><td colspan=2 style="background:#dddddd"></td></tr>
-  <tr><td colspan=2></td></tr>
-  <form name="BASIC_FORM2" method="POST" id="ghn_basic2">
-  <input type="hidden" name="CSRFTOKEN" value="$$CSRFTOKEN$$">
-  <input type="hidden" name="REDIRECT" value="ghn.html" target="content">
-  <tr><td>&#8226;G.hn profile</td><td align="right">
-  <select name="PHYMNG.GENERAL.RUNNING_PHYMODE_ID" id="ghn_basic2_profile">
-  <script language="JavaScript">
-  var sPhyMode='$$PHYMNG.GENERAL.RUNNING_PHYMODE_ID$$'
-  var profiles=new Array("PLC 100MHz","PLC 50MHz","PLC 100 MHz with MIMO", "COAX 100MHz","PHONE 100MHz","PLC 50MHz with MIMO", "PLC 50MHz MIMO_BOOST", "PLC 100MHz BOOST", "COAX 200 MHz", "PHONE 200MHz");
-  var mode    =new Array("1","4","7","9","10","20","22","23","25","26");
-  var nt=sPhyMode;
-  var ntp=nt;
-  selectOptionsWithText(ntp,profiles,mode);
-  </script>
-  </select>
-  </td></tr>
-
-  <tr><td colspan=2></td></tr>
-  <tr><td colspan=2 align="right">
-  <input name="OK" value="Ok" type="button" id="ghn_basic2_ok" onClick="onOKClick(this.form)">&nbsp;<input name="CANCEL" value="Cancel" type="reset" id="ghn_basic2_cancel">
-  </td></tr>
-  </form>
-
-  </table>
+    <form name="BASIC_FORM2" method="POST" id="ghn_basic2" style="margin-top: 20px;">
+      <input type="hidden" name="CSRFTOKEN" value="$$CSRFTOKEN$$">
+      <input type="hidden" name="REDIRECT" value="ghn.html" target="content">
+      <table class="form-table">
+        <tr>
+          <td>G.hn Profile</td>
+          <td>
+            <select name="PHYMNG.GENERAL.RUNNING_PHYMODE_ID" id="ghn_basic2_profile">
+              <script language="JavaScript">
+              var sPhyMode='$$PHYMNG.GENERAL.RUNNING_PHYMODE_ID$$'
+              var profiles=new Array("PLC 100MHz","PLC 50MHz","PLC 100 MHz with MIMO", "COAX 100MHz","PHONE 100MHz","PLC 50MHz with MIMO", "PLC 50MHz MIMO_BOOST", "PLC 100MHz BOOST", "COAX 200 MHz", "PHONE 200MHz");
+              var mode    =new Array("1","4","7","9","10","20","22","23","25","26");
+              var nt=sPhyMode;
+              var ntp=nt;
+              selectOptionsWithText(ntp,profiles,mode);
+              </script>
+            </select>
+          </td>
+        </tr>
+      </table>
+      <div class="button-group">
+        <input name="CANCEL" value="Cancel" type="reset" id="ghn_basic2_cancel">
+        <input name="OK" value="Save Profile" type="button" id="ghn_basic2_ok" onClick="onOKClick(this.form)">
+      </div>
+    </form>
+  </div>
 </div>
 
-
 <!-- NDIM -->
-<div style="padding:6px">
-  <table width=520 style="border:3px solid #dddddd">
-  <tr><td colspan=2><b>Neighboring Domain Interference Mitigation (NDIM)</b></td></tr>
-  <form name="NDIM_FORM" method="POST">
-  <input type="hidden" name="CSRFTOKEN" value="$$CSRFTOKEN$$">
-  <input type="hidden" name="REDIRECT" value="ghn.html" target="content">
-  <tr><td colspan=2 align="right">
-  </td></tr>
-  </form>
-
-  <tr><td colspan=2 style="background:#dddddd"></td></tr>
-  <tr><td colspan=2></td></tr>
-  <form name="INHOME_AV2_FORM" method="POST">
-  <input type="hidden" name="CSRFTOKEN" value="$$CSRFTOKEN$$">
-  <input type="hidden" name="REDIRECT" value="ghn.html">
-  <tr><td>&#8226;NDIM mode</td><td align="right">
-  <select name="NODE.GENERAL.DOMAIN_ID_MODE" id="ghn_ndim_mode" onChange="onNDIMChange()">
-  <script language="JavaScript">
-  var nt='$$NODE.GENERAL.DOMAIN_ID_MODE$$';
-  var ntp=nt;
-  var ntt=new Array('MANUAL','AUTOMATIC');
-  var nto=new Array('0','1');
-  selectOptionsWithText(ntp,ntt,nto);
-  </script>
-  </select>
-  </td></tr>
-
-  <tr><td>&#8226;Domain ID (DOD)</td><td align="right">
-  <input type="text" size=10 maxlength=10 name="NODE.GENERAL.DOMAIN_ID" value="$$NODE.GENERAL.DOMAIN_ID$$" id="ghn_ndim_dod">
-  </td></tr>
-
-  <tr><td colspan=2></td></tr>
-  <tr><td colspan=2 align="right">
-  <input name="OK" value="Ok" type="button" id="ghn_ndim_ok" onClick="onOKClick(this.form)">&nbsp;<input name="CANCEL" value="Cancel" type="reset" id="ghn_ndim_cancel">
-  </td></tr>
-  </form>
-
-  </table>
+<div class="section-container">
+  <div class="section-header">Neighboring Domain Interference Mitigation (NDIM)</div>
+  <div class="section-content">
+    <form name="NDIM_FORM" method="POST">
+      <input type="hidden" name="CSRFTOKEN" value="$$CSRFTOKEN$$">
+      <input type="hidden" name="REDIRECT" value="ghn.html" target="content">
+      <table class="form-table">
+        <tr>
+          <td>NDIM Mode</td>
+          <td>
+            <select name="NODE.GENERAL.DOMAIN_ID_MODE" id="ghn_ndim_mode" onChange="onNDIMChange()">
+              <script language="JavaScript">
+              var nt='$$NODE.GENERAL.DOMAIN_ID_MODE$$';
+              var ntp=nt;
+              var ntt=new Array('MANUAL','AUTOMATIC');
+              var nto=new Array('0','1');
+              selectOptionsWithText(ntp,ntt,nto);
+              </script>
+            </select>
+          </td>
+        </tr>
+        <tr>
+          <td>Domain ID (DOD)</td>
+          <td>
+            <input type="text" name="NODE.GENERAL.DOMAIN_ID" value="$$NODE.GENERAL.DOMAIN_ID$$" id="ghn_ndim_dod">
+          </td>
+        </tr>
+      </table>
+      <div class="button-group">
+        <input name="CANCEL" value="Cancel" type="reset" id="ghn_ndim_cancel">
+        <input name="OK" value="Save NDIM Settings" type="button" id="ghn_ndim_ok" onClick="onOKClick(this.form)">
+      </div>
+    </form>
+  </div>
 </div>
 
 <!-- Encryption -->
-<div style="padding:6px">
-  <table width=520 style="border:3px solid #dddddd">
-  <tr><td colspan=2><b>Encryption Configuration</b></td></tr>
-  <tr><td colspan=2></td></tr>
-  <tr><td colspan=2 style="background:#dddddd"></td></tr>
-  <tr><td colspan=2></td></tr>
-  <form name="ENCRYPTION_FORM" method="POST">
-  <input type="hidden" name="CSRFTOKEN" value="$$CSRFTOKEN$$">
-  <input type="hidden" name="REDIRECT" value="ghn.html">
-  <tr><td>
-  <script language="JavaScript">
-  var secured = "$$PAIRING.GENERAL.SECURED$$";
-  if (secured=='NO')
-    document.write('&#8226;Encryption is DISABLED');
-  else
-    document.write('&#8226;Encryption is ENABLED');
-  </script>
-  </td><td align="right"></td></tr>
-
-  <tr><td>&#8226;Pairing password</td><td align="right">
-  <input type="text" size=30 maxlength=30 name="PAIRING.GENERAL.PASSWORD" value="$$PAIRING.GENERAL.PASSWORD$$" id="ghn_pairing_password">
-  </td></tr>
-
-  <tr><td colspan=2></td></tr>
-  <tr><td colspan=2 align="right">
-  <script language="JavaScript">
-if (secured=='NO')
-  document.write('<input name="OK" value="Enable" type="button" id="ghn_crypto_ok"  onClick="onCryptoOKClick(this.form)">');
-else
-  document.write('<input name="OK" value="Change" type="button" id="ghn_crypto_ok"  onClick="onCryptoOKClick(this.form)">');
-  document.write('&nbsp;<input name="CANCEL" value="Cancel" type="reset" id="ghn_crypto_cancel">');
-  </script>
-  </td></tr>
-  </form>
-
-  </form>
-
-  <tr><td colspan=2 style="background:#dddddd"></td></tr>
-
-  <form name="ENCRYPTION_FORM" method="POST">
-  <input type="hidden" name="CSRFTOKEN" value="$$CSRFTOKEN$$">
-  <input type="hidden" name="REDIRECT" value="ghn.html">
-  <input type="hidden" name="PAIRING.GENERAL.PROCESS_START" id="PAIRING.GENERAL.PROCESS_START" value="YES" disabled="true">
-  <input type="hidden" name="PAIRING.GENERAL.LEAVE_SECURE_DOMAIN" id="PAIRING.GENERAL.LEAVE_SECURE_DOMAIN" value="YES" disabled="true">
-  <tr><td colspan=2></td></tr>
-  <tr><td colspan=2 align="right">
-  <tr><td>&#8226;Automatic configuration*:</td><td align="right">
-  <input name="PAIR_BUTTON" value="PAIR" type="button" id="ghn_crypto_pair"  onClick="onPAIRClick(this.form)">&nbsp;<input name="UNPAIR_BUTTON" type="button" value="UNPAIR" id="ghn_crypto_unpair"  onClick="onUNPAIRClick(this.form)">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-  <tr><td colspan=2><font size=-1><b>*</b> Pairing can take some time, please refresh page to update state</font></td></tr>
-  </td></tr>
-  </form>
-
-  </table>
+<div class="section-container">
+  <div class="section-header">Encryption Configuration</div>
+  <div class="section-content">
+    <form name="ENCRYPTION_FORM" method="POST">
+      <input type="hidden" name="CSRFTOKEN" value="$$CSRFTOKEN$$">
+      <input type="hidden" name="REDIRECT" value="ghn.html">
+      
+      <script language="JavaScript">
+      var secured = "$$PAIRING.GENERAL.SECURED$$";
+      if (secured=='NO')
+        document.write('<div class="encryption-status encryption-disabled">Encryption is DISABLED</div>');
+      else
+        document.write('<div class="encryption-status encryption-enabled">Encryption is ENABLED</div>');
+      </script>
+      
+      <table class="form-table">
+        <tr>
+          <td>Pairing Password</td>
+          <td>
+            <input type="text" name="PAIRING.GENERAL.PASSWORD" value="$$PAIRING.GENERAL.PASSWORD$$" id="ghn_pairing_password">
+          </td>
+        </tr>
+      </table>
+      
+      <div class="button-group">
+        <input name="CANCEL" value="Cancel" type="reset" id="ghn_crypto_cancel">
+        <script language="JavaScript">
+        if (secured=='NO')
+          document.write('<input name="OK" value="Enable Encryption" type="button" id="ghn_crypto_ok" onClick="onCryptoOKClick(this.form)">');
+        else
+          document.write('<input name="OK" value="Change Settings" type="button" id="ghn_crypto_ok" onClick="onCryptoOKClick(this.form)">');
+        </script>
+      </div>
+    </form>
+  </div>
 </div>
 
 <!-- G.hn connections -->

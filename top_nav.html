@@ -1,68 +1,137 @@
-<!--
-    <legal_notice>
-     MaxLinear, Inc. retains all right, title and interest (including all intellectual
-     property rights) in and to this computer program, which is protected by applicable
-     intellectual property laws.  Unless you have obtained a separate written license from
-     MaxLinear, Inc. or an authorized licensee of MaxLinear, Inc., you are not authorized
-     to utilize all or a part of this computer program for any purpose (including
-     reproduction, distribution, modification, and compilation into object code), and you
-     must immediately destroy or return all copies of this computer program.  If you are
-     licensed by MaxLinear, Inc. or an authorized licensee of MaxLinear, Inc., your rights
-     to utilize this computer program are limited by the terms of that license.
-    
-     This computer program contains trade secrets owned by MaxLinear, Inc. and, unless
-     authorized by MaxLinear, Inc. in writing, you agree to maintain the confidentiality
-     of this computer program and related information and to not disclose this computer
-     program and related information to any other person or entity.
-    
-     Misuse of this computer program or any information contained in it may results in
-     violations of applicable law.  MaxLinear, Inc. vigorously enforces its copyright,
-     trade secret, patent, contractual, and other legal rights.
-    
-     THIS COMPUTER PROGRAM IS PROVIDED "AS IS" WITHOUT ANY WARRANTIES, AND 
-      MAXLINEAR, INC.
-     EXPRESSLY DISCLAIMS ALL WARRANTIES, EXPRESS OR IMPLIED, INCLUDING THE 
-     WARRANTIES OF
-     MERCHANTIBILITY, FITNESS FOR A PARTICULAR PURPOSE, TITLE, AND 
-     NONINFRINGEMENT.
-    
-    ***************************************************************************************
-                                            Copyright (c) 2016/2020, MaxLinear, Inc.
-    ***************************************************************************************
-    </legal_notice>
--->
-
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="utf-8"/>
-<title>$$SYSTEM.PRODUCTION.DEVICE_NAME$$ Web Configuration - Main Page</title>
-<style type="text/css">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Top Navigation</title>
+<style>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  --primary-color: #0066cc;
+  --secondary-color: #004d99;
+  --background-color: #f5f5f5;
+  --text-color: #333333;
+  --border-color: #dddddd;
+  --header-bg-color: white;
+  --footer-bg-color: #e8f5e9;
+}
+
 body {
-	font-family:verdana,arial,sans-serif;
-	font-size:12pt;
-	margin:10px;
-	background-color:white;
-	}
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-size: 14px;
+  color: var(--text-color);
+  background-color: white;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.header {
+  background: var(--header-bg-color);
+  padding: 20px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  flex: 1;
+}
+
+.header-content {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.logo-section {
+  display: flex;
+  align-items: center;
+  gap: 30px;
+}
+
+.logo-container {
+  flex: 0 0 200px;
+}
+
+.logo-container img {
+  width: 100%;
+  height: auto;
+  max-width: 200px;
+}
+
+.title-container h1 {
+  font-size: 24px;
+  color: var(--primary-color);
+  margin: 0;
+}
+
+.logout-form {
+  margin: 0;
+}
+
+.logout-btn {
+  padding: 8px 20px;
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.logout-btn:hover {
+  background-color: var(--secondary-color);
+}
+
+.footer-frame {
+  width: 100%;
+  height: 150px;
+  border: none;
+  margin-top: auto;
+  background: var(--footer-bg-color);
+}
+
+@media (max-width: 768px) {
+  .header-content {
+    flex-direction: column;
+    gap: 15px;
+    text-align: center;
+  }
+
+  .logo-section {
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .title-container h1 {
+    font-size: 20px;
+  }
+}
 </style>
 </head>
 <body>
-<!--<h3>Top Navbar</h3>-->
-<p>
-<!-- <a href="menu_1.html" target="menu">Menu 1</a> | <a href="menu_2.html" target="menu">Menu 2</a></p> -->
-<table>
-<tr>
-<td valign="top" align="center" width=120><a href="http://www.maxlinear.com" target="_blank" name="www.maxlinear.com"><img src="logo_mxl.gif" border=0></a></td>
-<td valign="top" align="center" width=1000> <b>$$SYSTEM.PRODUCTION.DEVICE_NAME$$ Web Configuration</b></td>
-<td valign="top" align="right">
-  <form name="LOG_OUT_FORM" method="POST">
-  <input type="hidden" name="CSRFTOKEN" value="$$CSRFTOKEN$$">
-  <input type="hidden" name="REDIRECT" value="/" target="_top">
-  <input name="LOG_OUT_OK" value="Log Out" type="submit">
-  </form>
-</td>
-</tr>
-</table>
-</p>
+<div class="header">
+  <div class="header-content">
+    <div class="logo-section">
+      <div class="logo-container">
+        <a href="http://www.Velmenni.com" target="_blank">
+          <img src="velmenni_logo.jpeg" alt="Velmenni Logo">
+        </a>
+      </div>
+      <div class="title-container">
+        <h1>$$SYSTEM.PRODUCTION.DEVICE_NAME$$ Web Configuration</h1>
+      </div>
+    </div>
+    <form name="LOG_OUT_FORM" method="POST" class="logout-form">
+      <input type="hidden" name="CSRFTOKEN" value="$$CSRFTOKEN$$">
+      <input type="hidden" name="REDIRECT" value="/">
+      <input name="LOG_OUT_OK" value="Log Out" type="submit" class="logout-btn">
+    </form>
+  </div>
+</div>
+<iframe src="footer.html" class="footer-frame"></iframe>
 </body>
 </html>

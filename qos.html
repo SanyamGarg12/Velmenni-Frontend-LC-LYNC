@@ -37,6 +37,196 @@
 <head>
 <meta charset="utf-8" content="HTML,CSS,XML,JavaScript" />
 <script language="JavaScript" src="common.js"></script>
+<style>
+:root {
+  --primary-color: #0066cc;
+  --secondary-color: #004d99;
+  --background-color: #f5f5f5;
+  --text-color: #333333;
+  --border-color: #dddddd;
+  --input-border-color: #cccccc;
+  --button-text-color: white;
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-size: 14px;
+  color: var(--text-color);
+  background-color: white; /* Match iframe background */
+  margin: 0;
+  padding: 15px;
+}
+
+table {
+  width: 100%;
+  max-width: 700px; /* Consistent max width, can be wider if specific page needs it */
+  border-collapse: collapse;
+  margin-bottom: 20px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  border: 1px solid var(--border-color);
+}
+
+th, td {
+  padding: 10px 12px;
+  text-align: left;
+  border-bottom: 1px solid var(--border-color);
+}
+
+tr:last-child td {
+  border-bottom: none;
+}
+
+/* General rule for bold text in a colspan-td, typically section headers */
+td[colspan] > b {
+  font-size: 1.2em;
+  color: var(--primary-color);
+}
+
+/* Style for the header rows of each section (first tr in a tbody) */
+table > tbody > tr:first-child {
+  background-color: var(--background-color);
+}
+
+table > tbody > tr:first-child td {
+  font-weight: bold;
+  color: var(--primary-color);
+  border-bottom: 2px solid var(--primary-color);
+}
+
+/* Style for th elements */
+table th {
+    background-color: var(--background-color);
+    font-weight: bold;
+    color: var(--text-color);
+    padding: 8px 12px; /* Slightly less padding for th */
+    text-align: center; /* Center align header text */
+}
+
+
+/* Separator rows (td with colspan and specific old background) */
+td[colspan][style*="background:#dddddd"] /* More generic selector */
+{
+  background-color: var(--background-color) !important; /* Override inline style */
+  height: 5px;
+  padding: 0 !important; /* Override inline style if any */
+  border-top: 1px solid var(--border-color);
+  border-bottom: 1px solid var(--border-color);
+}
+
+/* Remove duplicate top border if separator is next to header */
+tr:nth-child(2) > td[colspan][style*="background:#dddddd"]{
+    border-top: none;
+}
+
+
+form {
+  margin: 0;
+}
+
+input[type=\"text\"],
+input[type=\"password\"],
+input[type=\"file\"],
+select {
+  padding: 8px;
+  border: 1px solid var(--input-border-color);
+  border-radius: 4px;
+  box-sizing: border-box;
+  font-size: 14px;
+  transition: border-color 0.2s;
+  width: 100%; /* Default to full width within their container */
+}
+
+/* Override for inputs with a 'size' attribute to respect their intended width */
+input[type=\"text\"][size] {
+    width: auto; /* Allow size attribute to dictate width */
+    min-width: 40px; /* Prevent them from becoming too small */
+}
+input[type=\"text\"][size=\"3\"] { width: 50px; text-align: center; }
+input[type=\"text\"][size=\"6\"] { width: 70px; }
+input[type=\"text\"][size=\"8\"] { width: 90px; }
+input[type=\"text\"][size=\"10\"] { width: 100px; }
+input[type=\"text\"][size=\"15\"] { width: 150px; }
+/* Add more specific sizes if needed */
+
+input[type=\"text\"]:focus,
+input[type=\"password\"]:focus,
+input[type=\"file\"]:focus,
+select:focus {
+  border-color: var(--primary-color);
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(0, 102, 204, 0.2);
+}
+
+input:disabled, select:disabled {
+    background-color: #eeeeee;
+    color: #888888;
+    cursor: not-allowed;
+}
+
+/* Align elements to the right if td has align=right */
+td[align=\"right\"] {
+  text-align: right;
+}
+td[align=\"center\"] {
+  text-align: center;
+}
+
+/* Button styling */
+input[type=\"button\"],
+input[type=\"reset\"] {
+  padding: 8px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.2s, box-shadow 0.2s;
+  margin-left: 10px;
+  width: auto; /* Buttons should size to content + padding */
+}
+
+input[type=\"button\"] {
+  background-color: var(--primary-color);
+  color: var(--button-text-color);
+}
+
+input[type=\"button\"]:hover {
+  background-color: var(--secondary-color);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+input[type=\"reset\"] {
+  background-color: #6c757d; /* A neutral grey */
+  color: var(--button-text-color);
+}
+
+input[type=\"reset\"]:hover {
+  background-color: #5a6268;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+/* Small text / font tags */
+font[size="-1"] {
+  font-size: 0.9em; 
+  color: var(--text-color);
+}
+td > font[size="-1"] { 
+    display: inline-block; 
+}
+
+/* Remove direct styling from specific table cells */
+td[style*="background:#dddddd"] {
+  background: transparent !important; 
+}
+
+/* Specific styling for DSCP map select elements in qos.html */
+select[id^="dscp_class_map_"] {
+  width: auto; /* Override the default 100% width */
+  min-width: 55px; /* Ensure enough space for digit, padding, and arrow */
+  padding-left: 6px;  /* Adjust padding if needed */
+  padding-right: 6px; /* Adjust padding if needed */
+}
+
+</style>
 <script language="JavaScript" type="text/javascript">
 //QoS functions
 function disableGeneralFields(dis)
@@ -542,8 +732,8 @@ printErrorMsg("$$LASTERRORMESSAGE$$");
 
 <!-- QoS -->
 <div style="padding:6px">
-  <table width=520 style="border:3px solid #dddddd">
-  <tr><td colspan=2><b>QoS Configuration</b></td></tr>
+  <table width="100%" style="/*border:3px solid #dddddd*/\">
+  <tr><td colspan=2><b>QoS Configuration general settings:</b></td></tr>
 
   <tr><td colspan=2 style="background:#dddddd"></td></tr>
   <tr><td colspan=2></td></tr>
@@ -635,10 +825,10 @@ printErrorMsg("$$LASTERRORMESSAGE$$");
 
 <!-- Packet classification -->
 <div style="padding:6px">
-  <table width=520 style="border:3px solid #dddddd">
-  <tr><td colspan=6><b>Packet classification</b></td></tr>
-  <tr><td colspan=6 style="background:#dddddd"></td></tr>
-  <tr><td colspan=6></td></tr>
+  <table width="100%" style="/*border:3px solid #dddddd*/\">
+  <tr><td colspan=8><b>Packet classifier parameters:</b></td></tr>
+  <tr><td colspan=8 style="background:#dddddd"></td></tr>
+  <tr><td colspan=8></td></tr>
   
   <tr><td>&#8226;Default prio</td><td align="right">
   <select name="PACKETCLASSIFIER.GENERAL.DEFAULT_CLASS" id="qos_packetclassifier_defaultprio">
@@ -652,7 +842,7 @@ printErrorMsg("$$LASTERRORMESSAGE$$");
   </td></tr>
 
  
-  <tr><td colspan=6 style="background:#dddddd"></td></tr>
+  <tr><td colspan=8 style="background:#dddddd"></td></tr>
 
   
   <input type="hidden" name="PACKETCLASSIFIER.GENERAL.TCPACKV4_CLASS_MAP_EN" value="NO"/>
@@ -735,10 +925,10 @@ printErrorMsg("$$LASTERRORMESSAGE$$");
 
 
 
-  <tr><td colspan=6 style="background:#dddddd"></td></tr>
+  <tr><td colspan=8 style="background:#dddddd"></td></tr>
 
 
-  <tr><td>DSCP Class  </td><td colspan=5 align="right">
+  <tr><td>DSCP Class  </td><td colspan=7 align="right">
   <script language="JavaScript" type="text/javascript">
   var dscp_class_map_str="$$PACKETCLASSIFIER.GENERAL.DSCP_CLASS_MAP$$";
   var dscp_class_map = dscp_class_map_str.split(",");
@@ -764,8 +954,8 @@ printErrorMsg("$$LASTERRORMESSAGE$$");
   </tr>
 
   
-  <tr><td colspan=6 style="background:#dddddd"></td></tr>
-  <tr><td colspan=6></td></tr>
+  <tr><td colspan=8 style="background:#dddddd"></td></tr>
+  <tr><td colspan=8></td></tr>
 
   <tr><th><font size=-1>PC</font></th><th><font size=-1>Offset</font></th><th><font size=-1>Bitmask</font></th><th><font size=-1>Pattern</font></th><th><font size=-1>Priority</font></th></tr>
 
@@ -798,11 +988,11 @@ var prio = prio_str.split(",");
   <input type="hidden" name="PACKETCLASSIFIER.GENERAL.RULES_ORDER" id="PACKETCLASSIFIER_GENERAL_RULES_ORDER1" value="$$PACKETCLASSIFIER.GENERAL.RULES_ORDER$$" />
 
 
-  <tr><td colspan=6 style="background:#dddddd"></td></tr>
-  <tr><td colspan=6 align="center">
+  <tr><td colspan=8 style="background:#dddddd"></td></tr>
+  <tr><td colspan=8 align="center">
   <input name="OK" value="Ok" type="button" id="qos_ok" onclick="onOKClick(this.form)"><input name="CANCEL" value="Cancel" type="reset" id="qos_cancel">
   </td></tr>
-  <tr><td colspan=6 style="background:#dddddd"></td></tr>
+  <tr><td colspan=8 style="background:#dddddd"></td></tr>
 </table>
 </div>
 </form>
