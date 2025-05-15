@@ -1,0 +1,416 @@
+<!--
+    <legal_notice>
+     MaxLinear, Inc. retains all right, title and interest (including all intellectual
+     property rights) in and to this computer program, which is protected by applicable
+     intellectual property laws.  Unless you have obtained a separate written license from
+     MaxLinear, Inc. or an authorized licensee of MaxLinear, Inc., you are not authorized
+     to utilize all or a part of this computer program for any purpose (including
+     reproduction, distribution, modification, and compilation into object code), and you
+     must immediately destroy or return all copies of this computer program.  If you are
+     licensed by MaxLinear, Inc. or an authorized licensee of MaxLinear, Inc., your rights
+     to utilize this computer program are limited by the terms of that license.
+    
+     This computer program contains trade secrets owned by MaxLinear, Inc. and, unless
+     authorized by MaxLinear, Inc. in writing, you agree to maintain the confidentiality
+     of this computer program and related information and to not disclose this computer
+     program and related information to any other person or entity.
+    
+     Misuse of this computer program or any information contained in it may results in
+     violations of applicable law.  MaxLinear, Inc. vigorously enforces its copyright,
+     trade secret, patent, contractual, and other legal rights.
+    
+     THIS COMPUTER PROGRAM IS PROVIDED "AS IS" WITHOUT ANY WARRANTIES, AND 
+      MAXLINEAR, INC.
+     EXPRESSLY DISCLAIMS ALL WARRANTIES, EXPRESS OR IMPLIED, INCLUDING THE 
+     WARRANTIES OF
+     MERCHANTIBILITY, FITNESS FOR A PARTICULAR PURPOSE, TITLE, AND 
+     NONINFRINGEMENT.
+    
+    ***************************************************************************************
+                                            Copyright (c) 2014/2020, MaxLinear, Inc.
+    ***************************************************************************************
+    </legal_notice>
+-->
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8"/>
+<script language="JavaScript" src="common.js"></script>
+<style>
+:root {
+  --primary-color: #e0e0e0;
+  --secondary-color: #d0d0d0;
+  --accent-color: #ff8c00;
+  --accent-hover: #e67e00;
+  --background-color: #f5f5f5;
+  --text-color: #333333;
+  --border-color: #dddddd;
+  --input-border-color: #cccccc;
+  --button-text-color: #333333;
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-size: 14px;
+  color: var(--text-color);
+  background-color: white;
+  margin: 0;
+  padding: 15px;
+}
+
+table {
+  width: 100%;
+  max-width: 700px;
+  border-collapse: collapse;
+  margin-bottom: 20px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  border: 1px solid var(--border-color);
+}
+
+th, td {
+  padding: 10px 12px;
+  text-align: left;
+  border-bottom: 1px solid var(--border-color);
+}
+
+tr:last-child td {
+  border-bottom: none;
+}
+
+td[colspan="2"] b {
+  font-size: 1.2em;
+  color: var(--accent-color);
+}
+
+table > tbody > tr:first-child {
+  background-color: var(--primary-color);
+}
+
+table > tbody > tr:first-child td {
+  font-weight: bold;
+  color: var(--text-color);
+  border-bottom: 2px solid var(--accent-color);
+}
+
+td[colspan="2"][style="background:#dddddd"] {
+  background-color: var(--secondary-color) !important;
+  height: 5px;
+  padding: 0;
+  border-top: 1px solid var(--border-color);
+  border-bottom: 1px solid var(--border-color);
+}
+
+tr:nth-child(2) > td[colspan="2"][style="background:#dddddd"] {
+  border-top: none;
+}
+
+form {
+  margin: 0;
+}
+
+input[type="text"],
+select {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid var(--input-border-color);
+  border-radius: 4px;
+  box-sizing: border-box;
+  font-size: 14px;
+  transition: border-color 0.2s;
+  background-color: var(--primary-color);
+}
+
+input[type="text"]:focus,
+select:focus {
+  border-color: var(--accent-color);
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(255, 140, 0, 0.2);
+}
+
+input[type="button"],
+input[type="reset"] {
+  padding: 8px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.2s, box-shadow 0.2s;
+  margin-left: 10px;
+}
+
+input[type="button"] {
+  background-color: var(--accent-color);
+  color: var(--button-text-color);
+}
+
+input[type="button"]:hover {
+  background-color: var(--accent-hover);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+input[type="reset"] {
+  background-color: var(--primary-color);
+  color: var(--text-color);
+}
+
+input[type="reset"]:hover {
+  background-color: var(--secondary-color);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+td[align="right"] {
+  text-align: right;
+}
+
+td[style="background:#dddddd"] {
+  background: transparent !important;
+}
+</style>
+<script language="JavaScript">
+function d2h(d) {return d.toString(16);}
+function h2d(h) {return parseInt(h,16);}
+function onLoadScripts()
+{
+  onVLANEnableChange();
+}
+function onVLANEnableChange()
+{
+  var nt='$$VLAN.CVLAN.ENABLE$$';
+  var ntp=nt;
+  vlanStateCheck(ntp);
+}
+function onOKClick(form)
+{
+  //disable all OK buttons after clicking to avoid sending 'OK' to the web server
+  //we want to POST only CFL parameters to track last error
+  document.getElementById("vlan_enabled_ok").disabled = true;
+  document.getElementById("vlan_disable_ok").disabled = true;
+
+  form.submit();
+}
+function onDisableClick(form)
+{
+  //disable all OK buttons after clicking to avoid sending 'OK' to the web server
+  //we want to POST only CFL parameters to track last error
+  document.getElementById("vlan_enabled_ok").disabled = true;
+  document.getElementById("vlan_disable_ok").disabled = true;
+
+  form.submit();
+}
+function vlanStateCheck(val)
+{
+  if (val == 'NO')
+  {
+    document.getElementById("vlan_disable_ok").disabled = true;    
+  }
+}
+</script>
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Cache-Control" content="no-cache">
+<meta http-equiv="Expires" content="Mon, 06 Jan 1990 00:00:01 GMT">
+</head>
+<body onLoad="onLoadScripts()">
+<script language="JavaScript">
+printErrorMsg("$$LASTERRORMESSAGE$$");
+</script>
+
+<!-- VLAN INFO -->
+<div style="padding:6px">
+  <table>
+  <tr><td colspan=2><b>VLAN Configuration</b></td></tr>
+  <tr><td colspan=3 style="background:#dddddd"></td></tr>
+  <tr><td colspan=3></td></tr>
+  <form name="VLAN_ENABLE_FORM" method="POST">
+  <input type="hidden" name="CSRFTOKEN" value="$$CSRFTOKEN$$">
+  <input type="hidden" name="REDIRECT" value="vlan.html">
+
+  <tr><td>VLAN feature Enabled:</td><td align="right">
+  <script language="JavaScript">
+  var nt='$$VLAN.CVLAN.ENABLE$$';
+  var ntp=nt;
+  document.write('<td align="center">'+ntp+'</td>');
+  vlanStateCheck(ntp);
+  </script>
+  <tr><td colspan=3 align="right">
+  <input name="DISABLE" value="Disable VLAN" type="button" id="vlan_disable_ok" onClick="onDisableClick(this.form)">&nbsp;
+  <input type="hidden" name="VLAN.CVLAN.ENABLE" value="NO" id="vlan_disable_button">
+  </td></tr>
+  </form>
+  </table>
+</div>
+
+<!-- VLAN TAG/IFACE configuration -->
+<div style="padding:6px">
+  <table>
+  <tr><td colspan=2><b>Configure port type and tag</b></td></tr>
+  <tr><td colspan=2 style="background:#dddddd"></td></tr>
+  <tr><td colspan=2></td></tr>
+  <form name="VLAN_CONFIG_FORM" method="POST">
+  <input type="hidden" name="CSRFTOKEN" value="$$CSRFTOKEN$$">
+  <input type="hidden" name="REDIRECT" value="vlan.html">
+  <tr><td>ETHA VLAN PVID:</td><td align="right">
+  <input type="text" size=10 maxlength=10 name="VLAN.CVLAN.PVID_ETHA" value="$$VLAN.CVLAN.PVID_ETHA$$" id="vlan_pvid_etha">
+  </td></tr>
+
+  <tr><td>ETHA Port configuration</td><td align="right">
+  <select name="VLAN.CVLAN.CONFIG_IF_ETHA" id="vlan_config_if_etha">
+  <script language="JavaScript">
+  var nt='$$VLAN.CVLAN.CONFIG_IF_ETHA$$';
+  var ntp=nt;
+  var nto=new Array('ACCESS','TRUNK','NONE');
+  selectOptions(ntp,nto);
+  </script>
+  </select>
+  </td></tr>
+
+  <tr><td>ETHB VLAN PVID:</td><td align="right">
+  <input type="text" size=10 maxlength=10 name="VLAN.CVLAN.PVID_ETHB" value="$$VLAN.CVLAN.PVID_ETHB$$"  id="vlan_pvid_ethb">
+  </td></tr>
+
+  <tr><td>ETHB Port configuration</td><td align="right">
+  <select name="VLAN.CVLAN.CONFIG_IF_ETHB" id="vlan_config_if_ethb">
+  <script language="JavaScript">
+  var nt='$$VLAN.CVLAN.CONFIG_IF_ETHB$$';
+  var ntp=nt;
+  var nto=new Array('ACCESS','TRUNK','NONE');
+  selectOptions(ntp,nto);
+  </script>
+  </select>
+  </td></tr>
+
+  <tr><td>FW VLAN PVID:</td><td align="right">
+  <input type="text" size=10 maxlength=10 name="VLAN.CVLAN.PVID_MGMT" value="$$VLAN.CVLAN.PVID_MGMT$$" id="vlan_pvid_fw">
+  </td></tr>
+
+  <tr><td>MGMT Port configuration</td><td align="right">
+  <select name="VLAN.CVLAN.CONFIG_IF_MGMT" id="vlan_config_if_mgmt">
+  <script language="JavaScript">
+  var nt='$$VLAN.CVLAN.CONFIG_IF_MGMT$$';
+  var ntp=nt;
+  var nto=new Array('ACCESS','TRUNK','NONE');
+  selectOptions(ntp,nto);
+  </script>
+  </select>
+  </td></tr>
+
+  <tr><td>SDIO VLAN PVID:</td><td align="right">
+  <input type="text" size=10 maxlength=10 name="VLAN.CVLAN.PVID_SDIO" value="$$VLAN.CVLAN.PVID_SDIO$$" id="vlan_pvid_sdio">
+  </td></tr>
+
+  <tr><td>SDIO Port configuration</td><td align="right">
+  <select name="VLAN.CVLAN.CONFIG_IF_SDIO" id="vlan_config_if_sdio">
+  <script language="JavaScript">
+  var nt='$$VLAN.CVLAN.CONFIG_IF_SDIO$$';
+  var ntp=nt;
+  var nto=new Array('ACCESS','TRUNK','NONE');
+  selectOptions(ntp,nto);
+  </script>
+  </select>
+  </td></tr>
+  </table>
+</div>
+
+<!-- VLAN FILTERING configuration -->
+<div style="padding:6px">
+  <table>
+  <tr><td><b>Ingress/Egress Filtering</b></td></tr>
+  <tr><td colspan=7 style="background:#dddddd"></td></tr>
+  <tr><td colspan=7></td></tr>
+
+  <tr><td>Enable VLAN Filtering</td><td colspan=5></td><td align="right">
+  <select name="VLAN.CVLAN.FILTERING_ENABLE" id="vlan_filtering_enable">
+  <script language="JavaScript">
+  var nt='$$VLAN.CVLAN.FILTERING_ENABLE$$';
+  var ntp=nt;
+  var nto=new Array('YES','NO');
+  selectOptions(ntp,nto);
+  </script>
+  </select>
+  </td></tr>
+
+  <tr><td colspan=7 style="background:#dddddd"></td></tr>
+  <tr><td colspan=7></td></tr>
+
+  <tr><td>Allowed TAGS in ETHA:</td>
+  <tr><td></td></tr>
+  <script language="JavaScript">
+    var allowed_tags_str = '$$VLAN.CVLAN.ALLOWED_TAGS_IN_ETHA$$';
+    var tags = allowed_tags_str.split(",");
+    for(var i=1;i<=16;i++)
+    {
+      document.write('<td align="right"><input type="text" size=5 maxlength=5 name="VLAN.CVLAN.ALLOWED_TAGS_IN_ETHA.'+i+'" value="'+(tags[i-1])+'" id="vlan_allowed_tags_etha'+i+'"></td><td align="right">');
+      if (i%4 == 0)
+      {
+        document.write('<tr></tr>');
+      }
+    }
+  </script>
+  </td></tr>
+
+  <tr><td colspan=7 style="background:#dddddd"></td></tr>
+  <tr><td colspan=7></td></tr>
+  <tr><td>Allowed TAGS in ETHB:</td><td align="right">
+  <tr><td></td></tr>
+  <script language="JavaScript">
+    var allowed_tags_str = '$$VLAN.CVLAN.ALLOWED_TAGS_IN_ETHB$$';
+    var tags = allowed_tags_str.split(",");
+    for(var i=1;i<=16;i++)
+    {
+      document.write('<td align="right"><input type="text" size=5 maxlength=5 name="VLAN.CVLAN.ALLOWED_TAGS_IN_ETHB.'+i+'" value="'+(tags[i-1])+'" id="vlan_allowed_tags_ethb'+i+'"></td><td align="right">');
+      if (i%4 == 0)
+      {
+        document.write('<tr></tr>');
+      }
+    }
+  </script>
+  </td></tr>
+
+  <tr><td colspan=7 style="background:#dddddd"></td></tr>
+  <tr><td colspan=7></td></tr>
+  <tr><td>Allowed TAGS in FW:</td><td align="right">
+  <tr><td></td></tr>
+  <script language="JavaScript">
+    var allowed_tags_str = '$$VLAN.CVLAN.ALLOWED_TAGS_IN_FW$$';
+    var tags = allowed_tags_str.split(",");
+    for(var i=1;i<=16;i++)
+    {
+      document.write('<td align="right"><input type="text" size=5 maxlength=5 name="VLAN.CVLAN.ALLOWED_TAGS_IN_FW.'+i+'" value="'+(tags[i-1])+'" id="vlan_allowed_tags_fw'+i+'"></td><td align="right">');
+      if (i%4 == 0)
+      {
+        document.write('<tr><td></td></tr>');
+      }
+    }
+  </script>
+  </td></tr>
+
+  <tr><td colspan=7 style="background:#dddddd"></td></tr>
+  <tr><td colspan=7></td></tr>
+  <tr><td>Allowed TAGS in SDIO:</td><td align="right">
+  <tr><td></td></tr>
+  <script language="JavaScript">
+    var allowed_tags_str = '$$VLAN.CVLAN.ALLOWED_TAGS_IN_SDIO$$';
+    var tags = allowed_tags_str.split(",");
+    for(var i=1;i<=16;i++)
+    {
+      document.write('<td align="right"><input type="text" size=5 maxlength=5 name="VLAN.CVLAN.ALLOWED_TAGS_IN_SDIO.'+i+'" value="'+(tags[i-1])+'" id="vlan_allowed_tags_sdio'+i+'"></td><td align="right">');
+      if (i%4 == 0)
+      {
+        document.write('<tr><td></td></tr>');
+      }
+    }
+  </script>
+  </td></tr>
+
+  <tr><td colspan=7 style="background:#dddddd"></td></tr>
+  <tr><td colspan=7 align="right">
+  <input name="OK" value="Submit and Enable VLAN" type="button" id="vlan_enabled_ok" onClick="onOKClick(this.form)">&nbsp;<input name="CANCEL" value="Cancel" type="reset" id="vlan_enabled_cancel">
+  <input type="hidden" name="VLAN.CVLAN.ENABLE" value="YES">
+  </td></tr>
+  </form>
+  </td></tr>
+  </table>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,110 @@
+<!--
+    <legal_notice>
+     MaxLinear, Inc. retains all right, title and interest (including all intellectual
+     property rights) in and to this computer program, which is protected by applicable
+     intellectual property laws.  Unless you have obtained a separate written license from
+     MaxLinear, Inc. or an authorized licensee of MaxLinear, Inc., you are not authorized
+     to utilize all or a part of this computer program for any purpose (including
+     reproduction, distribution, modification, and compilation into object code), and you
+     must immediately destroy or return all copies of this computer program.  If you are
+     licensed by MaxLinear, Inc. or an authorized licensee of MaxLinear, Inc., your rights
+     to utilize this computer program are limited by the terms of that license.
+    
+     This computer program contains trade secrets owned by MaxLinear, Inc. and, unless
+     authorized by MaxLinear, Inc. in writing, you agree to maintain the confidentiality
+     of this computer program and related information and to not disclose this computer
+     program and related information to any other person or entity.
+    
+     Misuse of this computer program or any information contained in it may results in
+     violations of applicable law.  MaxLinear, Inc. vigorously enforces its copyright,
+     trade secret, patent, contractual, and other legal rights.
+    
+     THIS COMPUTER PROGRAM IS PROVIDED "AS IS" WITHOUT ANY WARRANTIES, AND 
+      MAXLINEAR, INC.
+     EXPRESSLY DISCLAIMS ALL WARRANTIES, EXPRESS OR IMPLIED, INCLUDING THE 
+     WARRANTIES OF
+     MERCHANTIBILITY, FITNESS FOR A PARTICULAR PURPOSE, TITLE, AND 
+     NONINFRINGEMENT.
+    
+    ***************************************************************************************
+                                            Copyright (c) 2016/2020, MaxLinear, Inc.
+    ***************************************************************************************
+    </legal_notice>
+-->
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8"/>
+<script language="JavaScript" src="common.js"></script>
+<script language="JavaScript">
+function onHWResetClick(form)
+{
+  document.getElementById("flupst_hwreset").disabled = true;
+  form.submit();
+}
+</script>
+<title>$$SYSTEM.PRODUCTION.DEVICE_NAME$$  Web Configuration - Flash Upgrade</title>
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Cache-Control" content="no-cache">
+<meta http-equiv="Expires" content="Mon, 06 Jan 1990 00:00:01 GMT">
+<meta http-equiv="Refresh" content="30;URL='flupst.html'">
+</head>
+<body bgcolor="white">
+<div style="padding:10px;font-size:18px"><p>
+  <b>$$SYSTEM.GENERAL.CHIPSET$$ $$SYSTEM.PRODUCTION.HW_PRODUCT$$ Web Configuration</b>
+</p></div>
+<script language="JavaScript">
+printErrorMsg("$$LASTERRORMESSAGE$$");
+</script>
+<div style="padding:6px">
+  <table width=520 style="border:3px solid #dddddd">
+  <tr><td colspan=2><b>Flash Upgrade</b></td></tr>
+  <tr><td colspan=2 style="background:#dddddd"></td></tr>
+  <tr><td colspan=2></td></tr>
+  <tr><td>Status</td><td align="right"><font size=-1 id="flup_status">$$FLUPGRADE.GENERAL.STATUS$$</font></td></tr>
+  <tr><td>Flash Section</td><td align="right"><font size=-1>$$FLUPGRADE.GENERAL.SECTION$$</font></td></tr>
+  <tr><td>Upgrade Protocol</td><td align="right"><font size=-1>$$FLUPGRADE.GENERAL.SOURCE$$</font></td></tr>
+  <tr><td>Server IP Address</td><td align="right"><font size=-1>$$FLUPGRADE.GENERAL.HOST$$</font></td></tr>
+  <tr><td>Filename</td><td align="right"><font size=-1>$$FLUPGRADE.GENERAL.FILENAME$$</font></td></tr>
+  <script language="JavaScript">
+var ffs=parseInt('$$FLUPGRADE.GENERAL.FILE_SIZE$$');
+var fds=parseInt('$$FLUPGRADE.GENERAL.DOWNLOADED_BYTES$$');
+var p=0;
+if((ffs>0)&&(fds>0))
+{
+  p=parseInt(100*fds/ffs);
+}
+else if ((ffs==0) && (fds>0))
+{
+  <!-- special case, after upgrade end, FW sets ffs=0 -->
+  ffs=fds;
+  p=100;
+}
+p=Math.max(p,0);
+p=Math.min(p,100);
+document.write('<tr><td>Download Progress</td><td align="right"><font size=-1>'+fds+' of '+ffs+' bytes ('+p+' %)</font></td></tr>'+
+'<tr><td align="center" colspan=2>'+
+'<table border=0 cellspacing=0 cellpadding=0 width=500 height="12px" bgColor="#dddddd">'+
+'<tr><td width="'+p+'%" bgColor="#011051"></td><td width="'+(100-p)+'%"></td></tr>'+
+'</table>'+
+'</td></tr>');
+  </script>
+  <tr><td colspan=2></td></tr>
+  <tr><td colspan=2><font size=-1>This page is updated automatically every 10 seconds. The modem must be reset once the upgrade has finished.</font></td></tr>
+  <tr><td colspan=2></td></tr>
+  <form name="HW_RESET_FORM" method="POST">
+  <input type="hidden" name="CSRFTOKEN" value="$$CSRFTOKEN$$">
+  <input type="hidden" name="REDIRECT" value="reset.html">
+  <input type="hidden" name="SYSTEM.GENERAL.HW_RESET" value="1">
+  <tr><td colspan=2 align="right">
+  <input name="HW_RESET_BUTTON" value="Hardware Reset" type="button" id="flupst_hwreset" onClick="onHWResetClick(this.form)">
+  </td></tr>
+  </form>
+  </table>
+</div>
+<script language="javascript">
+setTimeout("location.href = 'flupst.html'",10000);
+</script>
+</body>
+</html>

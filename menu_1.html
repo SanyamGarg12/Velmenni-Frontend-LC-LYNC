@@ -1,0 +1,79 @@
+<!--
+    <legal_notice>
+     MaxLinear, Inc. retains all right, title and interest (including all intellectual
+     property rights) in and to this computer program, which is protected by applicable
+     intellectual property laws.  Unless you have obtained a separate written license from
+     MaxLinear, Inc. or an authorized licensee of MaxLinear, Inc., you are not authorized
+     to utilize all or a part of this computer program for any purpose (including
+     reproduction, distribution, modification, and compilation into object code), and you
+     must immediately destroy or return all copies of this computer program.  If you are
+     licensed by MaxLinear, Inc. or an authorized licensee of MaxLinear, Inc., your rights
+     to utilize this computer program are limited by the terms of that license.
+    
+     This computer program contains trade secrets owned by MaxLinear, Inc. and, unless
+     authorized by MaxLinear, Inc. in writing, you agree to maintain the confidentiality
+     of this computer program and related information and to not disclose this computer
+     program and related information to any other person or entity.
+    
+     Misuse of this computer program or any information contained in it may results in
+     violations of applicable law.  MaxLinear, Inc. vigorously enforces its copyright,
+     trade secret, patent, contractual, and other legal rights.
+    
+     THIS COMPUTER PROGRAM IS PROVIDED "AS IS" WITHOUT ANY WARRANTIES, AND 
+      MAXLINEAR, INC.
+     EXPRESSLY DISCLAIMS ALL WARRANTIES, EXPRESS OR IMPLIED, INCLUDING THE 
+     WARRANTIES OF
+     MERCHANTIBILITY, FITNESS FOR A PARTICULAR PURPOSE, TITLE, AND 
+     NONINFRINGEMENT.
+    
+    ***************************************************************************************
+                                            Copyright (c) 2016/2020, MaxLinear, Inc.
+    ***************************************************************************************
+    </legal_notice>
+-->
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8"/>
+<title>HTML Frames Example - Menu 1</title>
+<style type="text/css">
+body {
+	font-family:verdana,arial,sans-serif;
+	font-size:10pt;
+	margin:10px;
+	background-color:white;
+	}
+</style>
+</head>
+<body>
+<a href="ghn.html" target="content" id="ghn">G.hn</a><br />
+<a href="ip.html" target="content" id="ip">IP</a><br />
+<a href="ethernet.html" target="content" id="ethernet">Ethernet</a><br />
+<a href="device.html" target="content" id="device">Device</a><br />
+<a href="multicast.html" target="content" id="multicast">Multicast</a><br />
+<a href="qos.html" target="content" id="qos">QoS</a><br />
+<a href="vlan.html" target="content" id="vlan">VLAN</a><br />
+<a href="ghn_spectrum.html" target="content" id="ghn_spectrum">G.hn spectrum</a><br />
+<a href="acl.html" target="content" id="acl">ACL</a><br />
+<a href="logfile.html" target="content" id="logfile">Log file</a><br />
+<a href="wifi.html" target="content" id="wifi">Wifi</a><br />
+<a href="advanced.html" target="content" id="advanced">Advanced</a><br />
+<script>
+//dont show wlan menu if not available in the product
+linkNodes = document.getElementsByTagName("a");
+for(i = 0; i < linkNodes.length; i++){
+  if((linkNodes[i].getAttribute("href") == "wifi.html") && ("$$WLAN.GENERAL.WATCHDOG_ENABLED$$"=="")){
+    linkNodes[i].style.visibility= "hidden";
+  }
+}
+//dont show ACL menu if not a P2MP product (PHYMNG.GENERAL.ACCESS_POLICY=2)
+linkNodes = document.getElementsByTagName("a");
+for(i = 0; i < linkNodes.length; i++){
+  if((linkNodes[i].getAttribute("href") == "acl.html") && ("$$PHYMNG.GENERAL.ACCESS_POLICY$$"!="2")){
+    linkNodes[i].style.visibility= "hidden";
+  }
+}
+</script>
+</body>
+</html>

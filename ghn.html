@@ -1,0 +1,312 @@
+<!--
+    <legal_notice>
+     MaxLinear, Inc. retains all right, title and interest (including all intellectual
+     property rights) in and to this computer program, which is protected by applicable
+     intellectual property laws.  Unless you have obtained a separate written license from
+     MaxLinear, Inc. or an authorized licensee of MaxLinear, Inc., you are not authorized
+     to utilize all or a part of this computer program for any purpose (including
+     reproduction, distribution, modification, and compilation into object code), and you
+     must immediately destroy or return all copies of this computer program.  If you are
+     licensed by MaxLinear, Inc. or an authorized licensee of MaxLinear, Inc., your rights
+     to utilize this computer program are limited by the terms of that license.
+    
+     This computer program contains trade secrets owned by MaxLinear, Inc. and, unless
+     authorized by MaxLinear, Inc. in writing, you agree to maintain the confidentiality
+     of this computer program and related information and to not disclose this computer
+     program and related information to any other person or entity.
+    
+     Misuse of this computer program or any information contained in it may results in
+     violations of applicable law.  MaxLinear, Inc. vigorously enforces its copyright,
+     trade secret, patent, contractual, and other legal rights.
+    
+     THIS COMPUTER PROGRAM IS PROVIDED "AS IS" WITHOUT ANY WARRANTIES, AND 
+      MAXLINEAR, INC.
+     EXPRESSLY DISCLAIMS ALL WARRANTIES, EXPRESS OR IMPLIED, INCLUDING THE 
+     WARRANTIES OF
+     MERCHANTIBILITY, FITNESS FOR A PARTICULAR PURPOSE, TITLE, AND 
+     NONINFRINGEMENT.
+    
+    ***************************************************************************************
+                                            Copyright (c) 2016/2020, MaxLinear, Inc.
+    ***************************************************************************************
+    </legal_notice>
+-->
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8"/>
+<script language="JavaScript" src="common.js"></script>
+<script language="JavaScript">
+function onLoadScript()
+{
+  onNDIMChange();
+  onCryptoEnableChange();
+}
+function onCryptoEnableChange()
+{
+  var secured = "$$PAIRING.GENERAL.SECURED$$";
+  document.getElementById("ghn_crypto_unpair").disabled = (secured == 'NO');
+  //we need PAIR button to be always enabled to accept more nodes
+  //document.getElementById("ghn_crypto_pair").disabled = (secured == 'YES');
+}
+function onPAIRClick(form)
+{
+  onCryptoClickCommon();
+  document.getElementById("ghn_crypto_unpair").disabled = true;
+  document.getElementById("ghn_crypto_pair").disabled = false;
+
+  document.getElementById("PAIRING.GENERAL.PROCESS_START").disabled = false;
+
+  form.submit();
+}
+function onUNPAIRClick(form)
+{
+  onCryptoClickCommon();
+  document.getElementById("ghn_crypto_unpair").disabled = false;
+  document.getElementById("ghn_pairing_password").disabled = true;
+
+  document.getElementById("PAIRING.GENERAL.LEAVE_SECURE_DOMAIN").disabled = false;
+
+  form.submit();
+}
+function onOKClick(form)
+{
+  //disable all OK buttons after clicking to avoid sending 'OK' to the web server
+  //we want to POST only CFL parameters to track last error
+  document.getElementById("ghn_basic_ok").disabled = true;
+  document.getElementById("ghn_basic2_ok").disabled = true;
+  document.getElementById("ghn_ndim_ok").disabled = true;
+  form.submit();
+}
+function onCryptoClickCommon()
+{
+  //disable all OK buttons after clicking to avoid sending 'OK' to the web server
+  //we want to POST only CFL parameters to track last error
+  document.getElementById("ghn_crypto_ok").disabled = true;
+  document.getElementById("ghn_crypto_pair").disabled = true;
+  document.getElementById("ghn_crypto_unpair").disabled = true;
+}
+function onCryptoOKClick(form)
+{
+  onCryptoClickCommon();
+  form.submit();
+}
+function onNDIMChange()
+{
+    document.getElementById("ghn_ndim_dod").disabled = (document.getElementById("ghn_ndim_mode").value=='1');
+}
+</script>
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Cache-Control" content="no-cache">
+<meta http-equiv="Expires" content="Mon, 06 Jan 1990 00:00:01 GMT">
+</head>
+<body bgcolor="white" onLoad="onLoadScript()">
+<script language="JavaScript">
+printErrorMsg("$$LASTERRORMESSAGE$$");
+</script>
+
+<!-- Basic settings -->
+<div style="padding:6px">
+  <table width=520 style="border:3px solid #dddddd">
+  <tr><td colspan=2><b>Basic settings</b></td></tr>
+  <tr><td colspan=2 style="background:#dddddd"></td></tr>
+
+  <tr><td colspan=2></td></tr>
+  <form name="BASIC_FORM" method="POST" id="ghn_basic">
+  <input type="hidden" name="CSRFTOKEN" value="$$CSRFTOKEN$$">
+  <input type="hidden" name="REDIRECT" value="ghn.html" target="content">
+
+  <tr><td>&#8226;MAC address</td><td align="right"><font size=-1 id="ghn_basic_mac">$$SYSTEM.PRODUCTION.MAC_ADDR$$</font></td></tr>
+  <tr><td>&#8226;Device ID</td><td align="right"><font size=-1 id="ghn_basic_did">$$NODE.GENERAL.DEVICE_ID$$</font></td></tr>
+
+  <tr><td>&#8226;Domain Name</td><td align="right">
+  <input type="text" size=30 maxlength=20 name="NODE.GENERAL.DOMAIN_NAME" value="$$NODE.GENERAL.DOMAIN_NAME$$" id="ghn_basic_domain">
+  </td></tr>
+
+  <tr><td>&#8226;Force node Type</td><td align="right">
+  <select name="MASTERSELECTION.GENERAL.FORCE_NODE" id="ghn_basic_forcenodetype">
+  <script language="JavaScript">
+  var nt='$$MASTERSELECTION.GENERAL.FORCE_NODE$$';
+  var ntp=nt;
+  var ntt=new Array('END_POINT','DOMAIN_MASTER','AUTOMATIC');
+  var nto=new Array('END_POINT','DOMAIN_MASTER','NONE');
+  selectOptionsWithText(ntp,ntt,nto);
+  </script>
+  </select>
+  </td></tr>
+  <tr><td>&#8226;Node type*</td><td align="right"><font size=-1 id="ghn_basic_nodetype">$$NODE.GENERAL.NODE_TYPE$$</font></td></tr>
+  <tr><td colspan=2><font size=-1><b>*</b> Node type change can take some time, please refresh page to update state</font></td></tr>
+
+  <tr><td colspan=2></td></tr>
+  <tr><td colspan=2 align="right">
+  <input name="OK" value="Ok" type="button" id="ghn_basic_ok" onClick="onOKClick(this.form)">&nbsp;<input name="CANCEL" value="Cancel" type="reset" id="ghn_basic_cancel">
+  </td></tr>
+  </form>
+
+  <tr><td colspan=2 style="background:#dddddd"></td></tr>
+  <tr><td colspan=2></td></tr>
+  <form name="BASIC_FORM2" method="POST" id="ghn_basic2">
+  <input type="hidden" name="CSRFTOKEN" value="$$CSRFTOKEN$$">
+  <input type="hidden" name="REDIRECT" value="ghn.html" target="content">
+  <tr><td>&#8226;G.hn profile</td><td align="right">
+  <select name="PHYMNG.GENERAL.RUNNING_PHYMODE_ID" id="ghn_basic2_profile">
+  <script language="JavaScript">
+  var sPhyMode='$$PHYMNG.GENERAL.RUNNING_PHYMODE_ID$$'
+  var profiles=new Array("PLC 100MHz","PLC 50MHz","PLC 100 MHz with MIMO", "COAX 100MHz","PHONE 100MHz","PLC 50MHz with MIMO", "PLC 50MHz MIMO_BOOST", "PLC 100MHz BOOST", "COAX 200 MHz", "PHONE 200MHz");
+  var mode    =new Array("1","4","7","9","10","20","22","23","25","26");
+  var nt=sPhyMode;
+  var ntp=nt;
+  selectOptionsWithText(ntp,profiles,mode);
+  </script>
+  </select>
+  </td></tr>
+
+  <tr><td colspan=2></td></tr>
+  <tr><td colspan=2 align="right">
+  <input name="OK" value="Ok" type="button" id="ghn_basic2_ok" onClick="onOKClick(this.form)">&nbsp;<input name="CANCEL" value="Cancel" type="reset" id="ghn_basic2_cancel">
+  </td></tr>
+  </form>
+
+  </table>
+</div>
+
+
+<!-- NDIM -->
+<div style="padding:6px">
+  <table width=520 style="border:3px solid #dddddd">
+  <tr><td colspan=2><b>Neighboring Domain Interference Mitigation (NDIM)</b></td></tr>
+  <form name="NDIM_FORM" method="POST">
+  <input type="hidden" name="CSRFTOKEN" value="$$CSRFTOKEN$$">
+  <input type="hidden" name="REDIRECT" value="ghn.html" target="content">
+  <tr><td colspan=2 align="right">
+  </td></tr>
+  </form>
+
+  <tr><td colspan=2 style="background:#dddddd"></td></tr>
+  <tr><td colspan=2></td></tr>
+  <form name="INHOME_AV2_FORM" method="POST">
+  <input type="hidden" name="CSRFTOKEN" value="$$CSRFTOKEN$$">
+  <input type="hidden" name="REDIRECT" value="ghn.html">
+  <tr><td>&#8226;NDIM mode</td><td align="right">
+  <select name="NODE.GENERAL.DOMAIN_ID_MODE" id="ghn_ndim_mode" onChange="onNDIMChange()">
+  <script language="JavaScript">
+  var nt='$$NODE.GENERAL.DOMAIN_ID_MODE$$';
+  var ntp=nt;
+  var ntt=new Array('MANUAL','AUTOMATIC');
+  var nto=new Array('0','1');
+  selectOptionsWithText(ntp,ntt,nto);
+  </script>
+  </select>
+  </td></tr>
+
+  <tr><td>&#8226;Domain ID (DOD)</td><td align="right">
+  <input type="text" size=10 maxlength=10 name="NODE.GENERAL.DOMAIN_ID" value="$$NODE.GENERAL.DOMAIN_ID$$" id="ghn_ndim_dod">
+  </td></tr>
+
+  <tr><td colspan=2></td></tr>
+  <tr><td colspan=2 align="right">
+  <input name="OK" value="Ok" type="button" id="ghn_ndim_ok" onClick="onOKClick(this.form)">&nbsp;<input name="CANCEL" value="Cancel" type="reset" id="ghn_ndim_cancel">
+  </td></tr>
+  </form>
+
+  </table>
+</div>
+
+<!-- Encryption -->
+<div style="padding:6px">
+  <table width=520 style="border:3px solid #dddddd">
+  <tr><td colspan=2><b>Encryption Configuration</b></td></tr>
+  <tr><td colspan=2></td></tr>
+  <tr><td colspan=2 style="background:#dddddd"></td></tr>
+  <tr><td colspan=2></td></tr>
+  <form name="ENCRYPTION_FORM" method="POST">
+  <input type="hidden" name="CSRFTOKEN" value="$$CSRFTOKEN$$">
+  <input type="hidden" name="REDIRECT" value="ghn.html">
+  <tr><td>
+  <script language="JavaScript">
+  var secured = "$$PAIRING.GENERAL.SECURED$$";
+  if (secured=='NO')
+    document.write('&#8226;Encryption is DISABLED');
+  else
+    document.write('&#8226;Encryption is ENABLED');
+  </script>
+  </td><td align="right"></td></tr>
+
+  <tr><td>&#8226;Pairing password</td><td align="right">
+  <input type="text" size=30 maxlength=30 name="PAIRING.GENERAL.PASSWORD" value="$$PAIRING.GENERAL.PASSWORD$$" id="ghn_pairing_password">
+  </td></tr>
+
+  <tr><td colspan=2></td></tr>
+  <tr><td colspan=2 align="right">
+  <script language="JavaScript">
+if (secured=='NO')
+  document.write('<input name="OK" value="Enable" type="button" id="ghn_crypto_ok"  onClick="onCryptoOKClick(this.form)">');
+else
+  document.write('<input name="OK" value="Change" type="button" id="ghn_crypto_ok"  onClick="onCryptoOKClick(this.form)">');
+  document.write('&nbsp;<input name="CANCEL" value="Cancel" type="reset" id="ghn_crypto_cancel">');
+  </script>
+  </td></tr>
+  </form>
+
+  </form>
+
+  <tr><td colspan=2 style="background:#dddddd"></td></tr>
+
+  <form name="ENCRYPTION_FORM" method="POST">
+  <input type="hidden" name="CSRFTOKEN" value="$$CSRFTOKEN$$">
+  <input type="hidden" name="REDIRECT" value="ghn.html">
+  <input type="hidden" name="PAIRING.GENERAL.PROCESS_START" id="PAIRING.GENERAL.PROCESS_START" value="YES" disabled="true">
+  <input type="hidden" name="PAIRING.GENERAL.LEAVE_SECURE_DOMAIN" id="PAIRING.GENERAL.LEAVE_SECURE_DOMAIN" value="YES" disabled="true">
+  <tr><td colspan=2></td></tr>
+  <tr><td colspan=2 align="right">
+  <tr><td>&#8226;Automatic configuration*:</td><td align="right">
+  <input name="PAIR_BUTTON" value="PAIR" type="button" id="ghn_crypto_pair"  onClick="onPAIRClick(this.form)">&nbsp;<input name="UNPAIR_BUTTON" type="button" value="UNPAIR" id="ghn_crypto_unpair"  onClick="onUNPAIRClick(this.form)">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  <tr><td colspan=2><font size=-1><b>*</b> Pairing can take some time, please refresh page to update state</font></td></tr>
+  </td></tr>
+  </form>
+
+  </table>
+</div>
+
+<!-- G.hn connections -->
+<div style="padding:6px">
+  <table width=520 style="border:3px solid #dddddd">
+  <tr><td colspan=6><b>Available Connections</b></td></tr>
+  <tr><td colspan=6 style="background:#dddddd"></td></tr>
+  <tr><td colspan=6></td></tr>
+
+  <tr><th><font size=-1>Device ID</font></th><th><font size=-1>MAC Address</font></th><th><font size=-1>Phy Tx (Mbps)</font></th><th><font size=-1>Phy Rx (Mbps)</font></th></tr>
+<script language="JavaScript">
+
+var mymac='$$SYSTEM.PRODUCTION.MAC_ADDR$$';
+var mydid='$$NODE.GENERAL.DEVICE_ID$$';
+var pcdids=new Array($$DIDMNG.GENERAL.DIDS$$);
+var pcmastr="$$DIDMNG.GENERAL.MACS$$";
+var pcptx=new Array($$DIDMNG.GENERAL.TX_BPS$$);
+var pcprx=new Array($$DIDMNG.GENERAL.RX_BPS$$);
+
+//first convert pcmastr to array of connected MACs (remove own MAC)
+var pcma = pcmastr.split(",");
+
+if(pcma.length>2)  //if 2, it must be our own MAC, first element is always 00::00
+  {
+    for(var i=1;(i<pcma.length)&&(i<=32);i++)
+    {
+      if (pcma[i]!=mymac)
+      {
+         document.write('<tr><td align="center"><font size=-1 id="ghn_conn_did_'+i+'">'+pcdids[i]+'</font></td><td align="center"><tt id="ghn_conn_mac_'+i+'">'+pcma[i]+'</tt></td><td align="center"><font size=-1 id="ghn_conn_tx_'+i+'">'+Math.floor(pcptx[i]*32/1000)+'</font></td><td align="center"><font size=-1 id="ghn_conn_tx_'+i+'">'+Math.floor(pcprx[i]*32/1000)+'</font></td><td align="center"><font size=-1></font></td></tr>');
+      }
+    }
+    if(pcma.length>32)
+      document.write('<tr><td colspan=6 align="center"><font size=-1><i><b>Warning!</b> At least 33 items in the list</i></font></td></tr>');
+  }
+else
+{
+  document.write('<tr><td colspan=6 align="center"><font size=-1><i>Empty list</i></font></td></tr>');
+}
+  </script>
+
+
+</body>
+</html>

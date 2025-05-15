@@ -1,0 +1,811 @@
+<!--
+    <legal_notice>
+     MaxLinear, Inc. retains all right, title and interest (including all intellectual
+     property rights) in and to this computer program, which is protected by applicable
+     intellectual property laws.  Unless you have obtained a separate written license from
+     MaxLinear, Inc. or an authorized licensee of MaxLinear, Inc., you are not authorized
+     to utilize all or a part of this computer program for any purpose (including
+     reproduction, distribution, modification, and compilation into object code), and you
+     must immediately destroy or return all copies of this computer program.  If you are
+     licensed by MaxLinear, Inc. or an authorized licensee of MaxLinear, Inc., your rights
+     to utilize this computer program are limited by the terms of that license.
+    
+     This computer program contains trade secrets owned by MaxLinear, Inc. and, unless
+     authorized by MaxLinear, Inc. in writing, you agree to maintain the confidentiality
+     of this computer program and related information and to not disclose this computer
+     program and related information to any other person or entity.
+    
+     Misuse of this computer program or any information contained in it may results in
+     violations of applicable law.  MaxLinear, Inc. vigorously enforces its copyright,
+     trade secret, patent, contractual, and other legal rights.
+    
+     THIS COMPUTER PROGRAM IS PROVIDED "AS IS" WITHOUT ANY WARRANTIES, AND 
+      MAXLINEAR, INC.
+     EXPRESSLY DISCLAIMS ALL WARRANTIES, EXPRESS OR IMPLIED, INCLUDING THE 
+     WARRANTIES OF
+     MERCHANTIBILITY, FITNESS FOR A PARTICULAR PURPOSE, TITLE, AND 
+     NONINFRINGEMENT.
+    
+    ***************************************************************************************
+                                            Copyright (c) 2016/2020, MaxLinear, Inc.
+    ***************************************************************************************
+    </legal_notice>
+-->
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" content="HTML,CSS,XML,JavaScript" />
+<script language="JavaScript" src="common.js"></script>
+<script language="JavaScript" type="text/javascript">
+//QoS functions
+function disableGeneralFields(dis)
+{
+    //setQoSPacketDetector
+    for(var i=1;i<=2;i++)
+    {
+      document.getElementById("qos_pd"+i+"_offset").disabled=dis;
+      document.getElementById("qos_pd"+i+"_bitmask").disabled=dis;
+      document.getElementById("qos_pd"+i+"_pattern").disabled=dis;
+      if (dis == true)
+      {
+        document.getElementById("qos_pd"+i+"_enabled").value="0";
+      }
+      else
+      {
+        document.getElementById("qos_pd"+i+"_enabled").value="1";
+      }
+    }
+
+    document.getElementById("qos_pd1").disabled=dis;
+    document.getElementById("qos_pd2").disabled=dis;
+    document.getElementById("qos_pd1_enabled").disabled=dis;
+    document.getElementById("qos_pd2_enabled").disabled=dis;
+
+    //setQoSClassifierRule
+    for(var i=1;i<=8;i++)
+    {
+      document.getElementById("qos_pc_offset_rule"+i).disabled=dis;
+      document.getElementById("qos_pc_bitmask_rule"+i).disabled=dis;
+      document.getElementById("qos_pc_pattern_rule"+i).disabled=dis;
+    }
+
+    //typeofframe
+    document.getElementById("qos_frametype").disabled=dis;
+}
+
+function disablePrioFields(dis)
+{
+    //set8021pClassifierPrios
+    for(var i=1;i<=8;i++)
+    {
+      document.getElementById("qos_pc_prio_rule"+i).disabled=dis;
+      document.getElementById("qos_pc_enabled_rule"+i).disabled=dis;
+    }
+ 
+}
+
+function d2h(d) {return d.toString(16);}
+function h2d(h) {return parseInt(h,16);}
+
+function onPD1Change()
+{
+  if (document.forms.QOS_FORM.QOS_PD1.value == "None")
+  {
+    for(var i=1;i<=1;i++)
+    {
+      document.getElementById("qos_pd"+i+"_offset").value="0";
+      document.getElementById("qos_pd"+i+"_bitmask").value="0x0000";
+      document.getElementById("qos_pd"+i+"_pattern").value="0x0000";
+      document.getElementById("qos_pd"+i+"_offset").disabled=true;
+      document.getElementById("qos_pd"+i+"_bitmask").disabled=true;
+      document.getElementById("qos_pd"+i+"_pattern").disabled=true;
+      document.getElementById("qos_pd"+i+"_enabled").value="0";
+    }
+  }
+  else if (document.forms.QOS_FORM.QOS_PD1.value == "IPv4")
+  {
+    for(var i=1;i<=1;i++)
+    {
+      document.getElementById("qos_pd"+i+"_offset").value="6";
+      document.getElementById("qos_pd"+i+"_bitmask").value="0xFFFF";
+      document.getElementById("qos_pd"+i+"_pattern").value="0x0800";
+      document.getElementById("qos_pd"+i+"_offset").disabled=true;
+      document.getElementById("qos_pd"+i+"_bitmask").disabled=true;
+      document.getElementById("qos_pd"+i+"_pattern").disabled=true;
+      document.getElementById("qos_pd"+i+"_enabled").value="1";
+    }
+  }
+  else
+  {
+    for(var i=1;i<=1;i++)
+    {
+      document.getElementById("qos_pd"+i+"_offset").disabled=false;
+      document.getElementById("qos_pd"+i+"_bitmask").disabled=false;
+      document.getElementById("qos_pd"+i+"_pattern").disabled=false;
+      document.getElementById("qos_pd"+i+"_enabled").value="1";
+    }
+  }
+}
+
+function onPD2Change()
+{
+  if (document.forms.QOS_FORM.QOS_PD2.value == "None")
+  {
+    for(var i=2;i<=2;i++)
+    {
+      document.getElementById("qos_pd"+i+"_offset").value="0";
+      document.getElementById("qos_pd"+i+"_bitmask").value="0x0000";
+      document.getElementById("qos_pd"+i+"_pattern").value="0x0000";
+      document.getElementById("qos_pd"+i+"_offset").disabled=true;
+      document.getElementById("qos_pd"+i+"_bitmask").disabled=true;
+      document.getElementById("qos_pd"+i+"_pattern").disabled=true;
+      document.getElementById("qos_pd"+i+"_enabled").value="0";
+    }
+  }
+  else
+  {
+    for(var i=2;i<=2;i++)
+    {
+      document.getElementById("qos_pd"+i+"_offset").disabled=false;
+      document.getElementById("qos_pd"+i+"_bitmask").disabled=false;
+      document.getElementById("qos_pd"+i+"_pattern").disabled=false;
+      document.getElementById("qos_pd"+i+"_enabled").value="1";
+    }
+  }
+}
+
+function CriterionGUIPreset(criterion)
+{
+  document.getElementById("qos_criterion").value=criterion;
+
+  if (criterion=="None")
+  {
+    disableGeneralFields(true);
+    disablePrioFields(true);
+
+    document.forms.QOS_FORM.QOS_PD1.value="None";
+    document.forms.QOS_FORM.QOS_PD2.value="None";
+
+    document.getElementById("PACKETCLASSIFIER_GENERAL_TYPE_CLASS_MAP_EN1").value="NO";
+    document.getElementById("PACKETCLASSIFIER_GENERAL_VLAN_CLASS_MAP_EN1").value="NO";
+    document.getElementById("PACKETCLASSIFIER_GENERAL_DSCP_CLASS_MAP_EN1").value="NO";
+    document.getElementById("PACKETCLASSIFIER_GENERAL_RULES_ORDER1").value="VLAN_DSCP";
+  }
+  else if (criterion=="Custom")
+  {
+    disableGeneralFields(false);
+    disablePrioFields(false);
+
+    document.forms.QOS_FORM.QOS_PD1.value="None";
+    document.forms.QOS_FORM.QOS_PD2.value="None";
+
+
+    document.getElementById("PACKETCLASSIFIER_GENERAL_TYPE_CLASS_MAP_EN1").value="YES";
+    document.getElementById("PACKETCLASSIFIER_GENERAL_VLAN_CLASS_MAP_EN1").value="NO";
+    document.getElementById("PACKETCLASSIFIER_GENERAL_DSCP_CLASS_MAP_EN1").value="NO";
+    document.getElementById("PACKETCLASSIFIER_GENERAL_RULES_ORDER1").value="VLAN_DSCP";
+  }
+  else if (criterion=="DSCP")
+  {
+    disableGeneralFields(true);
+    disablePrioFields(true);
+
+    document.forms.QOS_FORM.QOS_PD1.value="None";
+    document.forms.QOS_FORM.QOS_PD2.value="None";
+
+
+    document.getElementById("PACKETCLASSIFIER_GENERAL_TYPE_CLASS_MAP_EN1").value="NO";
+    document.getElementById("PACKETCLASSIFIER_GENERAL_VLAN_CLASS_MAP_EN1").value="NO";
+    document.getElementById("PACKETCLASSIFIER_GENERAL_DSCP_CLASS_MAP_EN1").value="YES";
+    document.getElementById("PACKETCLASSIFIER_GENERAL_RULES_ORDER1").value="VLAN_DSCP";
+  }
+  else if (criterion=="802.1p")
+  {
+    disableGeneralFields(true);
+    disablePrioFields(true);
+
+    document.forms.QOS_FORM.QOS_PD1.value="None";
+    document.forms.QOS_FORM.QOS_PD2.value="None";
+
+    for(var i=1;i<=8;i++)
+    {
+      document.getElementById("qos_pc_offset_rule"+i).value="0";
+      document.getElementById("qos_pc_bitmask_rule"+i).value="0x0000";
+      document.getElementById("qos_pc_pattern_rule"+i).value="0x0000";
+    }
+
+    for(var i=1;i<=8;i++)
+    {
+      document.getElementById("qos_pc_prio_rule"+i).value=i-1;
+    }
+
+    document.getElementById("PACKETCLASSIFIER_GENERAL_TYPE_CLASS_MAP_EN1").value="NO";
+    document.getElementById("PACKETCLASSIFIER_GENERAL_VLAN_CLASS_MAP_EN1").value="YES";
+    document.getElementById("PACKETCLASSIFIER_GENERAL_DSCP_CLASS_MAP_EN1").value="NO";
+    document.getElementById("PACKETCLASSIFIER_GENERAL_RULES_ORDER1").value="VLAN_DSCP";
+  }
+  else if (criterion=="802.1p DSCP")
+  {
+    disableGeneralFields(true);
+    disablePrioFields(true);
+
+    document.forms.QOS_FORM.QOS_PD1.value="None";
+    document.forms.QOS_FORM.QOS_PD2.value="None";
+
+    for(var i=1;i<=8;i++)
+    {
+      document.getElementById("qos_pc_offset_rule"+i).value="0";
+      document.getElementById("qos_pc_bitmask_rule"+i).value="0x0000";
+      document.getElementById("qos_pc_pattern_rule"+i).value="0x0000";
+    }
+
+    for(var i=1;i<=8;i++)
+    {
+      document.getElementById("qos_pc_prio_rule"+i).value=i-1;
+    }
+
+    document.getElementById("PACKETCLASSIFIER_GENERAL_TYPE_CLASS_MAP_EN1").value="NO";
+    document.getElementById("PACKETCLASSIFIER_GENERAL_VLAN_CLASS_MAP_EN1").value="YES";
+    document.getElementById("PACKETCLASSIFIER_GENERAL_DSCP_CLASS_MAP_EN1").value="YES";
+    document.getElementById("PACKETCLASSIFIER_GENERAL_RULES_ORDER1").value="VLAN_DSCP";
+  }
+  else if (criterion=="DSCP 802.1p")
+  {
+    disableGeneralFields(true);
+    disablePrioFields(true);
+
+    document.forms.QOS_FORM.QOS_PD1.value="None";
+    document.forms.QOS_FORM.QOS_PD2.value="None";
+
+    for(var i=1;i<=8;i++)
+    {
+      document.getElementById("qos_pc_offset_rule"+i).value="0";
+      document.getElementById("qos_pc_bitmask_rule"+i).value="0x0000";
+      document.getElementById("qos_pc_pattern_rule"+i).value="0x0000";
+    }
+
+    for(var i=1;i<=8;i++)
+    {
+      document.getElementById("qos_pc_prio_rule"+i).value=i-1;
+    }
+
+    document.getElementById("PACKETCLASSIFIER_GENERAL_TYPE_CLASS_MAP_EN1").value="NO";
+    document.getElementById("PACKETCLASSIFIER_GENERAL_VLAN_CLASS_MAP_EN1").value="YES";
+    document.getElementById("PACKETCLASSIFIER_GENERAL_DSCP_CLASS_MAP_EN1").value="YES";
+    document.getElementById("PACKETCLASSIFIER_GENERAL_RULES_ORDER1").value="DSCP_VLAN";
+  }
+  else if (criterion=="Custom DSCP 802.1p")
+  {
+    disableGeneralFields(false);
+    disablePrioFields(false);
+
+    document.forms.QOS_FORM.QOS_PD1.value="None";
+    document.forms.QOS_FORM.QOS_PD2.value="None";
+
+
+    document.getElementById("PACKETCLASSIFIER_GENERAL_TYPE_CLASS_MAP_EN1").value="YES";
+    document.getElementById("PACKETCLASSIFIER_GENERAL_VLAN_CLASS_MAP_EN1").value="YES";
+    document.getElementById("PACKETCLASSIFIER_GENERAL_DSCP_CLASS_MAP_EN1").value="YES";
+    document.getElementById("PACKETCLASSIFIER_GENERAL_RULES_ORDER1").value="DSCP_VLAN";
+  }
+  else if (criterion=="Custom 802.1p DSCP")
+  {
+    disableGeneralFields(false);
+    disablePrioFields(false);
+
+    document.forms.QOS_FORM.QOS_PD1.value="None";
+    document.forms.QOS_FORM.QOS_PD2.value="None";
+
+
+    document.getElementById("PACKETCLASSIFIER_GENERAL_TYPE_CLASS_MAP_EN1").value="YES";
+    document.getElementById("PACKETCLASSIFIER_GENERAL_VLAN_CLASS_MAP_EN1").value="YES";
+    document.getElementById("PACKETCLASSIFIER_GENERAL_DSCP_CLASS_MAP_EN1").value="YES";
+    document.getElementById("PACKETCLASSIFIER_GENERAL_RULES_ORDER1").value="VLAN_DSCP";
+  }
+
+  onPD1Change();
+  onPD2Change();
+}
+
+function onLoadScript()
+{
+ var custom="$$PACKETCLASSIFIER.GENERAL.TYPE_CLASS_MAP_EN$$";
+ var vlan="$$PACKETCLASSIFIER.GENERAL.VLAN_CLASS_MAP_EN$$";
+ var dscp="$$PACKETCLASSIFIER.GENERAL.DSCP_CLASS_MAP_EN$$";
+ var type="$$PACKETCLASSIFIER.GENERAL.TYPE_CLASS_MAP_EN$$";
+ var rules_order="$$PACKETCLASSIFIER.GENERAL.RULES_ORDER$$";
+ var tcpackv4_class_map="$$PACKETCLASSIFIER.GENERAL.TCPACKV4_CLASS_MAP$$";
+ var tcpackv4_class_map_en="$$PACKETCLASSIFIER.GENERAL.TCPACKV4_CLASS_MAP_EN$$";
+ var tcpackv6_class_map="$$PACKETCLASSIFIER.GENERAL.TCPACKV6_CLASS_MAP$$";
+ var tcpackv6_class_map_en="$$PACKETCLASSIFIER.GENERAL.TCPACKV6_CLASS_MAP_EN$$";
+ var arp_class_map="$$PACKETCLASSIFIER.GENERAL.ARP_CLASS_MAP$$";
+ var arp_class_map_en="$$PACKETCLASSIFIER.GENERAL.ARP_CLASS_MAP_EN$$";
+ var dscp_class_map_str="$$PACKETCLASSIFIER.GENERAL.DSCP_CLASS_MAP$$";
+ var dscp_class_map = dscp_class_map_str.split(",");
+ var default_prio="$$PACKETCLASSIFIER.GENERAL.DEFAULT_CLASS$$";
+
+  if ( custom=="NO" && vlan=="NO" && dscp=="NO" )
+  {
+    CriterionGUIPreset("None");
+  }
+  else if ( custom=="NO" && vlan=="YES" && dscp=="NO" )
+  {
+    CriterionGUIPreset("802.1p");
+  }
+  else if ( custom=="NO" && vlan=="NO" && dscp=="YES" )
+  {
+    CriterionGUIPreset("DSCP");
+  }
+  else if ( custom=="NO" && vlan=="YES" && dscp=="YES" && rules_order=="VLAN_DSCP" )
+  {
+    CriterionGUIPreset("802.1p DSCP");
+  }
+  else if ( custom=="NO" && vlan=="YES" && dscp=="YES" && rules_order=="DSCP_VLAN" )
+  {
+    CriterionGUIPreset("DSCP 802.1p");
+  }
+  else if ( custom=="YES" && vlan=="YES" && dscp=="YES" && rules_order=="VLAN_DSCP" )
+  {
+    CriterionGUIPreset("Custom 802.1p DSCP");
+  }
+  else if ( custom=="YES" && vlan=="YES" && dscp=="YES" && rules_order=="DSCP_VLAN" )
+  {
+    CriterionGUIPreset("Custom DSCP 802.1p");
+  }
+  else if ( custom=="YES" && vlan=="NO" && dscp=="NO" )
+  {
+    CriterionGUIPreset("Custom");
+  }
+
+  if ( custom=="YES" )
+  {
+      var offset = $$PACKETCLASSIFIER.GENERAL.MATCHING_RULES.1.1$$;
+      var bitmask = $$PACKETCLASSIFIER.GENERAL.MATCHING_RULES.1.2$$;
+      var pattern = $$PACKETCLASSIFIER.GENERAL.MATCHING_RULES.1.3$$;
+
+      if(offset == 6 && bitmask == 0xffff && pattern == 0x800)
+      {
+        document.getElementById("qos_pd1").selectedIndex = 1;
+      }
+      else if(offset == 0 && bitmask == 0 && pattern == 0)
+      {
+        document.getElementById("qos_pd1").selectedIndex = 0;
+      }
+      else
+      {
+        document.getElementById("qos_pd1").selectedIndex = 2;
+      }
+
+      document.getElementById("qos_pd1_offset").value=h2d(offset);
+      document.getElementById("qos_pd1_bitmask").value="$$PACKETCLASSIFIER.GENERAL.MATCHING_RULES.1.2$$";
+      document.getElementById("qos_pd1_pattern").value="$$PACKETCLASSIFIER.GENERAL.MATCHING_RULES.1.3$$";
+
+
+      var offset2 = $$PACKETCLASSIFIER.GENERAL.MATCHING_RULES.2.1$$;
+      var bitmask2 = $$PACKETCLASSIFIER.GENERAL.MATCHING_RULES.2.2$$;
+      var pattern2 = $$PACKETCLASSIFIER.GENERAL.MATCHING_RULES.2.3$$;
+
+      if(offset2 == 0 && bitmask2 == 0 && pattern2 == 0)
+      {
+        document.getElementById("qos_pd2").selectedIndex = 0;
+      }
+      else
+      {
+        document.getElementById("qos_pd2").selectedIndex = 1;
+      }
+
+      document.getElementById("qos_pd2_offset").value=h2d(offset2);
+      document.getElementById("qos_pd2_bitmask").value="$$PACKETCLASSIFIER.GENERAL.MATCHING_RULES.2.2$$";
+      document.getElementById("qos_pd2_pattern").value="$$PACKETCLASSIFIER.GENERAL.MATCHING_RULES.2.3$$";
+
+      onPD1Change();
+      onPD2Change();
+  }
+
+  document.getElementById("qos_packetclassifier_tcpv4_ack_class").value = tcpackv4_class_map; 
+  document.getElementById("qos_packetclassifier_tcpv6_ack_class").value = tcpackv6_class_map; 
+  document.getElementById("qos_packetclassifier_arp_class").value = arp_class_map; 
+  document.getElementById("qos_packetclassifier_tcpv4_ack_class_en").value = tcpackv4_class_map_en; 
+  document.getElementById("qos_packetclassifier_tcpv6_ack_class_en").value = tcpackv6_class_map_en; 
+  document.getElementById("qos_packetclassifier_arp_class_en").value = arp_class_map_en; 
+
+
+  for(var i=1;i<=64;i++)
+  {
+    document.getElementById("dscp_class_map_"+i).value = dscp_class_map[i-1];
+  }
+
+  document.getElementById("qos_packetclassifier_defaultprio").value = default_prio;
+
+}
+
+function onCriteriaChange()
+{
+  CriterionGUIPreset(document.forms.QOS_FORM.CRITERION.value);
+}
+
+
+function onOKClick(form)
+{
+  var dscp_en;
+  var type_en;
+  var arp_en;
+  var tcpackv4_class_map = document.getElementById("qos_packetclassifier_tcpv4_ack_class").value;
+  var tcpackv6_class_map = document.getElementById("qos_packetclassifier_tcpv6_ack_class").value;
+  var arp_class_map = document.getElementById("qos_packetclassifier_arp_class_en").value;
+  var tcpackv4_class_map_en = document.getElementById("qos_packetclassifier_tcpv4_ack_class_en").value;
+  var tcpackv6_class_map_en = document.getElementById("qos_packetclassifier_tcpv6_ack_class_en").value;
+  var arp_class_map_en = document.getElementById("qos_packetclassifier_arp_class_en").value;
+
+  if ( document.getElementById("qos_criterion").value == "None" ||
+       document.getElementById("qos_criterion").value == "DSCP" || 
+       document.getElementById("qos_criterion").value == "802.1p" ||  
+       document.getElementById("qos_criterion").value == "DSCP 802.1p"  || document.getElementById("qos_criterion").value=="802.1p DSCP" ) 
+  {
+    document.getElementById("qos_pd1_enabled").disabled=false;
+    document.getElementById("qos_pd2_enabled").disabled=false;
+    for(var i=1;i<=8;i++)
+    {
+      document.getElementById("qos_pc_enabled_rule"+i).disabled=false;
+      document.getElementById("qos_pc_enabled_rule"+i).value="0";
+    }
+  }
+  else
+  {
+    document.getElementById("qos_pd1_enabled").disabled=false;
+    document.getElementById("qos_pd2_enabled").disabled=false;
+
+    // Enable controls that may contain predefined values so their values 
+    // are sent to the web server
+    for(var i=1;i<=2;i++)
+    {
+      document.getElementById("qos_pd"+i+"_offset").disabled=false;
+      document.getElementById("qos_pd"+i+"_bitmask").disabled=false;
+      document.getElementById("qos_pd"+i+"_pattern").disabled=false;
+    }
+ 
+    for(var i=1;i<=8;i++)
+    {
+      document.getElementById("qos_pc_enabled_rule"+i).disabled=false;
+      document.getElementById("qos_pc_enabled_rule"+i).value="1";
+    }
+  } 
+ 
+
+  //disable all OK buttons after clicking to avoid sending 'OK' to the web server
+  //we want to POST only CFL parameters to track last error
+  var qos_criterion_b =  document.getElementById("qos_criterion").disabled;
+  var qos_ok_b = document.getElementById("qos_ok").disabled;
+  var qos_pd1_b = document.getElementById("qos_pd1").disabled;
+  var qos_pd2_b = document.getElementById("qos_pd2").disabled;
+     
+      
+  document.getElementById("qos_criterion").disabled=true;
+  document.getElementById("qos_ok").disabled=true;
+  document.getElementById("qos_pd1").disabled=true;
+  document.getElementById("qos_pd2").disabled=true;
+
+  // Some parameters can ONLY  be written if funcionality is disabled so we need to disable funcionality
+  // submit changes and and then enable funcionality 
+  
+  // Disable Features
+  form.submit();
+
+
+  document.getElementById("qos_criterion").disabled = qos_criterion_b;
+  document.getElementById("qos_ok").disabled = qos_ok_b;
+  document.getElementById("qos_pd1").disabled = qos_pd1_b;
+  document.getElementById("qos_pd2").disabled = qos_pd2_b;
+
+  if ( document.getElementById("qos_criterion").value == "None" ||
+       document.getElementById("qos_criterion").value == "DSCP" || 
+       document.getElementById("qos_criterion").value == "802.1p" ||  
+       document.getElementById("qos_criterion").value == "DSCP 802.1p"  || document.getElementById("qos_criterion").value=="802.1p DSCP" ) 
+  {
+    for(var i=1;i<=8;i++)
+    {
+      document.getElementById("qos_pc_enabled_rule"+i).disabled=true;
+    }
+  }
+  else
+  {
+    for(var i=1;i<=8;i++)
+    {
+      document.getElementById("qos_pc_enabled_rule"+i).disabled=false;
+    }
+  }
+}
+
+</script>
+
+
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Cache-Control" content="no-cache">
+<meta http-equiv="Expires" content="Mon, 06 Jan 1990 00:00:01 GMT">
+</head>
+
+<body bgcolor="white" onLoad="onLoadScript()">
+    
+<script language="JavaScript" type="text/javascript">
+printErrorMsg("$$LASTERRORMESSAGE$$");
+</script> 
+
+<form name="QOS_FORM" method="POST">
+<input type="hidden" name="CSRFTOKEN" value="$$CSRFTOKEN$$" />
+
+<input type="hidden" name="REDIRECT" value="qos.html" target="content">
+<input type="hidden" name="PACKETCLASSIFIER.GENERAL.TYPE_CLASS_MAP_EN" value="NO" />
+<input type="hidden" name="PACKETCLASSIFIER.GENERAL.VLAN_CLASS_MAP_EN" value="NO" />
+<input type="hidden" name="PACKETCLASSIFIER.GENERAL.DSCP_CLASS_MAP_EN" value="NO" />
+
+
+<!-- QoS -->
+<div style="padding:6px">
+  <table width=520 style="border:3px solid #dddddd">
+  <tr><td colspan=2><b>QoS Configuration</b></td></tr>
+
+  <tr><td colspan=2 style="background:#dddddd"></td></tr>
+  <tr><td colspan=2></td></tr>
+
+  <tr><td>QoS criterion</td><td align="right">
+  <select name="CRITERION" id="qos_criterion" onChange="onCriteriaChange()">
+  <script language="JavaScript" type="text/javascript">
+  var nt='0';
+  var ntp=nt;
+  var nto=new Array('None','Custom','802.1p','DSCP','DSCP 802.1p','802.1p DSCP','Custom 802.1p DSCP','Custom DSCP 802.1p');
+  selectOptions(ntp,nto);
+  </script>
+  </select>
+  </td></tr>
+
+  
+  <tr><td>Type of frame</td><td align="right">
+  <select name="PACKETCLASSIFIER.GENERAL.FRAME_TYPE" value="$$PACKETCLASSIFIER.GENERAL.FRAME_TYPE$$" id="qos_frametype" onChange="">
+  <script language="JavaScript" type="text/javascript">
+  var nt='0';
+  var ntp=nt;
+  var nto=new Array('0','1','2');
+  var ntt=new Array('Ethernet frame','802.1Q tagged frame','802.1ad double tagged frame');
+  selectOptionsWithText(ntp,ntt,nto);
+  </script>
+  </select>
+  </td></tr>
+
+
+  <tr><td colspan=2></td></tr>
+  <tr><td colspan=2 style="background:#dddddd"></td></tr>
+
+  <tr><td>Packet detection 1</td><td align="right">
+  <select name="QOS_PD1" id="qos_pd1" onChange="onPD1Change()">
+  <script language="JavaScript" type="text/javascript">
+  var nt='0';
+  var ntp=nt;
+  var nto=new Array('None','IPv4','Custom');
+  selectOptions(ntp,nto);
+  </script>
+  </select>
+  </td></tr>
+
+  <tr>
+  <td>Offset</td><td align="right">
+  <input type="text" size=6 maxlength=6 name="PACKETCLASSIFIER.GENERAL.MATCHING_RULES.1.1" id="qos_pd1_offset">
+  </td>
+  <tr>
+  <td>Bitmask</td><td align="right">
+  <input type="text" size=6 maxlength=6 name="PACKETCLASSIFIER.GENERAL.MATCHING_RULES.1.2" value="$$PACKETCLASSIFIER.GENERAL.MATCHING_RULES.1.2$$" id="qos_pd1_bitmask"></td></tr>
+  <tr>
+  <td>Pattern</td><td align="right">
+  <input type="text" size=6 maxlength=6 name="PACKETCLASSIFIER.GENERAL.MATCHING_RULES.1.3" value="$$PACKETCLASSIFIER.GENERAL.MATCHING_RULES.1.3$$" id="qos_pd1_pattern"></td></tr>
+  <tr>
+  <td align="right">
+  <input type="hidden" name="PACKETCLASSIFIER.GENERAL.MATCHING_RULES.1.4" value="$$PACKETCLASSIFIER.GENERAL.MATCHING_RULES.1.4$$" id="qos_pd1_enabled"></td></tr>
+  <tr><td colspan=2></td></tr>
+
+
+  <tr><td colspan=2 style="background:#dddddd"></td></tr>
+  <tr><td>Packet detection 2</td><td align="right">
+  <select name="QOS_PD2" id="qos_pd2" onChange="onPD2Change()">
+  <script language="JavaScript" type="text/javascript">
+  var nt='0';
+  var ntp=nt;
+  var nto=new Array('None','Custom');
+  selectOptions(ntp,nto);
+  </script>
+  </select>
+  </td></tr>
+  <tr>
+  <td>Offset</td><td align="right">
+  <input type="text" size=6 maxlength=6 name="PACKETCLASSIFIER.GENERAL.MATCHING_RULES.2.1" id="qos_pd2_offset">
+  </td>
+  </tr>
+  <tr>
+  <td>Bitmask</td><td align="right">
+  <input type="text" size=6 maxlength=6 name="PACKETCLASSIFIER.GENERAL.MATCHING_RULES.2.2" value="$$PACKETCLASSIFIER.GENERAL.MATCHING_RULES.2.2$$" id="qos_pd2_bitmask"></td></tr>
+  <tr>
+  <td>Pattern</td><td align="right">
+  <input type="text" size=6 maxlength=6 name="PACKETCLASSIFIER.GENERAL.MATCHING_RULES.2.3" value="$$PACKETCLASSIFIER.GENERAL.MATCHING_RULES.2.3$$" id="qos_pd2_pattern"></td></tr>
+  <tr>
+  <td align="right">
+  <input type="hidden" name="PACKETCLASSIFIER.GENERAL.MATCHING_RULES.2.4" value="$$PACKETCLASSIFIER.GENERAL.MATCHING_RULES.2.4$$" id="qos_pd2_enabled"></td></tr>
+  <tr><td colspan=2></td></tr>
+  </table>
+</div>
+
+
+<!-- Packet classification -->
+<div style="padding:6px">
+  <table width=520 style="border:3px solid #dddddd">
+  <tr><td colspan=6><b>Packet classification</b></td></tr>
+  <tr><td colspan=6 style="background:#dddddd"></td></tr>
+  <tr><td colspan=6></td></tr>
+  
+  <tr><td>&#8226;Default prio</td><td align="right">
+  <select name="PACKETCLASSIFIER.GENERAL.DEFAULT_CLASS" id="qos_packetclassifier_defaultprio">
+  <script language="JavaScript">
+  var nt='$$PACKETCLASSIFIER.GENERAL.DEFAULT_CLASS$$';
+  var ntp=nt;
+  var nto=new Array('0','1','2','3','4','5','6','7');
+  selectOptions(ntp,nto);
+  </script>
+  </select>
+  </td></tr>
+
+ 
+  <tr><td colspan=6 style="background:#dddddd"></td></tr>
+
+  
+  <input type="hidden" name="PACKETCLASSIFIER.GENERAL.TCPACKV4_CLASS_MAP_EN" value="NO"/>
+
+  <tr>
+  <td>&#8226;TCP Ack Class in IPv4</td>
+  <td align="right">
+  <select name="PACKETCLASSIFIER.GENERAL.TCPACKV4_CLASS_MAP" id="qos_packetclassifier_tcpv4_ack_class">
+  <script language="JavaScript">
+  var nt='$$PACKETCLASSIFIER.GENERAL.TCPACKV4_CLASS_MAP$$';
+  var ntp=nt;
+  var nto=new Array('0','1','2','3','4','5','6','7');
+  selectOptions(ntp,nto);
+  </script>
+  </select>
+  </td>
+  <td align="right">
+  <select name="PACKETCLASSIFIER.GENERAL.TCPACKV4_CLASS_MAP_EN" id="qos_packetclassifier_tcpv4_ack_class_en">
+  <script language="JavaScript">
+  var nt='$$PACKETCLASSIFIER.GENERAL.TCPACKV4_CLASS_MAP_EN$$';
+  var ntp=nt;
+  var nto=new Array('YES','NO');
+  selectOptions(ntp,nto);
+  </script>
+  </select>
+  </td>
+  </tr>
+
+  <input type="hidden" name="PACKETCLASSIFIER.GENERAL.TCPACKV6_CLASS_MAP_EN" value="NO"/>
+
+  <tr>
+  <td>&#8226;TCP Ack Class in IPv6</td>
+  <td align="right">
+  <select name="PACKETCLASSIFIER.GENERAL.TCPACKV6_CLASS_MAP" id="qos_packetclassifier_tcpv6_ack_class">
+  <script language="JavaScript">
+  var nt='$$PACKETCLASSIFIER.GENERAL.TCPACKV6_CLASS_MAP$$';
+  var ntp=nt;
+  var nto=new Array('0','1','2','3','4','5','6','7');
+  selectOptions(ntp,nto);
+  </script>
+  </select>
+  </td>
+  <td align="right">
+  <select name="PACKETCLASSIFIER.GENERAL.TCPACKV6_CLASS_MAP_EN" id="qos_packetclassifier_tcpv6_ack_class_en">
+  <script language="JavaScript">
+  var nt='$$PACKETCLASSIFIER.GENERAL.TCPACKV6_CLASS_MAP_EN$$';
+  var ntp=nt;
+  var nto=new Array('YES','NO');
+  selectOptions(ntp,nto);
+  </script>
+  </select>
+  </td>
+  </tr>
+
+  <input type="hidden" name="PACKETCLASSIFIER.GENERAL.ARP_CLASS_MAP_EN" value="NO"/>
+
+  <tr>
+  <td>&#8226;ARP Class</td>
+  <td align="right">
+  <select name="PACKETCLASSIFIER.GENERAL.ARP_CLASS_MAP" id="qos_packetclassifier_arp_ack_class">
+  <script language="JavaScript">
+  var nt='$$PACKETCLASSIFIER.GENERAL.ARP_CLASS_MAP$$';
+  var ntp=nt;
+  var nto=new Array('0','1','2','3','4','5','6','7');
+  selectOptions(ntp,nto);
+  </script>
+  </select>
+  </td>
+  <td align="right">
+  <select name="PACKETCLASSIFIER.GENERAL.ARP_CLASS_MAP_EN" id="qos_packetclassifier_arp_class_en">
+  <script language="JavaScript">
+  var nt='$$PACKETCLASSIFIER.GENERAL.ARP_CLASS_MAP_EN$$';
+  var ntp=nt;
+  var nto=new Array('YES','NO');
+  selectOptions(ntp,nto);
+  </script>
+  </select>
+  </td>
+  </tr>
+
+
+
+  <tr><td colspan=6 style="background:#dddddd"></td></tr>
+
+
+  <tr><td>DSCP Class  </td><td colspan=5 align="right">
+  <script language="JavaScript" type="text/javascript">
+  var dscp_class_map_str="$$PACKETCLASSIFIER.GENERAL.DSCP_CLASS_MAP$$";
+  var dscp_class_map = dscp_class_map_str.split(",");
+  var nto=new Array('0','1','2','3','4','5','6','7');
+
+  document.write('<table style="border:3px solid #dddddd">');
+  for(var i=0;i<=7;i++)
+  {
+     document.write('<tr>');
+     for(var x=1;x<=8;x++)
+     {
+         var nt=dscp_class_map[eval((i*8)+x-1)];
+         var ntp=nt;
+         document.write('<td><select name="PACKETCLASSIFIER.GENERAL.DSCP_CLASS_MAP.'+eval((i*8)+x)+'" id="dscp_class_map_'+eval((i*8)+x)+'">');
+         selectOptions(ntp,nto);
+         document.write('</select></td>');
+     }
+     document.write('</tr>');
+  }  
+  document.write('</table>');
+  </script>
+  </td>
+  </tr>
+
+  
+  <tr><td colspan=6 style="background:#dddddd"></td></tr>
+  <tr><td colspan=6></td></tr>
+
+  <tr><th><font size=-1>PC</font></th><th><font size=-1>Offset</font></th><th><font size=-1>Bitmask</font></th><th><font size=-1>Pattern</font></th><th><font size=-1>Priority</font></th></tr>
+
+  <script language="JavaScript">
+var rules_str='$$PACKETCLASSIFIER.GENERAL.CLASSIFY_RULES$$';
+var rules = rules_str.split(",");
+var prio_str='$$PACKETCLASSIFIER.GENERAL.TYPE_CLASS_MAP$$';
+var prio = prio_str.split(",");
+
+  for(var i=1;i<=8;i++)
+  {
+      document.write('<tr><td align="center"><font size=-1>Rule '+i+'</font></td><td align="center"><tt><input type="text" size=6 maxlength=6 name="PACKETCLASSIFIER.GENERAL.CLASSIFY_RULES.'+i+'.1" value="'+h2d(rules[(i-1)*4])+'" id="qos_pc_offset_rule'+i+'"></tt></td>'+
+'<td align="center"><font size=-1><input type="text" size=6 maxlength=6 name="PACKETCLASSIFIER.GENERAL.CLASSIFY_RULES.'+i+'.2" value="'+rules[(i-1)*4+1]+'" id="qos_pc_bitmask_rule'+i+'"></font></td>'+
+'<td align="center"><font size=-1><input type="text" size=6 maxlength=6 name="PACKETCLASSIFIER.GENERAL.CLASSIFY_RULES.'+i+'.3" value="'+rules[(i-1)*4+2]+'" id="qos_pc_pattern_rule'+i+'"></font></td><td align="center">'+
+ '<input type="hidden" name="PACKETCLASSIFIER.GENERAL.CLASSIFY_RULES.'+i+'.4" value="'+h2d(rules[(i-1)*4+3])+'" id="qos_pc_enabled_rule'+i+'">' );
+
+   document.write( '<select name="PACKETCLASSIFIER.GENERAL.TYPE_CLASS_MAP.'+i+'" id="qos_pc_prio_rule'+i+'">');
+   var nt=prio[i-1];
+   var ntp=nt;
+   var nto=new Array('0','1','2','3','4','5','6','7');
+   selectOptions(ntp,nto);
+   document.write('</select>');
+   document.write('</td></tr>');
+  }  //for
+  </script>
+
+  <input type="hidden" name="PACKETCLASSIFIER.GENERAL.TYPE_CLASS_MAP_EN" id="PACKETCLASSIFIER_GENERAL_TYPE_CLASS_MAP_EN1" value="$$PACKETCLASSIFIER.GENERAL.TYPE_CLASS_MAP_EN$$" />
+  <input type="hidden" name="PACKETCLASSIFIER.GENERAL.VLAN_CLASS_MAP_EN" id="PACKETCLASSIFIER_GENERAL_VLAN_CLASS_MAP_EN1" value="$$PACKETCLASSIFIER.GENERAL.VLAN_CLASS_MAP_EN$$" />
+  <input type="hidden" name="PACKETCLASSIFIER.GENERAL.DSCP_CLASS_MAP_EN" id="PACKETCLASSIFIER_GENERAL_DSCP_CLASS_MAP_EN1" value="$$PACKETCLASSIFIER.GENERAL.DSCP_CLASS_MAP_EN$$" />
+  <input type="hidden" name="PACKETCLASSIFIER.GENERAL.RULES_ORDER" id="PACKETCLASSIFIER_GENERAL_RULES_ORDER1" value="$$PACKETCLASSIFIER.GENERAL.RULES_ORDER$$" />
+
+
+  <tr><td colspan=6 style="background:#dddddd"></td></tr>
+  <tr><td colspan=6 align="center">
+  <input name="OK" value="Ok" type="button" id="qos_ok" onclick="onOKClick(this.form)"><input name="CANCEL" value="Cancel" type="reset" id="qos_cancel">
+  </td></tr>
+  <tr><td colspan=6 style="background:#dddddd"></td></tr>
+</table>
+</div>
+</form>
+
+</body>
+</html>

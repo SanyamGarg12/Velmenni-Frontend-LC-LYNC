@@ -1,0 +1,256 @@
+<!--
+    <legal_notice>
+     MaxLinear, Inc. retains all right, title and interest (including all intellectual
+     property rights) in and to this computer program, which is protected by applicable
+     intellectual property laws.  Unless you have obtained a separate written license from
+     MaxLinear, Inc. or an authorized licensee of MaxLinear, Inc., you are not authorized
+     to utilize all or a part of this computer program for any purpose (including
+     reproduction, distribution, modification, and compilation into object code), and you
+     must immediately destroy or return all copies of this computer program.  If you are
+     licensed by MaxLinear, Inc. or an authorized licensee of MaxLinear, Inc., your rights
+     to utilize this computer program are limited by the terms of that license.
+    
+     This computer program contains trade secrets owned by MaxLinear, Inc. and, unless
+     authorized by MaxLinear, Inc. in writing, you agree to maintain the confidentiality
+     of this computer program and related information and to not disclose this computer
+     program and related information to any other person or entity.
+    
+     Misuse of this computer program or any information contained in it may results in
+     violations of applicable law.  MaxLinear, Inc. vigorously enforces its copyright,
+     trade secret, patent, contractual, and other legal rights.
+    
+     THIS COMPUTER PROGRAM IS PROVIDED "AS IS" WITHOUT ANY WARRANTIES, AND 
+      MAXLINEAR, INC.
+     EXPRESSLY DISCLAIMS ALL WARRANTIES, EXPRESS OR IMPLIED, INCLUDING THE 
+     WARRANTIES OF
+     MERCHANTIBILITY, FITNESS FOR A PARTICULAR PURPOSE, TITLE, AND 
+     NONINFRINGEMENT.
+    
+    ***************************************************************************************
+                                            Copyright (c) 2016/2020, MaxLinear, Inc.
+    ***************************************************************************************
+    </legal_notice>
+-->
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8"/>
+<script language="JavaScript" src="common.js"></script>
+<script language="JavaScript">
+function onLoadScripts()
+{
+  onFLUPSourceChange();
+  onFileSelected();
+}
+function onOKClick(form)
+{
+  form.submit();
+}
+function onSecurityOKClick(form)
+{
+  //disable all OK buttons after clicking to avoid sending 'OK' to the web server
+  //we want to POST only CFL parameters to track last error
+  document.getElementById("device_security_ok").disabled = true;
+  document.getElementById("device_security_cancel").disabled = true;
+
+  onOKClick(form);
+}
+function onSWUpdateOKClick(form)
+{
+  //disable all OK buttons after clicking to avoid sending 'OK' to the web server
+  //we want to POST only CFL parameters to track last error
+  document.getElementById("device_swupdate_ok").disabled = true;
+  document.getElementById("device_swupdate_cancel").disabled = true;
+
+  onOKClick(form);
+}
+function onSWUpdateCancelClick(form)
+{
+  document.getElementById("device_swupdate_protocol").value = 'FTP';
+  onFLUPSourceChange();
+}
+function onHttpSWUpdateOKClick(form)
+{
+  //disable all OK buttons after clicking to avoid sending 'OK' to the web server
+  //we want to POST only CFL parameters to track last error
+  document.getElementById("device_http_swupdate_ok").disabled = true;
+  document.getElementById("device_http_swupdate_cancel").disabled = true;
+
+  // File upload may take a while ...
+  document.body.style.cursor = 'wait';
+  document.getElementById('waiting-overlay').style.display='block';
+  
+  onOKClick(form);
+}
+function onHttpSWUpdateCancelClick(form)
+{
+  document.getElementById("device_swupdate_file").value = "";
+  onFileSelected();
+}
+function onFLUPSourceChange()
+{
+  var protocol = document.getElementById("device_swupdate_protocol").value;
+  
+  document.getElementById("device_swupdate_serverip").disabled = (protocol != 'FTP') && (protocol != 'TFTP');
+  document.getElementById("device_swupdate_user").disabled = (protocol != 'FTP') && (protocol != 'TFTP');
+  document.getElementById("device_swupdate_password").disabled = (protocol != 'FTP') && (protocol != 'TFTP');
+  document.getElementById("device_swupdate_filename").disabled = (protocol != 'FTP') && (protocol != 'TFTP');
+  document.getElementById("device_swupdate_filename").disabled = (protocol != 'FTP') && (protocol != 'TFTP');
+}
+function onFileSelected()
+{
+  var disabled = false;
+  if (document.getElementById("device_swupdate_file").value == "")
+  {
+    disabled = true;
+  }
+  document.getElementById("device_http_swupdate_ok").disabled = disabled;
+  document.getElementById("device_http_swupdate_cancel").disabled = disabled;
+}
+</script>
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Cache-Control" content="no-cache">
+<meta http-equiv="Expires" content="Mon, 06 Jan 1990 00:00:01 GMT">
+</head>
+<body bgcolor="white" onLoad="onLoadScripts()">
+<script language="JavaScript">
+printErrorMsg("$$LASTERRORMESSAGE$$");
+</script>
+
+<!-- Basic settings -->
+<div style="padding:6px">
+  <table width=700 style="border:3px solid #dddddd">
+  <tr><td colspan=2><b>Hardware information</b></td></tr>
+  <tr><td colspan=2 style="background:#dddddd"></td></tr>
+
+  <tr><td>&#8226;Device name</td><td align="right"><font size=-1 id="device_hw_name">$$SYSTEM.PRODUCTION.DEVICE_NAME$$</font></td></tr>
+  <tr><td>&#8226;Device description</td><td align="right"><font size=-1 id="device_hw_description">$$SYSTEM.PRODUCTION.DEVICE_DESCRIPTION$$</font></td></tr>
+  <tr><td>&#8226;Device manufacturer</td><td align="right"><font size=-1 id="device_hw_manufacturer">$$SYSTEM.PRODUCTION.DEVICE_MANUFACTURER$$</font></td></tr>
+  <tr><td>&#8226;Serial number</td><td align="right"><font size=-1 id="device_hw_serialnumber">$$SYSTEM.PRODUCTION.SERIAL_NUMBER$$</font></td></tr>
+  <tr><td>&#8226;MAC address</td><td align="right"><font size=-1 id="device_hw_macaddress">$$SYSTEM.PRODUCTION.MAC_ADDR$$</font></td></tr>
+  <tr><td>&#8226;HW version</td><td align="right"><font size=-1 id="device_hw_rev">$$SYSTEM.PRODUCTION.HW_REVISION$$</font></td></tr>
+
+  </table>
+</div>
+
+
+<!-- SW information -->
+<div style="padding:6px">
+  <table width=700 style="border:3px solid #dddddd">
+  <tr><td colspan=2><b>Software information</b></td></tr>
+  <tr><td colspan=2 style="background:#dddddd"></td></tr>
+
+  <tr><td>&#8226;FW version</td><td align="right"><font size=-1 id="device_sw_version">$$SYSTEM.GENERAL.FW_VERSION$$</font></td></tr>
+  <tr><td>&#8226;System uptime</td><td align="right"><font size=-1 id="device_sw_uptime">$$SYSTEM.GENERAL.UPTIME$$</font></td></tr>
+
+  </table>
+</div>
+
+
+<!-- Security -->
+<div style="padding:6px">
+  <table width=700 style="border:3px solid #dddddd">
+  <tr><td colspan=2><b>Security</b></td></tr>
+  <tr><td colspan=6 style="background:#dddddd"></td></tr>
+  <form name="SECURITY_FORM" method="POST">
+  <input type="hidden" name="CSRFTOKEN" value="$$CSRFTOKEN$$">
+  <input type="hidden" name="REDIRECT" value="device.html" target="content">
+  <tr><td colspan=2 align="right">
+  </td></tr>
+
+  <tr><td>&#8226;New Configuration password</td><td align="right">
+  <input type="password" size=30 maxlength=20 name="SYSTEM.GENERAL.PASSWORD_CONFIG" id="device_security_configpw"  autocomplete="off">
+  </td></tr>
+
+  <tr><td colspan=2></td></tr>
+  <tr><td colspan=2 align="right">
+  <input name="OK" value="Ok" type="button" id="device_security_ok" onClick="onOKClick(this.form)">&nbsp;<input name="CANCEL" value="Cancel" type="reset" id="device_security_cancel"></td></tr>
+
+  </form>
+  </table>
+</div>
+
+<!-- SW update -->
+<div style="padding:6px">
+  <table width=700 style="border:3px solid #dddddd">
+  <tr><td colspan=2><b>SW update</b></td></tr>
+  <tr><td colspan=2 style="background:#dddddd"></td></tr>
+  <tr><td colspan=2></td></tr>
+  <tr><td>&#8226;Status</td><td align="right"><font size=-1 id="flup_status">$$FLUPGRADE.GENERAL.STATUS$$</font></td></tr>
+  <tr><td colspan=2></td></tr>
+  <form name="FLUP_FORM" method="POST">
+  <input type="hidden" name="CSRFTOKEN" value="$$CSRFTOKEN$$">
+  <input type="hidden" name="REDIRECT" value="flupst.html">
+  <input type="hidden" name="FLUPGRADE.GENERAL.SECTION" value="osup">
+  <tr><td>&#8226;Protocol</td><td align="right">
+  <select name="FLUPGRADE.GENERAL.SOURCE" id="device_swupdate_protocol" onChange="onFLUPSourceChange()">
+  <script language="JavaScript">
+var fp='$$FLUPGRADE.GENERAL.SOURCE$$';
+var fpo=new Array('FTP','TFTP','L2');
+selectOptions(fp,fpo);
+  </script>
+  </select>
+  </td></tr>
+  <tr><td>&#8226;Server IPv4/v6</td><td align="right">
+  <input type="text" size=30 maxlength=40 name="FLUPGRADE.GENERAL.HOST" value="$$FLUPGRADE.GENERAL.HOST$$" id="device_swupdate_serverip">
+  </td></tr>
+  <tr><td>&#8226;FTP User</td><td align="right">
+  <input type="text" size=30 maxlength=80 name="FLUPGRADE.GENERAL.FTP_LOGIN" value="$$FLUPGRADE.GENERAL.FTP_LOGIN$$" id="device_swupdate_user">
+  </td></tr>
+  <tr><td>&#8226;FTP Password</td><td align="right">
+  <input type="password" size=30 maxlength=20 name="FLUPGRADE.GENERAL.FTP_PASSWORD" id="device_swupdate_password">
+  </td></tr>
+  <tr><td>&#8226;OSUP Filename</td><td align="right">
+  <input type="text" size=60 maxlength=200 name="FLUPGRADE.GENERAL.FILENAME" value="$$FLUPGRADE.GENERAL.FILENAME$$" id="device_swupdate_filename">
+  </td></tr>
+  <tr><td colspan=2></td></tr>
+  <tr><td colspan=2 align="right">
+  <input type="hidden" name="FLUPGRADE.GENERAL.START" value="YES">
+  <input name="OK" value="Ok" type="button" id="device_swupdate_ok" onClick="onSWUpdateOKClick(this.form)">
+  &nbsp;<input name="CANCEL" value="Cancel" type="button" id="device_swupdate_cancel" onClick="onSWUpdateCancelClick(this.form)">
+  </td></tr>
+  </form>
+  </table>
+</div>
+
+<!-- HTTP SW update -->
+<div style="padding:6px">
+  <table width=700 style="border:3px solid #dddddd">
+  <tr><td colspan=2><b>HTTP SW update</b></td></tr>
+  <tr><td colspan=2 style="background:#dddddd"></td></tr>
+  <tr><td colspan=2></td></tr>
+  <form name="FLUP_FORM" method="POST" enctype="multipart/form-data">
+  <input type="hidden" name="CSRFTOKEN" value="$$CSRFTOKEN$$">
+  <tr><td>&#8226;Upgrade file:</td><td align="right">
+  <input type="file" name="file" id="device_swupdate_file" onChange="onFileSelected()">
+  </td></tr>
+  <tr><td colspan=2></td></tr>
+  <tr><td colspan=2 align="right">
+  <input name="OK" value="Ok" type="button" id="device_http_swupdate_ok" onClick="onHttpSWUpdateOKClick(this.form)">
+  &nbsp;<input name="CANCEL" value="Cancel" type="button" id="device_http_swupdate_cancel" onClick="onHttpSWUpdateCancelClick(this.form)">
+  </td></tr>
+  </form>
+  </table>
+</div>
+
+<div id="waiting-overlay">
+</div>
+<style type="text/css">
+ #waiting-overlay {
+         left: 0;
+          position: fixed;
+          bottom: 0;
+          left: 0;
+          right: 0;
+          top: 0;
+          z-index: 999;
+          background-color: white;
+          opacity: 0.4;
+          filter:alpha(opacity=40);
+          text-align:center;
+          display:none;
+ }
+</style>
+</body>
+</html>

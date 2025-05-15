@@ -1,0 +1,124 @@
+<!--
+    <legal_notice>
+     MaxLinear, Inc. retains all right, title and interest (including all intellectual
+     property rights) in and to this computer program, which is protected by applicable
+     intellectual property laws.  Unless you have obtained a separate written license from
+     MaxLinear, Inc. or an authorized licensee of MaxLinear, Inc., you are not authorized
+     to utilize all or a part of this computer program for any purpose (including
+     reproduction, distribution, modification, and compilation into object code), and you
+     must immediately destroy or return all copies of this computer program.  If you are
+     licensed by MaxLinear, Inc. or an authorized licensee of MaxLinear, Inc., your rights
+     to utilize this computer program are limited by the terms of that license.
+    
+     This computer program contains trade secrets owned by MaxLinear, Inc. and, unless
+     authorized by MaxLinear, Inc. in writing, you agree to maintain the confidentiality
+     of this computer program and related information and to not disclose this computer
+     program and related information to any other person or entity.
+    
+     Misuse of this computer program or any information contained in it may results in
+     violations of applicable law.  MaxLinear, Inc. vigorously enforces its copyright,
+     trade secret, patent, contractual, and other legal rights.
+    
+     THIS COMPUTER PROGRAM IS PROVIDED "AS IS" WITHOUT ANY WARRANTIES, AND 
+      MAXLINEAR, INC.
+     EXPRESSLY DISCLAIMS ALL WARRANTIES, EXPRESS OR IMPLIED, INCLUDING THE 
+     WARRANTIES OF
+     MERCHANTIBILITY, FITNESS FOR A PARTICULAR PURPOSE, TITLE, AND 
+     NONINFRINGEMENT.
+    
+    ***************************************************************************************
+                                            Copyright (c) 2016/2020, MaxLinear, Inc.
+    ***************************************************************************************
+    </legal_notice>
+-->
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8"/>
+<script language="JavaScript" src="common.js"></script>
+<script language="JavaScript">
+function onLoadScripts()
+{
+  onPowersavingModeChange();
+}
+function onPowersavingModeChange()
+{
+  document.getElementById("powersaving_time").disabled = (document.getElementById("powersaving_mode").value == '0');
+}
+function onOKClick(form)
+{
+  //disable all OK buttons after clicking to avoid sending 'OK' to the web server
+  //we want to POST only CFL parameters to track last error
+  document.getElementById("powersaving_ok").disabled = true;
+  
+  form.submit();
+}
+</script>
+
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Cache-Control" content="no-cache">
+<meta http-equiv="Expires" content="Mon, 06 Jan 1990 00:00:01 GMT">
+</head>
+<body bgcolor="white" onLoad="onLoadScripts()">
+<script language="JavaScript">
+printErrorMsg("$$LASTERRORMESSAGE$$");
+</script>
+
+<!-- Ethernet -->
+<div style="padding:6px">
+  <table width=520 style="border:3px solid #dddddd">
+  <tr><td colspan=2><b>Ethernet</b></td></tr>
+  <tr><td colspan=8 style="background:#dddddd"></td></tr>
+  <tr><td colspan=2></td></tr>
+
+  <tr><td colspan=6>External Interfaces:</td></tr>
+  <tr><th><font size=-1>Interface</font></th><th><font size=-1>Speed</font></th> <th><font size=-1>Duplex</font></th>  <th><font size=-1>Interface Type</font></th> <th><font size=-1>Mode</font></th><th><font size=-1>Internal PHY</font></th><th><font size=-1>Link</font></th> </tr>
+  <tr><td align="center"><font size=-1>ETHA</font></td><td align="center"><font size=-1 id="eth_a_speed">$$ETHPHYCONF.ETHA.SPEED$$</font></td> <td align="center"><font size=-1 id="eth_a_duplex">$$ETHPHYCONF.ETHA.DUPLEX$$</font></td>  <td align="center"><font size=-1 id="eth_a_type">$$ETHIFDRIVER.ETHA.IFACE_TYPE$$</font></td> <td align="center"><font size=-1 id="eth_a_mode">$$ETHIFDRIVER.ETHA.MODE$$</font></td><td align="center"><font size=-1 id="eth_a_internal">$$ETHIFDRIVER.ETHA.INTERNAL_PHY$$</font></td><td align="center"><font size=-1 id="eth_a_link">$$ETHPHYCONF.ETHA.LINK$$</font></td> </tr>
+  <tr><td align="center"><font size=-1>ETHB</font></td><td align="center"><font size=-1 id="eth_b_speed">$$ETHPHYCONF.ETHB.SPEED$$</font></td> <td align="center"><font size=-1 id="eth_b_duplex">$$ETHPHYCONF.ETHB.DUPLEX$$</font></td>  <td align="center"><font size=-1 id="eth_b_type">$$ETHIFDRIVER.ETHB.IFACE_TYPE$$</font></td> <td align="center"><font size=-1 id="eth_b_mode">$$ETHIFDRIVER.ETHB.MODE$$</font></td><td align="center"><font size=-1 id="eth_b_internal">$$ETHIFDRIVER.ETHB.INTERNAL_PHY$$</font></td><td align="center"><font size=-1 id="eth_b_link">$$ETHPHYCONF.ETHB.LINK$$</font></td> </tr>
+
+
+  </table>
+</div>
+
+
+<!-- Powersaving -->
+<div style="padding:6px">
+  <table width=520 style="border:3px solid #dddddd">
+  <tr><td colspan=2><b>Powersaving</b></td></tr>
+  <tr><td colspan=2></td></tr>
+  <tr><td colspan=2 style="background:#dddddd"></td></tr>
+  <tr><td colspan=2></td></tr>
+  <form name="POWERSAVING_FORM" method="POST">
+  <input type="hidden" name="CSRFTOKEN" value="$$CSRFTOKEN$$">
+  <input type="hidden" name="REDIRECT" value="ethernet.html">
+  <tr><td>&#8226;Inactivity detection mode</td><td align="right">
+  <select name="POWERSAVING.GENERAL.MODE" id="powersaving_mode" onChange="onPowersavingModeChange()">
+  <script language="JavaScript">
+  var nt='$$POWERSAVING.GENERAL.MODE$$';
+  var ntp=nt;
+  var nto=new Array('0','1','2');
+  var ntt=new Array('Disabled','ETH link','ETH activity');
+  selectOptionsWithText(ntp,ntt,nto);
+  </script>
+  </select>
+  </td></tr>
+
+  <tr><td>&#8226;Inactivity time(s)</td><td align="right">
+  <input type="text" size=30 maxlength=20 name="POWERSAVING.GENERAL.IDLE_TIME" value="$$POWERSAVING.GENERAL.IDLE_TIME$$" id="powersaving_time">
+  </td></tr>
+
+  <tr><td colspan=2></td></tr>
+  <tr><td colspan=2 align="right">
+  <input name="OK" value="Ok" type="button" id="powersaving_ok" onClick="onOKClick(this.form)">&nbsp;<input name="CANCEL" value="Cancel" type="reset" id="powersaving_cancel">
+  </td></tr>
+  </form>
+
+  </form>
+  </table>
+</div>
+
+
+
+</body>
+</html>

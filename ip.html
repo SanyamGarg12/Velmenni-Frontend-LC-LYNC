@@ -1,0 +1,265 @@
+<!--
+    <legal_notice>
+     MaxLinear, Inc. retains all right, title and interest (including all intellectual
+     property rights) in and to this computer program, which is protected by applicable
+     intellectual property laws.  Unless you have obtained a separate written license from
+     MaxLinear, Inc. or an authorized licensee of MaxLinear, Inc., you are not authorized
+     to utilize all or a part of this computer program for any purpose (including
+     reproduction, distribution, modification, and compilation into object code), and you
+     must immediately destroy or return all copies of this computer program.  If you are
+     licensed by MaxLinear, Inc. or an authorized licensee of MaxLinear, Inc., your rights
+     to utilize this computer program are limited by the terms of that license.
+    
+     This computer program contains trade secrets owned by MaxLinear, Inc. and, unless
+     authorized by MaxLinear, Inc. in writing, you agree to maintain the confidentiality
+     of this computer program and related information and to not disclose this computer
+     program and related information to any other person or entity.
+    
+     Misuse of this computer program or any information contained in it may results in
+     violations of applicable law.  MaxLinear, Inc. vigorously enforces its copyright,
+     trade secret, patent, contractual, and other legal rights.
+    
+     THIS COMPUTER PROGRAM IS PROVIDED "AS IS" WITHOUT ANY WARRANTIES, AND 
+      MAXLINEAR, INC.
+     EXPRESSLY DISCLAIMS ALL WARRANTIES, EXPRESS OR IMPLIED, INCLUDING THE 
+     WARRANTIES OF
+     MERCHANTIBILITY, FITNESS FOR A PARTICULAR PURPOSE, TITLE, AND 
+     NONINFRINGEMENT.
+    
+    ***************************************************************************************
+                                            Copyright (c) 2016/2020, MaxLinear, Inc.
+    ***************************************************************************************
+    </legal_notice>
+-->
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8"/>
+<script language="JavaScript" src="common.js"></script>
+<script language="JavaScript">
+function onLoadScript()
+{
+  onDHCPv4Change();
+  onDHCPv6Change();
+  onNTPEnableChange();
+}
+function onNTPEnableChange()
+{
+  document.getElementById("ip_ntp_resynchtime").disabled = (document.getElementById("ip_ntp_enable").value == 'NO');
+  document.getElementById("ip_ntp_address").disabled = (document.getElementById("ip_ntp_enable").value == 'NO');
+}
+function onDHCPv4Change()
+{
+  document.getElementById("ip_v4_address").disabled = (document.getElementById("ip_v4_dhcpenable").value == 'YES');
+  document.getElementById("ip_v4_netmask").disabled = (document.getElementById("ip_v4_dhcpenable").value == 'YES');
+  document.getElementById("ip_v4_gw").disabled = (document.getElementById("ip_v4_dhcpenable").value == 'YES');
+  document.getElementById("ip_v4_dns").disabled = (document.getElementById("ip_v4_dhcpenable").value == 'YES');
+}
+function onDHCPv6Change()
+{
+  document.getElementById("ip_v6_address").disabled = (document.getElementById("ip_v6_dhcpenable").value == 'YES');
+  document.getElementById("ip_v6_prefix").disabled = (document.getElementById("ip_v6_dhcpenable").value == 'YES');
+  document.getElementById("ip_v6_dns").disabled = (document.getElementById("ip_v6_dhcpenable").value == 'YES');
+}
+function onOKClick(form)
+{
+  //disable all OK buttons after clicking to avoid sending 'OK' to the web server
+  //we want to POST only CFL parameters to track last error
+  document.getElementById("ip_v4_ok").disabled = true;
+  document.getElementById("ip_v6_ok").disabled = true;
+  document.getElementById("ip_ntp_ok").disabled = true;
+
+  form.submit();
+}
+</script>
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Cache-Control" content="no-cache">
+<meta http-equiv="Expires" content="Mon, 06 Jan 1990 00:00:01 GMT">
+</head>
+<body bgcolor="white" onLoad="onLoadScript()">
+<script language="JavaScript">
+printErrorMsg("$$LASTERRORMESSAGE$$");
+</script>
+
+<!-- IPv4 -->
+<div style="padding:6px">
+  <table width=700 style="border:3px solid #dddddd">
+  <tr><td colspan=2><b>IPv4 configuration*</b></td></tr>
+  <tr><td colspan=2 style="background:#dddddd"></td></tr>
+  <tr><td colspan=2></td></tr>
+
+  <form name="IPV4_FORM" method="POST">
+  <input type="hidden" name="CSRFTOKEN" value="$$CSRFTOKEN$$">
+  <input type="hidden" name="REDIRECT" value="ip.html">
+  <tr><td>DHCP enabled</td><td align="right">
+  <select name="DHCP.GENERAL.ENABLED_IPV4" id="ip_v4_dhcpenable" onChange="onDHCPv4Change()">
+  <script language="JavaScript">
+var icn='$$DHCP.GENERAL.ENABLED_IPV4$$';
+var ico=new Array('NO','YES');
+selectOptions(icn,ico);
+  </script>
+  </select>
+  </td></tr>
+  <tr><td colspan=2></td></tr>
+
+  <tr><td>IPv4 address / netmask</td><td align="right">
+  <input type="text" size=15 maxlength=15 name="TCPIP.IPV4.IP_ADDRESS" value="$$TCPIP.IPV4.IP_ADDRESS$$" id="ip_v4_address">/<input type="text" size=15 maxlength=15 name="TCPIP.IPV4.IP_NETMASK" value="$$TCPIP.IPV4.IP_NETMASK$$" id="ip_v4_netmask">
+  </td></tr>
+
+  <tr><td>Default Gateway</td><td align="right">
+  <input type="text" size=15 maxlength=15 name="TCPIP.IPV4.GATEWAY" value="$$TCPIP.IPV4.GATEWAY$$" id="ip_v4_gw">
+  </td></tr>
+
+  <tr><td>DNS</td><td align="right">
+  <input type="text" size=15 maxlength=15 name="DNS.GENERAL.IPV4" value="$$DNS.GENERAL.IPV4$$" id="ip_v4_dns">
+  </td></tr>
+
+  <tr><td colspan=2></td></tr>
+  <tr><td colspan=2 style="background:#dddddd"></td></tr>
+  <tr><td colspan=2></td></tr>
+
+  <tr><td>Additional address #1</td><td align="right">
+  <input type="text" size=15 maxlength=15 name="TCPIP.IPV4.ADDITIONAL_IP_ADDRESS.1" value="$$TCPIP.IPV4.ADDITIONAL_IP_ADDRESS.1$$" id="ip_v4_additionaladdress1">/<input type="text" size=15 maxlength=15 name="TCPIP.IPV4.ADDITIONAL_IP_NETMASK.1" value="$$TCPIP.IPV4.ADDITIONAL_IP_NETMASK.1$$" id="ip_v4_additionalnetmask1">
+  </td></tr>
+
+  <tr><td>Additional address #2</td><td align="right">
+  <input type="text" size=15 maxlength=15 name="TCPIP.IPV4.ADDITIONAL_IP_ADDRESS.2" value="$$TCPIP.IPV4.ADDITIONAL_IP_ADDRESS.2$$" id="ip_v4_additionaladdress2">/<input type="text" size=15 maxlength=15 name="TCPIP.IPV4.ADDITIONAL_IP_NETMASK.2" value="$$TCPIP.IPV4.ADDITIONAL_IP_NETMASK.2$$" id="ip_v4_additionalnetmask2">
+  </td></tr>
+
+  <tr><td colspan=2></td></tr>
+  <tr><td colspan=2 style="background:#dddddd"></td></tr>
+  <tr><td colspan=2></td></tr>
+
+  <tr><td colspan=2></td></tr>
+  <tr><td colspan=2><font size=-1>*All changes except the DNS server will have effect after system boot</font></td></tr>
+  <tr><td colspan=2></td></tr>
+
+  <tr><td colspan=2></td></tr>
+  <tr><td colspan=2 align="right">
+  <input name="OK" value="Ok" type="button" id="ip_v4_ok" onClick="onOKClick(this.form)">&nbsp;<input name="CANCEL" value="Cancel" type="reset" id="ip_v4_cancel">
+  </td></tr>
+  </form>
+  </table>
+</div>
+
+
+<!-- IPv6 -->
+<div style="padding:6px">
+  <table width=700 style="border:3px solid #dddddd">
+  <tr><td colspan=2><b>IPv6 configuration*</b></td></tr>
+  <tr><td colspan=2 style="background:#dddddd"></td></tr>
+  <tr><td colspan=2></td></tr>
+
+  <form name="IPV6_FORM" method="POST">
+  <input type="hidden" name="CSRFTOKEN" value="$$CSRFTOKEN$$">
+  <input type="hidden" name="REDIRECT" value="ip.html">
+  <tr><td>DHCP enabled</td><td align="right">
+  <select name="DHCP.GENERAL.ENABLED_IPV6" id="ip_v6_dhcpenable" onChange="onDHCPv6Change()">
+  <script language="JavaScript">
+var icn='$$DHCP.GENERAL.ENABLED_IPV6$$';
+var ico=new Array('NO','YES');
+selectOptions(icn,ico);
+  </script>
+  </select>
+  </td></tr>
+  <tr><td colspan=2></td></tr>
+
+  <tr><td>IPv6 address / prefix</td><td align="right">
+  <input type="text" size=39 maxlength=39 name="TCPIP.IPV6.IP_ADDRESS" value="$$TCPIP.IPV6.IP_ADDRESS$$" id="ip_v6_address">/<input type="text" size=3 maxlength=3 name="TCPIP.IPV6.IP_PREFIX" value="$$TCPIP.IPV6.IP_PREFIX$$" id="ip_v6_prefix">
+  </td></tr>
+
+  <tr><td>Default Gateway</td><td align="right">
+  <input type="text" size=39 maxlength=39 name="TCPIP.IPV6.GATEWAY" value="$$TCPIP.IPV6.GATEWAY$$" id="ip_v6_gw">
+  </td></tr>
+
+  <tr><td>DNS</td><td align="right">
+  <input type="text" size=39 maxlength=39 name="DNS.GENERAL.IPV6" value="$$DNS.GENERAL.IPV6$$" id="ip_v6_dns">
+  </td></tr>
+
+  <tr><td colspan=2></td></tr>
+  <tr><td colspan=2 style="background:#dddddd"></td></tr>
+  <tr><td colspan=2></td></tr>
+
+  <tr><td>Additional address #1</td><td align="right">
+  <input type="text" size=39 maxlength=39 name="TCPIP.IPV6.ADDITIONAL_IP_ADDRESS.1" value="$$TCPIP.IPV6.ADDITIONAL_IP_ADDRESS.1$$" id="ip_v6_additionaladdress1">/<input type="text" size=3 maxlength=3 name="TCPIP.IPV6.ADDITIONAL_IP_PREFIX.1" value="$$TCPIP.IPV6.ADDITIONAL_IP_PREFIX.1$$" id="ip_v6_additionalprefix1">
+  </td></tr>
+
+  <tr><td>Additional address #2</td><td align="right">
+  <input type="text" size=39 maxlength=39 name="TCPIP.IPV6.ADDITIONAL_IP_ADDRESS.2" value="$$TCPIP.IPV6.ADDITIONAL_IP_ADDRESS.2$$" id="ip_v6_additionaladdress2">/<input type="text" size=3 maxlength=3 name="TCPIP.IPV6.ADDITIONAL_IP_PREFIX.2" value="$$TCPIP.IPV6.ADDITIONAL_IP_PREFIX.2$$" id="ip_v6_additionalprefix2">
+  </td></tr>
+
+  <tr><td>Additional address #3</td><td align="right">
+  <input type="text" size=39 maxlength=39 name="TCPIP.IPV6.ADDITIONAL_IP_ADDRESS.3" value="$$TCPIP.IPV6.ADDITIONAL_IP_ADDRESS.3$$" id="ip_v6_additionaladdress3">/<input type="text" size=3 maxlength=3 name="TCPIP.IPV6.ADDITIONAL_IP_PREFIX.3" value="$$TCPIP.IPV6.ADDITIONAL_IP_PREFIX.3$$" id="ip_v6_additionalprefix3">
+  </td></tr>
+
+  <tr><td>Additional address #4</td><td align="right">
+  <input type="text" size=39 maxlength=39 name="TCPIP.IPV6.ADDITIONAL_IP_ADDRESS.4" value="$$TCPIP.IPV6.ADDITIONAL_IP_ADDRESS.4$$" id="ip_v6_additionaladdress4">/<input type="text" size=3 maxlength=3 name="TCPIP.IPV6.ADDITIONAL_IP_PREFIX.4" value="$$TCPIP.IPV6.ADDITIONAL_IP_PREFIX.4$$" id="ip_v6_additionalprefix4">
+  </td></tr>
+
+  <tr><td colspan=2></td></tr>
+  <tr><td colspan=2 style="background:#dddddd"></td></tr>
+  <tr><td colspan=2></td></tr>
+
+  <tr><td>IPv6 link-local address</td><td align="right">
+  <input type="text" size=39 maxlength=39 name="TCPIP.IPV6.LINK_LOCAL_IP_ADDRESS" value="$$TCPIP.IPV6.LINK_LOCAL_IP_ADDRESS$$" id="ip_v6_localaddress" disabled>/<input type="text" size=3 maxlength=3 name="TCPIP.IPV6.LINK_LOCAL_IP_PREFIX" value="$$TCPIP.IPV6.LINK_LOCAL_IP_PREFIX$$" id="ip_v6_localprefix" disabled>
+  </td></tr>
+
+  <tr><td>IPv6 SLAAC address</td><td align="right">
+  <input type="text" size=39 maxlength=39 name="TCPIP.IPV6.SLAAC_IP_ADDRESS" value="$$TCPIP.IPV6.SLAAC_IP_ADDRESS$$" id="ip_v6_slaacaddress" disabled>/<input type="text" size=3 maxlength=3 name="TCPIP.IPV6.SLAAC_IP_PREFIX" value="$$TCPIP.IPV6.SLAAC_IP_PREFIX$$" id="ip_v6_slaacprefix" disabled>
+  </td></tr>
+
+  <tr><td colspan=2></td></tr>
+  <tr><td colspan=2 style="background:#dddddd"></td></tr>
+  <tr><td colspan=2></td></tr>
+
+  <tr><td colspan=2></td></tr>
+  <tr><td colspan=2><font size=-1>*All changes except the DNS server will have effect after system boot</font></td></tr>
+  <tr><td colspan=2></td></tr>
+
+  <tr><td colspan=2></td></tr>
+  <tr><td colspan=2 align="right">
+  <input name="OK" value="Ok" type="button" id="ip_v6_ok"  onClick="onOKClick(this.form)">&nbsp;<input name="CANCEL" value="Cancel" type="reset" id="ip_v6_cancel">
+  </td></tr>
+  </form>
+  </table>
+</div>
+
+<!-- NTP -->
+<div style="padding:6px">
+  <table width=700 style="border:3px solid #dddddd">
+  <tr><td colspan=2><b>NTPv4/v6 client configuration</b></td></tr>
+  <tr><td colspan=2 style="background:#dddddd"></td></tr>
+  <tr><td colspan=2></td></tr>
+
+  <form name="NTP_FORM" method="POST">
+  <input type="hidden" name="CSRFTOKEN" value="$$CSRFTOKEN$$">
+  <input type="hidden" name="REDIRECT" value="ip.html">
+  <tr><td>NTPv4/v6 client enabled</td><td align="right">
+  <select name="NTP.GENERAL.ENABLED" id="ip_ntp_enable" onChange="onNTPEnableChange()">
+  <script language="JavaScript">
+var icn='$$NTP.GENERAL.ENABLED$$';
+var ico=new Array('YES','NO');
+selectOptions(icn,ico);
+  </script>
+  </select>
+  </td></tr>
+
+  <tr><td>Resynchronization time (minutes)</td><td align="right">
+  <input type="text" size=3 maxlength=5 name="NTP.GENERAL.RESYNC_TIME" value="$$NTP.GENERAL.RESYNC_TIME$$" id="ip_ntp_resynchtime">
+  </td></tr>
+  <tr><td>NTP IPv4/v6 address</td><td align="right">
+  <input type="text" size=39 maxlength=39 name="NTP.GENERAL.HOST" value="$$NTP.GENERAL.HOST$$" id="ip_ntp_address">
+  </td></tr>
+  <tr><td colspan=2></td></tr>
+  <tr><td colspan=2 align="right">
+  <input name="OK" value="Ok" type="button" id="ip_ntp_ok" onClick="onOKClick(this.form)">&nbsp;<input name="CANCEL" value="Cancel" type="reset" id="ip_ntp_cancel">
+  </td></tr>
+  </form>
+  </table>
+</div>
+
+
+
+</body>
+</html>
