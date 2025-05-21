@@ -42,184 +42,7 @@
     <meta http-equiv="Expires" content="Mon, 06 Jan 1990 00:00:01 GMT">
     <title>Log File Configuration</title>
     <script language="JavaScript" src="common.js"></script>
-    <style>
-        :root {
-            --primary-color: #e0e0e0;
-            --secondary-color: #d0d0d0;
-            --accent-color: #ff8c00;
-            --accent-hover: #e67e00;
-            --background-color: #f5f5f5;
-            --text-color: #333333;
-            --border-color: #dddddd;
-            --input-border-color: #cccccc;
-            --button-text-color: #333333;
-        }
-        
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            line-height: 1.6;
-            margin: 0;
-            padding: 15px;
-            background-color: white;
-            color: var(--text-color);
-        }
-        
-        .header-main {
-            background-color: var(--primary-color);
-            padding: 10px 0;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            margin-bottom: 20px;
-        }
-        
-        .header-content {
-            max-width: 800px;
-            margin: 0 auto;
-            display: flex;
-            align-items: center;
-            padding: 0 10px;
-        }
-        
-        .logo {
-            height: 40px;
-            margin-right: 15px;
-        }
-        
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-            background: white;
-            padding: 15px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-        
-        .section {
-            margin: 15px 0;
-            padding: 15px;
-            border: 1px solid var(--border-color);
-            border-radius: 4px;
-            background-color: var(--primary-color);
-        }
-        
-        .section-title {
-            font-size: 1.2em;
-            font-weight: bold;
-            margin-bottom: 15px;
-            color: var(--accent-color);
-        }
-        
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin: 10px 0;
-            background-color: white;
-        }
-        
-        th, td {
-            padding: 8px;
-            text-align: left;
-            border-bottom: 1px solid var(--border-color);
-        }
-        
-        th {
-            background-color: var(--primary-color);
-            color: var(--text-color);
-            font-weight: bold;
-        }
-        
-        .form-group {
-            margin: 10px 0;
-        }
-        
-        label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: bold;
-            color: var(--text-color);
-        }
-        
-        input[type="text"],
-        select {
-            width: 100%;
-            padding: 8px;
-            border: 1px solid var(--input-border-color);
-            border-radius: 4px;
-            box-sizing: border-box;
-            background-color: var(--primary-color);
-            transition: border-color 0.2s;
-        }
-        
-        input[type="text"]:focus,
-        select:focus {
-            border-color: var(--accent-color);
-            outline: none;
-            box-shadow: 0 0 0 2px rgba(255, 140, 0, 0.2);
-        }
-        
-        .button-group {
-            margin-top: 15px;
-            text-align: right;
-        }
-        
-        button, input[type="button"], input[type="reset"] {
-            padding: 8px 16px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            margin-left: 10px;
-            font-size: 14px;
-            transition: background-color 0.2s, box-shadow 0.2s;
-        }
-        
-        input[type="button"] {
-            background-color: var(--accent-color);
-            color: var(--button-text-color);
-        }
-        
-        input[type="button"]:hover {
-            background-color: var(--accent-hover);
-            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-        }
-        
-        input[type="reset"] {
-            background-color: var(--primary-color);
-            color: var(--text-color);
-        }
-        
-        input[type="reset"]:hover {
-            background-color: var(--secondary-color);
-            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-        }
-        
-        .error-message {
-            color: #d32f2f;
-            padding: 10px;
-            margin: 10px 0;
-            border: 1px solid #d32f2f;
-            border-radius: 4px;
-            background-color: #ffebee;
-        }
-
-        .footer {
-            background-color: var(--primary-color);
-            padding: 20px 0;
-            margin-top: 20px;
-            box-shadow: 0 -2px 4px rgba(0,0,0,0.1);
-        }
-
-        .footer-content {
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 0 10px;
-            font-size: 0.9em;
-            color: var(--text-color);
-            text-align: center;
-        }
-
-        tr:hover {
-            background-color: var(--secondary-color);
-        }
-    </style>
+    <link rel="stylesheet" href="styles.css">
     <script language="JavaScript">
     function onLoadScripts()
     {
@@ -251,61 +74,66 @@
         </div>
     </header> -->
 
-    <div class="container">
-        <div id="error-message" class="error-message">
-            <script language="JavaScript">
-                printErrorMsg("$$LASTERRORMESSAGE$$");
-            </script>
+    <div class="card">
+        <div class="card-header">
+            <span class="card-title">Log File</span>
         </div>
+        <div class="card-content section-content">
+            <div id="error-message" class="error-message">
+                <script language="JavaScript">
+                    printErrorMsg("$$LASTERRORMESSAGE$$");
+                </script>
+            </div>
 
-        <div class="section">
-            <div class="section-title">Log File Settings</div>
-            <form name="LOGFILE_FORM" method="POST">
-                <input type="hidden" name="CSRFTOKEN" value="$$CSRFTOKEN$$">
-                <input type="hidden" name="REDIRECT" value="logfile.html">
-                
-                <div class="form-group">
-                    <label for="logfile_enabled">Enable Log File</label>
-                    <select name="LOGFILE.GENERAL.ENABLE" id="logfile_enabled" onChange="onLogfileEnableChange()">
-                        <script language="JavaScript">
-                        var nt='$$LOGFILE.GENERAL.ENABLE$$';
-                        var ntp=nt;
-                        var nto=new Array('YES','NO');
-                        selectOptions(ntp,nto);
-                        </script>
-                    </select>
-                </div>
+            <div class="section">
+                <div class="section-title">Log File Settings</div>
+                <form name="LOGFILE_FORM" method="POST">
+                    <input type="hidden" name="CSRFTOKEN" value="$$CSRFTOKEN$$">
+                    <input type="hidden" name="REDIRECT" value="logfile.html">
+                    
+                    <div class="form-group">
+                        <label for="logfile_enabled">Enable Log File</label>
+                        <select name="LOGFILE.GENERAL.ENABLE" id="logfile_enabled" onChange="onLogfileEnableChange()">
+                            <script language="JavaScript">
+                            var nt='$$LOGFILE.GENERAL.ENABLE$$';
+                            var ntp=nt;
+                            var nto=new Array('YES','NO');
+                            selectOptions(ntp,nto);
+                            </script>
+                        </select>
+                    </div>
 
-                <div class="form-group">
-                    <label for="logfile_capture_interval">Data capture interval (s)</label>
-                    <input type="text" size=30 maxlength=20 name="LOGFILE.GENERAL.DATA_INTERVAL" value="$$LOGFILE.GENERAL.DATA_INTERVAL$$" id="logfile_capture_interval">
-                </div>
+                    <div class="form-group">
+                        <label for="logfile_capture_interval">Data capture interval (s)</label>
+                        <input type="text" size=30 maxlength=20 name="LOGFILE.GENERAL.DATA_INTERVAL" value="$$LOGFILE.GENERAL.DATA_INTERVAL$$" id="logfile_capture_interval">
+                    </div>
 
-                <div class="form-group">
-                    <label for="logfile_url">FTP server URL</label>
-                    <input type="text" size=30 maxlength=80 name="LOGFILE.FTPSERVER.HOST" value="$$LOGFILE.FTPSERVER.HOST$$" id="logfile_url">
-                </div>
+                    <div class="form-group">
+                        <label for="logfile_url">FTP server URL</label>
+                        <input type="text" size=30 maxlength=80 name="LOGFILE.FTPSERVER.HOST" value="$$LOGFILE.FTPSERVER.HOST$$" id="logfile_url">
+                    </div>
 
-                <div class="form-group">
-                    <label for="logfile_login">FTP server login</label>
-                    <input type="text" size=30 maxlength=30 name="LOGFILE.FTPSERVER.LOGIN" value="$$LOGFILE.FTPSERVER.LOGIN$$" id="logfile_login">
-                </div>
+                    <div class="form-group">
+                        <label for="logfile_login">FTP server login</label>
+                        <input type="text" size=30 maxlength=30 name="LOGFILE.FTPSERVER.LOGIN" value="$$LOGFILE.FTPSERVER.LOGIN$$" id="logfile_login">
+                    </div>
 
-                <div class="form-group">
-                    <label for="logfile_password">FTP server password</label>
-                    <input type="text" size=30 maxlength=30 name="LOGFILE.FTPSERVER.PASSWORD" id="logfile_password">
-                </div>
+                    <div class="form-group">
+                        <label for="logfile_password">FTP server password</label>
+                        <input type="text" size=30 maxlength=30 name="LOGFILE.FTPSERVER.PASSWORD" id="logfile_password">
+                    </div>
 
-                <div class="form-group">
-                    <label for="logfile_upload_interval">Upload to server interval (min)</label>
-                    <input type="text" size=30 maxlength=20 name="LOGFILE.GENERAL.UPLOAD_INTERVAL" value="$$LOGFILE.GENERAL.UPLOAD_INTERVAL$$" id="logfile_upload_interval">
-                </div>
+                    <div class="form-group">
+                        <label for="logfile_upload_interval">Upload to server interval (min)</label>
+                        <input type="text" size=30 maxlength=20 name="LOGFILE.GENERAL.UPLOAD_INTERVAL" value="$$LOGFILE.GENERAL.UPLOAD_INTERVAL$$" id="logfile_upload_interval">
+                    </div>
 
-                <div class="button-group">
-                    <input name="OK" value="OK" type="button" id="logfile_ok" onClick="onOKClick(this.form)">
-                    <input name="CANCEL" value="Cancel" type="reset" id="logfile_cancel">
-                </div>
-            </form>
+                    <div class="button-group">
+                        <input name="OK" value="OK" type="button" id="logfile_ok" onClick="onOKClick(this.form)">
+                        <input name="CANCEL" value="Cancel" type="reset" id="logfile_cancel">
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
 </body>

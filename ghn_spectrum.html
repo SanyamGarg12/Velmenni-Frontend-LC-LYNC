@@ -36,6 +36,8 @@
 <html>
 <head>
 <meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="styles.css">
 <script language="JavaScript" src="common.js"></script>
 <style>
 :root {
@@ -232,129 +234,134 @@ function onRemoveOKClick(form)
 printErrorMsg("$$LASTERRORMESSAGE$$");
 </script>
 
-<!-- Notches -->
-<div style="padding:6px">
-  <table width=420 style="border:3px solid #dddddd">
-  <tr><td colspan=2><b>Notches Configuration</b></td></tr>
-  <tr><td colspan=2></td></tr>
-  <tr><td colspan=2 style="background:#dddddd"></td></tr>
-  <tr><td colspan=2></td></tr>
+<div class="card">
+  <div class="card-header">
+    <span class="card-title">G.hn Spectrum Settings</span>
+  </div>
+  <div class="card-content section-content">
+    <!-- Notches -->
+    <div style="padding:6px">
+      <table width=420 style="border:3px solid #dddddd">
+      <tr><td colspan=2><b>Notches Configuration</b></td></tr>
+      <tr><td colspan=2></td></tr>
+      <tr><td colspan=2 style="background:#dddddd"></td></tr>
+      <tr><td colspan=2></td></tr>
 
-<tr><td>
-<div style="padding:6px">
-<table style="width: 300px" cellpadding="0" cellspacing="0">
-  <tr><td colspan=8><font size=-1>Notch index</font></td>
-  <td colspan=8><font size=-1>Start freq (KHz)</font></td>
-  <td colspan=8><font size=-1>Stop  freq (KHz)</font></td>
-  <td colspan=8><font size=-1>Depth (dB)</font></td>
-  <td colspan=8><font size=-1>Type</font></td></tr>
-</table>
+    <tr><td>
+    <div style="padding:6px">
+    <table style="width: 300px" cellpadding="0" cellspacing="0">
+      <tr><td colspan=8><font size=-1>Notch index</font></td>
+      <td colspan=8><font size=-1>Start freq (KHz)</font></td>
+      <td colspan=8><font size=-1>Stop  freq (KHz)</font></td>
+      <td colspan=8><font size=-1>Depth (dB)</font></td>
+      <td colspan=8><font size=-1>Type</font></td></tr>
+    </table>
+    </div>
+
+    <div style="overflow: auto;height: 250px; width: 350px;">
+
+    <script language="JavaScript">
+    document.write('<table style="width: 300px;" cellpadding="0" cellspacing="0">');
+    var regul_str='$$POWERMASK.REGULATION.NOTCHES$$';
+    var regul    = regul_str.split(",");
+    var vendor_str='$$POWERMASK.VENDOR.NOTCHES$$';
+    var vendor= vendor_str.split(",");
+    var user_str='$$POWERMASK.USER.NOTCHES$$';
+    var user= user_str.split(",");
+      for (var i=0; i<regul.length; i+=3)
+      {
+        document.write('<tr>'+
+          '<td align=center id="notches_regul_id'+i/3+'"><font size=-1>'+i/3+'</td>'+
+          '<td align=right id="notches_regul_start'+i+'"><font size=-1>'+regul[i]+'</td>'+
+          '<td align=right id="notches_regul_stop'+i+'"><font size=-1>'+regul[i+1]+'</td>'+
+          '<td align=right id="notches_regul_depth'+i+'"><font size=-1>'+parseInt(regul[i+2])/2+'</td>'+
+          '<td align=left id="notches_regul_type'+i+'"><font size=-1>'+'&nbsp; &nbsp; Regulation'+'</td>'+
+          '</tr>');
+      }
+    if (vendor_str!='0')
+    {
+      for (var i=0; i<vendor.length; i+=3)
+      {
+        document.write('<tr>'+
+          '<td align=center id="notches_vendor_id'+i/3+'"><font size=-1>'+i/3+'</td>'+
+          '<td align=right id="notches_vendor_start'+i+'"><font size=-1>'+vendor[i]+'</td>'+
+          '<td align=right id="notches_vendor_stop'+i+'"><font size=-1>'+vendor[i+1]+'</td>'+
+          '<td align=right id="notches_vendor_depth'+i+'"><font size=-1>'+parseInt(vendor[i+2])/2+'</td>'+
+          '<td align=left id="notches_vendor_type'+i+'"><font size=-1>'+'&nbsp; &nbsp; Vendor'+'</td>'+
+          '</tr>');
+      }
+    }
+    if (user_str!='0')
+    {
+      for (var i=0; i<user.length; i+=3)
+      {
+        document.write('<tr>'+
+          '<td align=center id="notches_user_id'+i/3+'"><font size=-1>'+i/3+'</td>'+
+          '<td align=right id="notches_user_start'+i+'"><font size=-1>'+user[i]+'</td>'+
+          '<td align=right id="notches_user_stop'+i+'"><font size=-1>'+user[i+1]+'</td>'+
+          '<td align=right id="notches_user_depth'+i+'"><font size=-1>'+parseInt(user[i+2])/2+'</td>'+
+          '<td align=left id="notches_user_type'+i+'"><font size=-1>'+'&nbsp; &nbsp; User'+'</td>'+
+          '</tr>');
+      }
+    }
+    document.write('</table>');
+    </script>
+    </div>
+    </td></tr>
+
+
+
+      <tr><td colspan=2 style="background:#dddddd"></td></tr>
+      <tr><td colspan=2></td></tr>
+      <tr><td colspan=2>Add new user notch</td></tr>
+      <form name="NOTCHES_FORM" method="POST">
+      <input type="hidden" name="CSRFTOKEN" value="$$CSRFTOKEN$$">
+      <input type="hidden" name="REDIRECT" value="ghn_spectrum.html">
+      <input type="hidden" name="POWERMASK.USER.NOTCHES_ENABLE" value="YES">
+
+      <tr><td>&#8226;Index (0..9)</td><td align="right">
+      <input type="text" size=10 maxlength=10 name="" value="" id="notches_add_index">
+      </td></tr>
+
+      <tr><td>&#8226;Start frequency (KHz)</td><td align="right">
+      <input type="text" size=10 maxlength=10 id="notches_add_start">
+      </td></tr>
+      <tr><td>&#8226;Stop frequency (KHz)</td><td align="right">
+      <input type="text" size=10 maxlength=10 id="notches_add_stop">
+      </td></tr>
+      <tr><td>&#8226;Depth (0..40dB, 100 removes notch)</td><td align="right">
+      <input type="text" size=10 maxlength=10 id="notches_add_depth">
+      <tr><td colspan=2></td></tr>
+      <tr><td colspan=2 align="right">
+      <input name="OK" value="Ok" type="button" id="notches_add_ok" onClick="onOKClick(this.form)">&nbsp;<input name="CANCEL" value="Cancel" type="reset" id="notches_add_cancel">
+      </td></tr>
+      <input type="hidden" name="POWERMASK.GENERAL.NOTCHES_UPDATE" value="YES">
+      </form>
+      </form>
+
+
+      <tr><td colspan=2 style="background:#dddddd"></td></tr>
+      <tr><td colspan=2></td></tr>
+      <tr><td colspan=2>Remove user notch</td></tr>
+      <form name="NOTCHES_REMOVE_FORM" method="POST">
+      <input type="hidden" name="CSRFTOKEN" value="$$CSRFTOKEN$$">
+      <input type="hidden" name="REDIRECT" value="ghn_spectrum.html">
+      <input type="hidden" id="notches_remove"
+
+      <tr><td>&#8226;Index (0..9)</td><td align="right">
+      <input type="text" size=10 maxlength=10 id="notches_remove_index">
+      </td></tr>
+      <tr><td colspan=2></td></tr>
+      <tr><td colspan=2 align="right">
+      <input name="OK" value="Ok" type="button" id="notches_remove_ok" onClick="onRemoveOKClick(this.form)">&nbsp;<input name="CANCEL" value="Cancel" type="reset" id="notches_remove_cancel">
+      <input type="hidden" name="POWERMASK.GENERAL.NOTCHES_UPDATE" value="YES">
+      </td></tr>
+      </form>
+      </form>
+      </table>
+    </div>
+  </div>
 </div>
-
-<div style="overflow: auto;height: 250px; width: 350px;">
-
-<script language="JavaScript">
-document.write('<table style="width: 300px;" cellpadding="0" cellspacing="0">');
-var regul_str='$$POWERMASK.REGULATION.NOTCHES$$';
-var regul    = regul_str.split(",");
-var vendor_str='$$POWERMASK.VENDOR.NOTCHES$$';
-var vendor= vendor_str.split(",");
-var user_str='$$POWERMASK.USER.NOTCHES$$';
-var user= user_str.split(",");
-  for (var i=0; i<regul.length; i+=3)
-  {
-    document.write('<tr>'+
-      '<td align=center id="notches_regul_id'+i/3+'"><font size=-1>'+i/3+'</td>'+
-      '<td align=right id="notches_regul_start'+i+'"><font size=-1>'+regul[i]+'</td>'+
-      '<td align=right id="notches_regul_stop'+i+'"><font size=-1>'+regul[i+1]+'</td>'+
-      '<td align=right id="notches_regul_depth'+i+'"><font size=-1>'+parseInt(regul[i+2])/2+'</td>'+
-      '<td align=left id="notches_regul_type'+i+'"><font size=-1>'+'&nbsp; &nbsp; Regulation'+'</td>'+
-      '</tr>');
-  }
-if (vendor_str!='0')
-{
-  for (var i=0; i<vendor.length; i+=3)
-  {
-    document.write('<tr>'+
-      '<td align=center id="notches_vendor_id'+i/3+'"><font size=-1>'+i/3+'</td>'+
-      '<td align=right id="notches_vendor_start'+i+'"><font size=-1>'+vendor[i]+'</td>'+
-      '<td align=right id="notches_vendor_stop'+i+'"><font size=-1>'+vendor[i+1]+'</td>'+
-      '<td align=right id="notches_vendor_depth'+i+'"><font size=-1>'+parseInt(vendor[i+2])/2+'</td>'+
-      '<td align=left id="notches_vendor_type'+i+'"><font size=-1>'+'&nbsp; &nbsp; Vendor'+'</td>'+
-      '</tr>');
-  }
-}
-if (user_str!='0')
-{
-  for (var i=0; i<user.length; i+=3)
-  {
-    document.write('<tr>'+
-      '<td align=center id="notches_user_id'+i/3+'"><font size=-1>'+i/3+'</td>'+
-      '<td align=right id="notches_user_start'+i+'"><font size=-1>'+user[i]+'</td>'+
-      '<td align=right id="notches_user_stop'+i+'"><font size=-1>'+user[i+1]+'</td>'+
-      '<td align=right id="notches_user_depth'+i+'"><font size=-1>'+parseInt(user[i+2])/2+'</td>'+
-      '<td align=left id="notches_user_type'+i+'"><font size=-1>'+'&nbsp; &nbsp; User'+'</td>'+
-      '</tr>');
-  }
-}
-document.write('</table>');
-</script>
-</div>
-</td></tr>
-
-
-
-  <tr><td colspan=2 style="background:#dddddd"></td></tr>
-  <tr><td colspan=2></td></tr>
-  <tr><td colspan=2>Add new user notch</td></tr>
-  <form name="NOTCHES_FORM" method="POST">
-  <input type="hidden" name="CSRFTOKEN" value="$$CSRFTOKEN$$">
-  <input type="hidden" name="REDIRECT" value="ghn_spectrum.html">
-  <input type="hidden" name="POWERMASK.USER.NOTCHES_ENABLE" value="YES">
-
-  <tr><td>&#8226;Index (0..9)</td><td align="right">
-  <input type="text" size=10 maxlength=10 name="" value="" id="notches_add_index">
-  </td></tr>
-
-  <tr><td>&#8226;Start frequency (KHz)</td><td align="right">
-  <input type="text" size=10 maxlength=10 id="notches_add_start">
-  </td></tr>
-  <tr><td>&#8226;Stop frequency (KHz)</td><td align="right">
-  <input type="text" size=10 maxlength=10 id="notches_add_stop">
-  </td></tr>
-  <tr><td>&#8226;Depth (0..40dB, 100 removes notch)</td><td align="right">
-  <input type="text" size=10 maxlength=10 id="notches_add_depth">
-  <tr><td colspan=2></td></tr>
-  <tr><td colspan=2 align="right">
-  <input name="OK" value="Ok" type="button" id="notches_add_ok" onClick="onOKClick(this.form)">&nbsp;<input name="CANCEL" value="Cancel" type="reset" id="notches_add_cancel">
-  </td></tr>
-  <input type="hidden" name="POWERMASK.GENERAL.NOTCHES_UPDATE" value="YES">
-  </form>
-  </form>
-
-
-  <tr><td colspan=2 style="background:#dddddd"></td></tr>
-  <tr><td colspan=2></td></tr>
-  <tr><td colspan=2>Remove user notch</td></tr>
-  <form name="NOTCHES_REMOVE_FORM" method="POST">
-  <input type="hidden" name="CSRFTOKEN" value="$$CSRFTOKEN$$">
-  <input type="hidden" name="REDIRECT" value="ghn_spectrum.html">
-  <input type="hidden" id="notches_remove"
-
-  <tr><td>&#8226;Index (0..9)</td><td align="right">
-  <input type="text" size=10 maxlength=10 id="notches_remove_index">
-  </td></tr>
-  <tr><td colspan=2></td></tr>
-  <tr><td colspan=2 align="right">
-  <input name="OK" value="Ok" type="button" id="notches_remove_ok" onClick="onRemoveOKClick(this.form)">&nbsp;<input name="CANCEL" value="Cancel" type="reset" id="notches_remove_cancel">
-  <input type="hidden" name="POWERMASK.GENERAL.NOTCHES_UPDATE" value="YES">
-  </td></tr>
-  </form>
-  </form>
-  </table>
-</div>
-
-
 
 </body>
 </html>

@@ -36,189 +36,9 @@
 <html>
 <head>
 <meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="styles.css">
 <script language="JavaScript" src="common.js"></script>
-<style>
-:root {
-  --primary-color: #0066cc;
-  --secondary-color: #004d99;
-  --background-color: #f5f5f5;
-  --text-color: #333333;
-  --border-color: #dddddd;
-  --input-border-color: #cccccc;
-  --button-text-color: white;
-}
-
-body {
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  font-size: 14px;
-  color: var(--text-color);
-  background-color: white; /* Match iframe background */
-  margin: 0;
-  padding: 15px; /* Add some padding to the body */
-}
-
-table {
-  width: 100%;
-  max-width: 700px; /* Consistent max width */
-  border-collapse: collapse;
-  margin-bottom: 20px;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-  border: 1px solid var(--border-color);
-}
-
-th, td {
-  padding: 10px 12px;
-  text-align: left;
-  border-bottom: 1px solid var(--border-color);
-}
-
-tr:last-child td {
-  border-bottom: none;
-}
-
-td[colspan="2"] b,
-td[colspan="6"] b /* Adjusted for device.html sections like Security */
- {
-  font-size: 1.2em;
-  color: var(--primary-color);
-}
-
-/* Style for the header rows of each section */
-table > tbody > tr:first-child {
-  background-color: var(--background-color);
-}
-
-table > tbody > tr:first-child td {
-  font-weight: bold;
-  color: var(--primary-color);
-  border-bottom: 2px solid var(--primary-color);
-}
-
-/* Style for th elements if any are used (none in device.html currently, but good for consistency) */
-table th {
-    background-color: var(--background-color);
-    font-weight: bold;
-    color: var(--text-color);
-}
-
-
-/* Separator rows */
-td[colspan="2"][style="background:#dddddd"],
-td[colspan="6"][style="background:#dddddd"] /* Adjusted for device.html */
-{
-  background-color: var(--background-color) !important; /* Override inline style */
-  height: 5px;
-  padding: 0;
-  border-top: 1px solid var(--border-color);
-  border-bottom: 1px solid var(--border-color);
-}
-/* Remove duplicate top border if next to header */
-tr:nth-child(2) > td[colspan="2"][style="background:#dddddd"],
-tr:nth-child(2) > td[colspan="6"][style="background:#dddddd"]{
-    border-top: none;
-}
-
-
-form {
-  margin: 0;
-}
-
-input[type="text"],
-input[type="password"],
-input[type="file"],
-select {
-  width: 100%; /* Make inputs take available width in td */
-  padding: 8px;
-  border: 1px solid var(--input-border-color);
-  border-radius: 4px;
-  box-sizing: border-box;
-  font-size: 14px;
-  transition: border-color 0.2s;
-}
-
-input[type="text"]:focus,
-input[type="password"]:focus,
-input[type="file"]:focus,
-select:focus {
-  border-color: var(--primary-color);
-  outline: none;
-  box-shadow: 0 0 0 2px rgba(0, 102, 204, 0.2);
-}
-
-/* Align text fields and selects to the right if they are in the second td */
-td:nth-child(2) > input[type="text"],
-td:nth-child(2) > input[type="password"],
-td:nth-child(2) > input[type="file"],
-td:nth-child(2) > select {
-  /* Default to full width as per above, but if specific widths are set, they take precedence */
-}
-
-/* Button styling */
-input[type="button"],
-input[type="reset"] {
-  padding: 8px 20px;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 14px;
-  transition: background-color 0.2s, box-shadow 0.2s;
-  margin-left: 10px;
-}
-
-input[type="button"] {
-  background-color: var(--primary-color);
-  color: var(--button-text-color);
-}
-
-input[type="button"]:hover {
-  background-color: var(--secondary-color);
-  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-}
-
-input[type="reset"] {
-  background-color: #6c757d; /* A neutral grey */
-  color: var(--button-text-color);
-}
-
-input[type="reset"]:hover {
-  background-color: #5a6268;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-}
-
-/* Container for buttons to align them right */
-td[align="right"] {
-  text-align: right;
-}
-
-/* Small text for notes and informational display */
-font[size="-1"] {
-  font-size: 1em; /* Make it normal size, padding/margins will handle spacing */
-  color: var(--text-color);
-}
-td > font[size="-1"] { /* if font is direct child of td */
-    display: inline-block; /* Allows padding if needed */
-    padding: 8px 0; /* Match input padding for alignment */
-}
-
-/* Remove direct styling from specific table cells */
-td[style="background:#dddddd"] {
-  background: transparent !important; 
-}
-
-/* Specific input widths for device.html if needed */
-input[name="SYSTEM.GENERAL.PASSWORD_CONFIG"],
-input[name="FLUPGRADE.GENERAL.HOST"],
-input[name="FLUPGRADE.GENERAL.FTP_LOGIN"],
-input[name="FLUPGRADE.GENERAL.FTP_PASSWORD"] {
-    width: auto; /* Allow size attribute to have an effect */
-    min-width: 250px; /* Ensure a decent minimum width */
-}
-input[name="FLUPGRADE.GENERAL.FILENAME"] {
-    width: auto;
-    min-width: 300px; /* Longer field */
-}
-
-</style>
 <script language="JavaScript">
 function onLoadScripts()
 {
@@ -232,207 +52,181 @@ function onOKClick(form)
 function onSecurityOKClick(form)
 {
   //disable all OK buttons after clicking to avoid sending 'OK' to the web server
-  //we want to POST only CFL parameters to track last error
   document.getElementById("device_security_ok").disabled = true;
   document.getElementById("device_security_cancel").disabled = true;
-
   onOKClick(form);
 }
 function onSWUpdateOKClick(form)
 {
   //disable all OK buttons after clicking to avoid sending 'OK' to the web server
-  //we want to POST only CFL parameters to track last error
   document.getElementById("device_swupdate_ok").disabled = true;
   document.getElementById("device_swupdate_cancel").disabled = true;
-
   onOKClick(form);
-}
-function onSWUpdateCancelClick(form)
-{
-  document.getElementById("device_swupdate_protocol").value = 'FTP';
-  onFLUPSourceChange();
-}
-function onHttpSWUpdateOKClick(form)
-{
-  //disable all OK buttons after clicking to avoid sending 'OK' to the web server
-  //we want to POST only CFL parameters to track last error
-  document.getElementById("device_http_swupdate_ok").disabled = true;
-  document.getElementById("device_http_swupdate_cancel").disabled = true;
-
-  // File upload may take a while ...
-  document.body.style.cursor = 'wait';
-  document.getElementById('waiting-overlay').style.display='block';
-  
-  onOKClick(form);
-}
-function onHttpSWUpdateCancelClick(form)
-{
-  document.getElementById("device_swupdate_file").value = "";
-  onFileSelected();
 }
 function onFLUPSourceChange()
 {
-  var protocol = document.getElementById("device_swupdate_protocol").value;
-  
-  document.getElementById("device_swupdate_serverip").disabled = (protocol != 'FTP') && (protocol != 'TFTP');
-  document.getElementById("device_swupdate_user").disabled = (protocol != 'FTP') && (protocol != 'TFTP');
-  document.getElementById("device_swupdate_password").disabled = (protocol != 'FTP') && (protocol != 'TFTP');
-  document.getElementById("device_swupdate_filename").disabled = (protocol != 'FTP') && (protocol != 'TFTP');
-  document.getElementById("device_swupdate_filename").disabled = (protocol != 'FTP') && (protocol != 'TFTP');
+  var source = document.getElementById("flupgrade_source").value;
+  document.getElementById("flupgrade_host").disabled = (source != 'FTP');
+  document.getElementById("flupgrade_login").disabled = (source != 'FTP');
+  document.getElementById("flupgrade_password").disabled = (source != 'FTP');
+  document.getElementById("flupgrade_filename").disabled = (source != 'FTP');
 }
 function onFileSelected()
 {
-  var disabled = false;
-  if (document.getElementById("device_swupdate_file").value == "")
-  {
-    disabled = true;
+  var fileInput = document.getElementById("flupgrade_file");
+  var fileName = fileInput.value;
+  if (fileName) {
+    document.getElementById("flupgrade_filename").value = fileName.split('\\').pop().split('/').pop();
   }
-  document.getElementById("device_http_swupdate_ok").disabled = disabled;
-  document.getElementById("device_http_swupdate_cancel").disabled = disabled;
 }
 </script>
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Cache-Control" content="no-cache">
 <meta http-equiv="Expires" content="Mon, 06 Jan 1990 00:00:01 GMT">
 </head>
-<body bgcolor="white" onLoad="onLoadScripts()">
+<body onLoad="onLoadScripts()">
 <script language="JavaScript">
 printErrorMsg("$$LASTERRORMESSAGE$$");
 </script>
 
-<!-- Basic settings -->
-<div style="padding:6px">
-  <table width=700 style="/*border:3px solid #dddddd*/\">
-  <tr><td colspan=2><b>Hardware information</b></td></tr>
-  <tr><td colspan=2 style="background:#dddddd"></td></tr>
-
-  <tr><td>&#8226;Device name</td><td align="right"><font size=-1 id="device_hw_name">$$SYSTEM.PRODUCTION.DEVICE_NAME$$</font></td></tr>
-  <tr><td>&#8226;Device description</td><td align="right"><font size=-1 id="device_hw_description">$$SYSTEM.PRODUCTION.DEVICE_DESCRIPTION$$</font></td></tr>
-  <tr><td>&#8226;Device manufacturer</td><td align="right"><font size=-1 id="device_hw_manufacturer">$$SYSTEM.PRODUCTION.DEVICE_MANUFACTURER$$</font></td></tr>
-  <tr><td>&#8226;Serial number</td><td align="right"><font size=-1 id="device_hw_serialnumber">$$SYSTEM.PRODUCTION.SERIAL_NUMBER$$</font></td></tr>
-  <tr><td>&#8226;MAC address</td><td align="right"><font size=-1 id="device_hw_macaddress">$$SYSTEM.PRODUCTION.MAC_ADDR$$</font></td></tr>
-  <tr><td>&#8226;HW version</td><td align="right"><font size=-1 id="device_hw_rev">$$SYSTEM.PRODUCTION.HW_REVISION$$</font></td></tr>
-
-  </table>
+<div class="card">
+  <div class="card-header">
+    <span class="card-title">Device Information</span>
+  </div>
+  <div class="card-content section-content">
+    <table class="table">
+      <tr>
+        <td colspan="2"><b>System Information</b></td>
+      </tr>
+      <tr>
+        <td colspan="2" class="separator"></td>
+      </tr>
+      <tr>
+        <td>Device Name</td>
+        <td><span class="text-sm">$$SYSTEM.PRODUCTION.DEVICE_NAME$$</span></td>
+      </tr>
+      <tr>
+        <td>Serial Number</td>
+        <td><span class="text-sm">$$SYSTEM.PRODUCTION.SERIAL_NUMBER$$</span></td>
+      </tr>
+      <tr>
+        <td>Hardware Version</td>
+        <td><span class="text-sm">$$SYSTEM.PRODUCTION.HW_VERSION$$</span></td>
+      </tr>
+      <tr>
+        <td>Software Version</td>
+        <td><span class="text-sm">$$SYSTEM.PRODUCTION.SW_VERSION$$</span></td>
+      </tr>
+    </table>
+  </div>
 </div>
 
-
-<!-- SW information -->
-<div style="padding:6px">
-  <table width=700 style="/*border:3px solid #dddddd*/\">
-  <tr><td colspan=2><b>Software information</b></td></tr>
-  <tr><td colspan=2 style="background:#dddddd"></td></tr>
-
-  <tr><td>&#8226;FW version</td><td align="right"><font size=-1 id="device_sw_version">$$SYSTEM.GENERAL.FW_VERSION$$</font></td></tr>
-  <tr><td>&#8226;System uptime</td><td align="right"><font size=-1 id="device_sw_uptime">$$SYSTEM.GENERAL.UPTIME$$</font></td></tr>
-
-  </table>
+<div class="card">
+  <div class="card-header">
+    <span class="card-title">Security Settings</span>
+  </div>
+  <div class="card-content section-content">
+    <form name="SECURITY_FORM" method="POST">
+      <input type="hidden" name="CSRFTOKEN" value="$$CSRFTOKEN$$">
+      <input type="hidden" name="REDIRECT" value="device.html" target="content">
+      
+      <table class="table">
+        <tr>
+          <td colspan="2"><b>Password Configuration</b></td>
+        </tr>
+        <tr>
+          <td colspan="2" class="separator"></td>
+        </tr>
+        <tr>
+          <td>Current Password</td>
+          <td>
+            <input type="password" name="SYSTEM.GENERAL.PASSWORD_CONFIG" class="form-control" style="width: 250px;">
+          </td>
+        </tr>
+        <tr>
+          <td>New Password</td>
+          <td>
+            <input type="password" name="SYSTEM.GENERAL.PASSWORD_NEW" class="form-control" style="width: 250px;">
+          </td>
+        </tr>
+        <tr>
+          <td>Confirm New Password</td>
+          <td>
+            <input type="password" name="SYSTEM.GENERAL.PASSWORD_CONFIRM" class="form-control" style="width: 250px;">
+          </td>
+        </tr>
+      </table>
+      <div class="button-group">
+        <input name="CANCEL" value="Cancel" type="reset" class="btn btn-secondary" id="device_security_cancel">
+        <input name="OK" value="Save Changes" type="button" id="device_security_ok" class="btn btn-primary" onClick="onSecurityOKClick(this.form)">
+      </div>
+    </form>
+  </div>
 </div>
 
-
-<!-- Security -->
-<div style="padding:6px">
-  <table width=700 style="/*border:3px solid #dddddd*/\">
-  <tr><td colspan=2><b>Security</b></td></tr>
-  <tr><td colspan=6 style="background:#dddddd"></td></tr>
-  <form name="SECURITY_FORM" method="POST">
-  <input type="hidden" name="CSRFTOKEN" value="$$CSRFTOKEN$$">
-  <input type="hidden" name="REDIRECT" value="device.html" target="content">
-  <tr><td colspan=2 align="right">
-  </td></tr>
-
-  <tr><td>&#8226;New Configuration password</td><td align="right">
-  <input type="password" size=30 maxlength=20 name="SYSTEM.GENERAL.PASSWORD_CONFIG" id="device_security_configpw"  autocomplete="off">
-  </td></tr>
-
-  <tr><td colspan=2></td></tr>
-  <tr><td colspan=2 align="right">
-  <input name="OK" value="Ok" type="button" id="device_security_ok" onClick="onOKClick(this.form)">&nbsp;<input name="CANCEL" value="Cancel" type="reset" id="device_security_cancel"></td></tr>
-
-  </form>
-  </table>
+<div class="card">
+  <div class="card-header">
+    <span class="card-title">Software Update</span>
+  </div>
+  <div class="card-content section-content">
+    <form name="SWUPDATE_FORM" method="POST" enctype="multipart/form-data">
+      <input type="hidden" name="CSRFTOKEN" value="$$CSRFTOKEN$$">
+      <input type="hidden" name="REDIRECT" value="device.html" target="content">
+      
+      <table class="table">
+        <tr>
+          <td colspan="2"><b>Firmware Update</b></td>
+        </tr>
+        <tr>
+          <td colspan="2" class="separator"></td>
+        </tr>
+        <tr>
+          <td>Update Source</td>
+          <td>
+            <select name="FLUPGRADE.GENERAL.SOURCE" id="flupgrade_source" onChange="onFLUPSourceChange()" class="form-control">
+              <script language="JavaScript">
+              var source='$$FLUPGRADE.GENERAL.SOURCE$$';
+              var sourcep=source;
+              var sourcet=new Array('LOCAL','FTP');
+              var sourceo=new Array('LOCAL','FTP');
+              selectOptionsWithText(sourcep,sourcet,sourceo);
+              </script>
+            </select>
+          </td>
+        </tr>
+        <tr>
+          <td>FTP Server</td>
+          <td>
+            <input type="text" name="FLUPGRADE.GENERAL.HOST" value="$$FLUPGRADE.GENERAL.HOST$$" id="flupgrade_host" class="form-control" style="width: 250px;">
+          </td>
+        </tr>
+        <tr>
+          <td>FTP Login</td>
+          <td>
+            <input type="text" name="FLUPGRADE.GENERAL.FTP_LOGIN" value="$$FLUPGRADE.GENERAL.FTP_LOGIN$$" id="flupgrade_login" class="form-control" style="width: 250px;">
+          </td>
+        </tr>
+        <tr>
+          <td>FTP Password</td>
+          <td>
+            <input type="password" name="FLUPGRADE.GENERAL.FTP_PASSWORD" value="$$FLUPGRADE.GENERAL.FTP_PASSWORD$$" id="flupgrade_password" class="form-control" style="width: 250px;">
+          </td>
+        </tr>
+        <tr>
+          <td>Firmware File</td>
+          <td>
+            <input type="file" name="FLUPGRADE.GENERAL.FILE" id="flupgrade_file" onChange="onFileSelected()" class="form-control" style="width: 300px;">
+            <input type="hidden" name="FLUPGRADE.GENERAL.FILENAME" id="flupgrade_filename" value="$$FLUPGRADE.GENERAL.FILENAME$$">
+          </td>
+        </tr>
+      </table>
+      <div class="button-group">
+        <input name="CANCEL" value="Cancel" type="reset" class="btn btn-secondary" id="device_swupdate_cancel">
+        <input name="OK" value="Update Firmware" type="button" id="device_swupdate_ok" class="btn btn-primary" onClick="onSWUpdateOKClick(this.form)">
+      </div>
+    </form>
+  </div>
 </div>
 
-<!-- SW update -->
-<div style="padding:6px">
-  <table width=700 style="/*border:3px solid #dddddd*/\">
-  <tr><td colspan=2><b>SW update</b></td></tr>
-  <tr><td colspan=2 style="background:#dddddd"></td></tr>
-  <tr><td colspan=2></td></tr>
-  <tr><td>&#8226;Status</td><td align="right"><font size=-1 id="flup_status">$$FLUPGRADE.GENERAL.STATUS$$</font></td></tr>
-  <tr><td colspan=2></td></tr>
-  <form name="FLUP_FORM" method="POST">
-  <input type="hidden" name="CSRFTOKEN" value="$$CSRFTOKEN$$">
-  <input type="hidden" name="REDIRECT" value="flupst.html">
-  <input type="hidden" name="FLUPGRADE.GENERAL.SECTION" value="osup">
-  <tr><td>&#8226;Protocol</td><td align="right">
-  <select name="FLUPGRADE.GENERAL.SOURCE" id="device_swupdate_protocol" onChange="onFLUPSourceChange()">
-  <script language="JavaScript">
-var fp='$$FLUPGRADE.GENERAL.SOURCE$$';
-var fpo=new Array('FTP','TFTP','L2');
-selectOptions(fp,fpo);
-  </script>
-  </select>
-  </td></tr>
-  <tr><td>&#8226;Server IPv4/v6</td><td align="right">
-  <input type="text" size=30 maxlength=40 name="FLUPGRADE.GENERAL.HOST" value="$$FLUPGRADE.GENERAL.HOST$$" id="device_swupdate_serverip">
-  </td></tr>
-  <tr><td>&#8226;FTP User</td><td align="right">
-  <input type="text" size=30 maxlength=80 name="FLUPGRADE.GENERAL.FTP_LOGIN" value="$$FLUPGRADE.GENERAL.FTP_LOGIN$$" id="device_swupdate_user">
-  </td></tr>
-  <tr><td>&#8226;FTP Password</td><td align="right">
-  <input type="password" size=30 maxlength=20 name="FLUPGRADE.GENERAL.FTP_PASSWORD" id="device_swupdate_password">
-  </td></tr>
-  <tr><td>&#8226;OSUP Filename</td><td align="right">
-  <input type="text" size=60 maxlength=200 name="FLUPGRADE.GENERAL.FILENAME" value="$$FLUPGRADE.GENERAL.FILENAME$$" id="device_swupdate_filename">
-  </td></tr>
-  <tr><td colspan=2></td></tr>
-  <tr><td colspan=2 align="right">
-  <input type="hidden" name="FLUPGRADE.GENERAL.START" value="YES">
-  <input name="OK" value="Ok" type="button" id="device_swupdate_ok" onClick="onSWUpdateOKClick(this.form)">
-  &nbsp;<input name="CANCEL" value="Cancel" type="button" id="device_swupdate_cancel" onClick="onSWUpdateCancelClick(this.form)">
-  </td></tr>
-  </form>
-  </table>
-</div>
-
-<!-- HTTP SW update -->
-<div style="padding:6px">
-  <table width=700 style="/*border:3px solid #dddddd*/\">
-  <tr><td colspan=2><b>HTTP SW update</b></td></tr>
-  <tr><td colspan=2 style="background:#dddddd"></td></tr>
-  <tr><td colspan=2></td></tr>
-  <form name="FLUP_FORM" method="POST" enctype="multipart/form-data">
-  <input type="hidden" name="CSRFTOKEN" value="$$CSRFTOKEN$$">
-  <tr><td>&#8226;Upgrade file:</td><td align="right">
-  <input type="file" name="file" id="device_swupdate_file" onChange="onFileSelected()">
-  </td></tr>
-  <tr><td colspan=2></td></tr>
-  <tr><td colspan=2 align="right">
-  <input name="OK" value="Ok" type="button" id="device_http_swupdate_ok" onClick="onHttpSWUpdateOKClick(this.form)">
-  &nbsp;<input name="CANCEL" value="Cancel" type="button" id="device_http_swupdate_cancel" onClick="onHttpSWUpdateCancelClick(this.form)">
-  </td></tr>
-  </form>
-  </table>
-</div>
-
-<div id="waiting-overlay">
-</div>
-<style type="text/css">
- #waiting-overlay {
-         left: 0;
-          position: fixed;
-          bottom: 0;
-          left: 0;
-          right: 0;
-          top: 0;
-          z-index: 999;
-          background-color: white;
-          opacity: 0.4;
-          filter:alpha(opacity=40);
-          text-align:center;
-          display:none;
- }
-</style>
 </body>
 </html>

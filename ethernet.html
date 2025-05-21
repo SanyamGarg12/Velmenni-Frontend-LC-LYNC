@@ -36,172 +36,9 @@
 <html>
 <head>
 <meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="styles.css">
 <script language="JavaScript" src="common.js"></script>
-<style>
-:root {
-  --primary-color: #0066cc;
-  --secondary-color: #004d99;
-  --background-color: #f5f5f5;
-  --text-color: #333333;
-  --border-color: #dddddd;
-  --input-border-color: #cccccc;
-  --button-text-color: white;
-}
-
-body {
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  font-size: 14px;
-  color: var(--text-color);
-  background-color: white; /* Match iframe background */
-  margin: 0;
-  padding: 15px; /* Add some padding to the body */
-}
-
-table {
-  width: 100%;
-  max-width: 700px; /* Consistent max width, can be adjusted per page if needed */
-  border-collapse: collapse;
-  margin-bottom: 20px;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-  border: 1px solid var(--border-color);
-}
-
-th, td {
-  padding: 10px 12px;
-  text-align: left;
-  border-bottom: 1px solid var(--border-color);
-}
-
-tr:last-child td {
-  border-bottom: none;
-}
-
-td[colspan="2"] b,
-td[colspan="8"] b /* For Ethernet table header */
- {
-  font-size: 1.2em;
-  color: var(--primary-color);
-}
-
-/* Style for the header rows of each section */
-table > tbody > tr:first-child {
-  background-color: var(--background-color);
-}
-
-table > tbody > tr:first-child td {
-  font-weight: bold;
-  color: var(--primary-color);
-  border-bottom: 2px solid var(--primary-color);
-}
-
-/* Style for th elements in the Ethernet status table */
-table th {
-    background-color: var(--background-color);
-    font-weight: bold;
-    color: var(--text-color); /* Darker text for headers */
-}
-
-
-/* Separator rows */
-td[colspan="2"][style="background:#dddddd"],
-td[colspan="8"][style="background:#dddddd"] /* For Ethernet table separator */
-{
-  background-color: var(--background-color) !important; /* Override inline style */
-  height: 5px;
-  padding: 0;
-  border-top: 1px solid var(--border-color);
-  border-bottom: 1px solid var(--border-color);
-}
-/* Remove duplicate top border if next to header */
-tr:nth-child(2) > td[colspan="2"][style="background:#dddddd"],
-tr:nth-child(2) > td[colspan="8"][style="background:#dddddd"]{
-    border-top: none;
-}
-
-
-form {
-  margin: 0;
-}
-
-input[type="text"],
-select {
-  width: 100%; /* Make inputs take available width in td */
-  padding: 8px;
-  border: 1px solid var(--input-border-color);
-  border-radius: 4px;
-  box-sizing: border-box;
-  font-size: 14px;
-  transition: border-color 0.2s;
-}
-
-input[type="text"]:focus,
-select:focus {
-  border-color: var(--primary-color);
-  outline: none;
-  box-shadow: 0 0 0 2px rgba(0, 102, 204, 0.2);
-}
-
-/* Align text fields and selects to the right if they are in the second td */
-td:nth-child(2) > input[type="text"],
-td:nth-child(2) > select {
-  /* Default to full width as per above, but if specific widths are set, they take precedence */
-}
-
-/* Button styling */
-input[type="button"],
-input[type="reset"] {
-  padding: 8px 20px;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 14px;
-  transition: background-color 0.2s, box-shadow 0.2s;
-  margin-left: 10px;
-}
-
-input[type="button"] {
-  background-color: var(--primary-color);
-  color: var(--button-text-color);
-}
-
-input[type="button"]:hover {
-  background-color: var(--secondary-color);
-  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-}
-
-input[type="reset"] {
-  background-color: #6c757d; /* A neutral grey */
-  color: var(--button-text-color);
-}
-
-input[type="reset"]:hover {
-  background-color: #5a6268;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-}
-
-/* Container for buttons to align them right */
-td[align="right"] {
-  text-align: right;
-}
-
-/* Small text for notes */
-font[size="-1"] {
-  font-size: 0.9em;
-  color: #555;
-}
-
-/* Remove direct styling from specific table cells */
-td[style="background:#dddddd"] {
-  background: transparent !important; /* Will be handled by tr:first-child or specific class if needed for section headers */
-}
-
-/* Specific for ethernet.html input fields if needed */
-input[name="POWERSAVING.GENERAL.IDLE_TIME"] {
-    width: auto; /* Allow it to be sized by its original size attribute or content */
-    min-width: 150px; /* Ensure a reasonable minimum width */
-}
-
-</style>
 <script language="JavaScript">
 function onLoadScripts()
 {
@@ -214,76 +51,102 @@ function onPowersavingModeChange()
 function onOKClick(form)
 {
   //disable all OK buttons after clicking to avoid sending 'OK' to the web server
-  //we want to POST only CFL parameters to track last error
   document.getElementById("powersaving_ok").disabled = true;
-  
   form.submit();
 }
 </script>
-
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Cache-Control" content="no-cache">
 <meta http-equiv="Expires" content="Mon, 06 Jan 1990 00:00:01 GMT">
 </head>
-<body bgcolor="white" onLoad="onLoadScripts()">
+<body onLoad="onLoadScripts()">
 <script language="JavaScript">
 printErrorMsg("$$LASTERRORMESSAGE$$");
 </script>
 
-<!-- Ethernet -->
-<div style="padding:6px">
-  <table width=520 style="/*border:3px solid #dddddd*/">
-  <tr><td colspan=8><b>Ethernet</b></td></tr>
-  <tr><td colspan=8 style="background:#dddddd"></td></tr>
-  <tr><td colspan=2></td></tr>
+<div class="card">
+  <div class="card-header">
+    <span class="card-title">Ethernet Settings</span>
+  </div>
+  <div class="card-content section-content">
+    <table class="table">
+      <tr>
+        <td colspan="8"><b>Ethernet</b></td>
+      </tr>
+      <tr>
+        <td colspan="8" class="separator"></td>
+      </tr>
+      <tr>
+        <td colspan="6">External Interfaces:</td>
+      </tr>
+      <tr>
+        <th><span class="text-sm">Interface</span></th>
+        <th><span class="text-sm">Speed</span></th>
+        <th><span class="text-sm">Duplex</span></th>
+        <th><span class="text-sm">Interface Type</span></th>
+        <th><span class="text-sm">Mode</span></th>
+        <th><span class="text-sm">Internal PHY</span></th>
+        <th><span class="text-sm">Link</span></th>
+      </tr>
+      <tr>
+        <td class="text-center"><span class="text-sm">ETHA</span></td>
+        <td class="text-center"><span class="text-sm" id="eth_a_speed">$$ETHPHYCONF.ETHA.SPEED$$</span></td>
+        <td class="text-center"><span class="text-sm" id="eth_a_duplex">$$ETHPHYCONF.ETHA.DUPLEX$$</span></td>
+        <td class="text-center"><span class="text-sm" id="eth_a_type">$$ETHIFDRIVER.ETHA.IFACE_TYPE$$</span></td>
+        <td class="text-center"><span class="text-sm" id="eth_a_mode">$$ETHIFDRIVER.ETHA.MODE$$</span></td>
+        <td class="text-center"><span class="text-sm" id="eth_a_internal">$$ETHIFDRIVER.ETHA.INTERNAL_PHY$$</span></td>
+        <td class="text-center"><span class="text-sm" id="eth_a_link">$$ETHPHYCONF.ETHA.LINK$$</span></td>
+      </tr>
+      <tr>
+        <td class="text-center"><span class="text-sm">ETHB</span></td>
+        <td class="text-center"><span class="text-sm" id="eth_b_speed">$$ETHPHYCONF.ETHB.SPEED$$</span></td>
+        <td class="text-center"><span class="text-sm" id="eth_b_duplex">$$ETHPHYCONF.ETHB.DUPLEX$$</span></td>
+        <td class="text-center"><span class="text-sm" id="eth_b_type">$$ETHIFDRIVER.ETHB.IFACE_TYPE$$</span></td>
+        <td class="text-center"><span class="text-sm" id="eth_b_mode">$$ETHIFDRIVER.ETHB.MODE$$</span></td>
+        <td class="text-center"><span class="text-sm" id="eth_b_internal">$$ETHIFDRIVER.ETHB.INTERNAL_PHY$$</span></td>
+        <td class="text-center"><span class="text-sm" id="eth_b_link">$$ETHPHYCONF.ETHB.LINK$$</span></td>
+      </tr>
+    </table>
 
-  <tr><td colspan=6>External Interfaces:</td></tr>
-  <tr><th><font size=-1>Interface</font></th><th><font size=-1>Speed</font></th> <th><font size=-1>Duplex</font></th>  <th><font size=-1>Interface Type</font></th> <th><font size=-1>Mode</font></th><th><font size=-1>Internal PHY</font></th><th><font size=-1>Link</font></th> </tr>
-  <tr><td align="center"><font size=-1>ETHA</font></td><td align="center"><font size=-1 id="eth_a_speed">$$ETHPHYCONF.ETHA.SPEED$$</font></td> <td align="center"><font size=-1 id="eth_a_duplex">$$ETHPHYCONF.ETHA.DUPLEX$$</font></td>  <td align="center"><font size=-1 id="eth_a_type">$$ETHIFDRIVER.ETHA.IFACE_TYPE$$</font></td> <td align="center"><font size=-1 id="eth_a_mode">$$ETHIFDRIVER.ETHA.MODE$$</font></td><td align="center"><font size=-1 id="eth_a_internal">$$ETHIFDRIVER.ETHA.INTERNAL_PHY$$</font></td><td align="center"><font size=-1 id="eth_a_link">$$ETHPHYCONF.ETHA.LINK$$</font></td> </tr>
-  <tr><td align="center"><font size=-1>ETHB</font></td><td align="center"><font size=-1 id="eth_b_speed">$$ETHPHYCONF.ETHB.SPEED$$</font></td> <td align="center"><font size=-1 id="eth_b_duplex">$$ETHPHYCONF.ETHB.DUPLEX$$</font></td>  <td align="center"><font size=-1 id="eth_b_type">$$ETHIFDRIVER.ETHB.IFACE_TYPE$$</font></td> <td align="center"><font size=-1 id="eth_b_mode">$$ETHIFDRIVER.ETHB.MODE$$</font></td><td align="center"><font size=-1 id="eth_b_internal">$$ETHIFDRIVER.ETHB.INTERNAL_PHY$$</font></td><td align="center"><font size=-1 id="eth_b_link">$$ETHPHYCONF.ETHB.LINK$$</font></td> </tr>
-
-
-  </table>
+    <form name="POWERSAVING_FORM" method="POST">
+      <input type="hidden" name="CSRFTOKEN" value="$$CSRFTOKEN$$">
+      <input type="hidden" name="REDIRECT" value="ethernet.html" target="content">
+      
+      <table class="table">
+        <tr>
+          <td colspan="2"><b>Power Saving</b></td>
+        </tr>
+        <tr>
+          <td colspan="2" class="separator"></td>
+        </tr>
+        <tr>
+          <td>Power Saving Mode</td>
+          <td>
+            <select name="POWERSAVING.GENERAL.MODE" id="powersaving_mode" onChange="onPowersavingModeChange()" class="form-control">
+              <script language="JavaScript">
+              var mode='$$POWERSAVING.GENERAL.MODE$$';
+              var modep=mode;
+              var modet=new Array('DISABLED','ENABLED');
+              var modeo=new Array('0','1');
+              selectOptionsWithText(modep,modet,modeo);
+              </script>
+            </select>
+          </td>
+        </tr>
+        <tr>
+          <td>Idle Time (seconds)</td>
+          <td>
+            <input type="text" name="POWERSAVING.GENERAL.IDLE_TIME" value="$$POWERSAVING.GENERAL.IDLE_TIME$$" id="powersaving_time" class="form-control" style="width: 150px;">
+          </td>
+        </tr>
+      </table>
+      <div class="button-group">
+        <input name="CANCEL" value="Cancel" type="reset" class="btn btn-secondary">
+        <input name="OK" value="Save Changes" type="button" id="powersaving_ok" class="btn btn-primary" onClick="onOKClick(this.form)">
+      </div>
+    </form>
+  </div>
 </div>
-
-
-<!-- Powersaving -->
-<div style="padding:6px">
-  <table width=520 style="/*border:3px solid #dddddd*/">
-  <tr><td colspan=2><b>Powersaving</b></td></tr>
-  <tr><td colspan=2></td></tr>
-  <tr><td colspan=2 style="background:#dddddd"></td></tr>
-  <tr><td colspan=2></td></tr>
-  <form name="POWERSAVING_FORM" method="POST">
-  <input type="hidden" name="CSRFTOKEN" value="$$CSRFTOKEN$$">
-  <input type="hidden" name="REDIRECT" value="ethernet.html">
-  <tr><td>&#8226;Inactivity detection mode</td><td align="right">
-  <select name="POWERSAVING.GENERAL.MODE" id="powersaving_mode" onChange="onPowersavingModeChange()">
-  <script language="JavaScript">
-  var nt='$$POWERSAVING.GENERAL.MODE$$';
-  var ntp=nt;
-  var nto=new Array('0','1','2');
-  var ntt=new Array('Disabled','ETH link','ETH activity');
-  selectOptionsWithText(ntp,ntt,nto);
-  </script>
-  </select>
-  </td></tr>
-
-  <tr><td>&#8226;Inactivity time(s)</td><td align="right">
-  <input type="text" size=30 maxlength=20 name="POWERSAVING.GENERAL.IDLE_TIME" value="$$POWERSAVING.GENERAL.IDLE_TIME$$" id="powersaving_time">
-  </td></tr>
-
-  <tr><td colspan=2></td></tr>
-  <tr><td colspan=2 align="right">
-  <input name="OK" value="Ok" type="button" id="powersaving_ok" onClick="onOKClick(this.form)">&nbsp;<input name="CANCEL" value="Cancel" type="reset" id="powersaving_cancel">
-  </td></tr>
-  </form>
-
-  </form>
-  </table>
-</div>
-
-
 
 </body>
 </html>

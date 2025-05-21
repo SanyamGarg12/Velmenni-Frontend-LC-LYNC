@@ -37,6 +37,7 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="styles.css">
 <script language="JavaScript" src="common.js"></script>
 <script language="JavaScript">
 function onLoadScript()
@@ -101,184 +102,17 @@ function onNDIMChange()
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Cache-Control" content="no-cache">
 <meta http-equiv="Expires" content="Mon, 06 Jan 1990 00:00:01 GMT">
-<style>
-:root {
-  --primary-color: #0066cc;
-  --secondary-color: #004d99;
-  --background-color: #f7f7f7;
-  --text-color: #333333;
-  --border-color: #dddddd;
-  --header-bg-color: white;
-  --footer-bg-color: #e8f5e9;
-  --success-color: #28a745;
-  --warning-color: #ffc107;
-  --danger-color: #dc3545;
-}
-
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
-body {
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  line-height: 1.6;
-  color: var(--text-color);
-  background-color: var(--background-color);
-  padding: 20px;
-}
-
-.section-container {
-  background: white;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-  margin-bottom: 20px;
-  overflow: hidden;
-}
-
-.section-header {
-  background-color: var(--primary-color);
-  color: white;
-  padding: 15px 20px;
-  font-size: 18px;
-  font-weight: 500;
-}
-
-.section-content {
-  padding: 20px;
-}
-
-.form-table {
-  width: 100%;
-  border-collapse: collapse;
-}
-
-.form-table tr:not(:last-child) {
-  border-bottom: 1px solid var(--border-color);
-}
-
-.form-table td {
-  padding: 12px 8px;
-  vertical-align: middle;
-}
-
-.form-table td:first-child {
-  font-weight: 500;
-  color: var(--text-color);
-}
-
-.form-table td:last-child {
-  text-align: right;
-}
-
-input[type="text"], select {
-  width: 100%;
-  max-width: 300px;
-  padding: 8px 12px;
-  border: 1px solid var(--border-color);
-  border-radius: 4px;
-  font-size: 14px;
-  transition: border-color 0.2s, box-shadow 0.2s;
-}
-
-input[type="text"]:focus, select:focus {
-  outline: none;
-  border-color: var(--primary-color);
-  box-shadow: 0 0 0 2px rgba(0,102,204,0.1);
-}
-
-.button-group {
-  display: flex;
-  justify-content: flex-end;
-  gap: 10px;
-  margin-top: 20px;
-}
-
-button, input[type="button"], input[type="reset"] {
-  padding: 8px 20px;
-  border-radius: 4px;
-  font-size: 14px;
-  cursor: pointer;
-  transition: background-color 0.2s;
-}
-
-input[type="button"] {
-  background-color: var(--primary-color);
-  color: white;
-  border: none;
-}
-
-input[type="button"]:hover {
-  background-color: var(--secondary-color);
-}
-
-input[type="reset"] {
-  background-color: white;
-  color: var(--text-color);
-  border: 1px solid var(--border-color);
-}
-
-input[type="reset"]:hover {
-  background-color: #f5f5f5;
-}
-
-input[disabled] {
-  opacity: 0.7;
-  cursor: not-allowed;
-}
-
-.status-text {
-  font-size: 14px;
-  color: #666;
-  margin-top: 8px;
-}
-
-.encryption-status {
-  display: inline-block;
-  padding: 6px 12px;
-  border-radius: 4px;
-  font-weight: 500;
-  margin-bottom: 10px;
-}
-
-.encryption-enabled {
-  background-color: var(--success-color);
-  color: white;
-}
-
-.encryption-disabled {
-  background-color: var(--danger-color);
-  color: white;
-}
-
-@media (max-width: 600px) {
-  .form-table td {
-    display: block;
-    width: 100%;
-    text-align: left;
-    padding: 8px;
-  }
-  
-  .form-table td:last-child {
-    text-align: left;
-  }
-  
-  input[type="text"], select {
-    max-width: 100%;
-  }
-}
-</style>
 </head>
 <body bgcolor="white" onLoad="onLoadScript()">
 <script language="JavaScript">
 printErrorMsg("$$LASTERRORMESSAGE$$");
 </script>
 
-<!-- Basic settings -->
-<div class="section-container">
-  <div class="section-header">Basic Settings</div>
-  <div class="section-content">
+<div class="card">
+  <div class="card-header">
+    <span class="card-title">G.hn Basic Settings</span>
+  </div>
+  <div class="card-content section-content">
     <form name="BASIC_FORM" method="POST" id="ghn_basic">
       <input type="hidden" name="CSRFTOKEN" value="$$CSRFTOKEN$$">
       <input type="hidden" name="REDIRECT" value="ghn.html" target="content">
@@ -353,9 +187,11 @@ printErrorMsg("$$LASTERRORMESSAGE$$");
 </div>
 
 <!-- NDIM -->
-<div class="section-container">
-  <div class="section-header">Neighboring Domain Interference Mitigation (NDIM)</div>
-  <div class="section-content">
+<div class="card">
+  <div class="card-header">
+    <span class="card-title">Neighboring Domain Interference Mitigation (NDIM)</span>
+  </div>
+  <div class="card-content section-content">
     <form name="NDIM_FORM" method="POST">
       <input type="hidden" name="CSRFTOKEN" value="$$CSRFTOKEN$$">
       <input type="hidden" name="REDIRECT" value="ghn.html" target="content">
@@ -390,9 +226,11 @@ printErrorMsg("$$LASTERRORMESSAGE$$");
 </div>
 
 <!-- Encryption -->
-<div class="section-container">
-  <div class="section-header">Encryption Configuration</div>
-  <div class="section-content">
+<div class="card">
+  <div class="card-header">
+    <span class="card-title">Encryption Configuration</span>
+  </div>
+  <div class="card-content section-content">
     <form name="ENCRYPTION_FORM" method="POST">
       <input type="hidden" name="CSRFTOKEN" value="$$CSRFTOKEN$$">
       <input type="hidden" name="REDIRECT" value="ghn.html">
