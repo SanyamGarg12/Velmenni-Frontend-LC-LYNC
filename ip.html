@@ -225,7 +225,7 @@ select:focus {
   margin-top: 20px;
 }
 
-input[type="button"], input[type="reset"] {
+button, input[type="button"], input[type="reset"] {
   padding: 8px 20px;
   border-radius: 4px;
   font-size: 14px;
@@ -253,9 +253,8 @@ input[type="reset"]:hover {
   background-color: #f5f5f5;
 }
 
-input:disabled, select:disabled {
-  background-color: #f5f5f5;
-  color: #888888;
+input[disabled] {
+  opacity: 0.7;
   cursor: not-allowed;
 }
 
@@ -454,8 +453,8 @@ printErrorMsg("$$LASTERRORMESSAGE$$");
             </tr>
           </table>
           <div class="button-group">
-            <input name="CANCEL" value="Cancel" type="reset" class="btn btn-secondary">
-            <input name="OK" value="Save Changes" type="button" id="ip_v4_ok" class="btn btn-primary" onClick="onOKClick(this.form)">
+            <input name="CANCEL" value="Cancel" type="reset">
+            <input name="OK" value="Save Changes" type="button" id="ip_v4_ok" onClick="onOKClick(this.form)">
           </div>
         </form>
       </div>
@@ -498,8 +497,8 @@ printErrorMsg("$$LASTERRORMESSAGE$$");
             </tr>
           </table>
           <div class="button-group">
-            <input name="CANCEL" value="Cancel" type="reset" class="btn btn-secondary">
-            <input name="OK" value="Save Changes" type="button" id="ip_v6_ok" class="btn btn-primary" onClick="onOKClick(this.form)">
+            <input name="CANCEL" value="Cancel" type="reset">
+            <input name="OK" value="Save Changes" type="button" id="ip_v6_ok" onClick="onOKClick(this.form)">
           </div>
         </form>
       </div>
@@ -539,8 +538,8 @@ printErrorMsg("$$LASTERRORMESSAGE$$");
             </tr>
           </table>
           <div class="button-group">
-            <input name="CANCEL" value="Cancel" type="reset" class="btn btn-secondary">
-            <input name="OK" value="Save Changes" type="button" id="ip_dns_ok" class="btn btn-primary" onClick="onOKClick(this.form)">
+            <input name="CANCEL" value="Cancel" type="reset">
+            <input name="OK" value="Save Changes" type="button" id="ip_dns_ok" onClick="onOKClick(this.form)">
           </div>
         </form>
       </div>
@@ -582,8 +581,8 @@ printErrorMsg("$$LASTERRORMESSAGE$$");
             </tr>
           </table>
           <div class="button-group">
-            <input name="CANCEL" value="Cancel" type="reset" class="btn btn-secondary">
-            <input name="OK" value="Save Changes" type="button" id="ip_ntp_ok" class="btn btn-primary" onClick="onOKClick(this.form)">
+            <input name="CANCEL" value="Cancel" type="reset">
+            <input name="OK" value="Save Changes" type="button" id="ip_ntp_ok" onClick="onOKClick(this.form)">
           </div>
         </form>
       </div>
