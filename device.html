@@ -239,6 +239,58 @@ tr:last-child td {
     padding: 16px;
   }
 }
+
+/* Add/replace the following CSS to match ghn.html button theme */
+.button-group {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 20px;
+}
+button, input[type="button"], input[type="reset"] {
+  padding: 8px 20px;
+  border-radius: 4px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+input[type="button"] {
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+}
+input[type="button"]:hover {
+  background-color: var(--primary-light);
+}
+input[type="reset"] {
+  background-color: white;
+  color: var(--text-color);
+  border: 1px solid var(--border-color);
+}
+input[type="reset"]:hover {
+  background-color: #f5f5f5;
+}
+input[disabled] {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+input[type="text"], input[type="password"], select, input[type="file"] {
+  width: 100%;
+  max-width: 300px;
+  padding: 8px 12px;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  font-size: 14px;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  background: #fff;
+  color: var(--text-color);
+  box-sizing: border-box;
+}
+input[type="text"]:focus, input[type="password"]:focus, select:focus, input[type="file"]:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 2px rgba(0,102,204,0.1);
+}
 </style>
 
 <script>
@@ -326,9 +378,6 @@ printErrorMsg("$$LASTERRORMESSAGE$$");
             <td colspan="2"><b>System Information</b></td>
           </tr>
           <tr>
-            <td colspan="2" class="separator"></td>
-          </tr>
-          <tr>
             <td>Device Name</td>
             <td><span class="text-sm">$$SYSTEM.PRODUCTION.DEVICE_NAME$$</span></td>
           </tr>
@@ -362,30 +411,27 @@ printErrorMsg("$$LASTERRORMESSAGE$$");
               <td colspan="2"><b>Password Configuration</b></td>
             </tr>
             <tr>
-              <td colspan="2" class="separator"></td>
-            </tr>
-            <tr>
               <td>Current Password</td>
               <td>
-                <input type="password" name="SYSTEM.GENERAL.PASSWORD_CONFIG" class="form-control" style="width: 250px;">
+                <input type="password" name="SYSTEM.GENERAL.PASSWORD_CONFIG" class="form-control">
               </td>
             </tr>
             <tr>
               <td>New Password</td>
               <td>
-                <input type="password" name="SYSTEM.GENERAL.PASSWORD_NEW" class="form-control" style="width: 250px;">
+                <input type="password" name="SYSTEM.GENERAL.PASSWORD_NEW" class="form-control">
               </td>
             </tr>
             <tr>
               <td>Confirm New Password</td>
               <td>
-                <input type="password" name="SYSTEM.GENERAL.PASSWORD_CONFIRM" class="form-control" style="width: 250px;">
+                <input type="password" name="SYSTEM.GENERAL.PASSWORD_CONFIRM" class="form-control">
               </td>
             </tr>
           </table>
           <div class="button-group">
-            <input name="CANCEL" value="Cancel" type="reset" class="btn btn-secondary" id="device_security_cancel">
-            <input name="OK" value="Save Changes" type="button" id="device_security_ok" class="btn btn-primary" onClick="onSecurityOKClick(this.form)">
+            <input name="CANCEL" value="Cancel" type="reset" id="device_security_cancel">
+            <input name="OK" value="Save Changes" type="button" id="device_security_ok" onClick="onSecurityOKClick(this.form)">
           </div>
         </form>
       </div>
@@ -405,9 +451,6 @@ printErrorMsg("$$LASTERRORMESSAGE$$");
               <td colspan="2"><b>Firmware Update</b></td>
             </tr>
             <tr>
-              <td colspan="2" class="separator"></td>
-            </tr>
-            <tr>
               <td>Update Source</td>
               <td>
                 <select name="FLUPGRADE.GENERAL.SOURCE" id="flupgrade_source" onChange="onFLUPSourceChange()" class="form-control">
@@ -424,32 +467,32 @@ printErrorMsg("$$LASTERRORMESSAGE$$");
             <tr>
               <td>FTP Server</td>
               <td>
-                <input type="text" name="FLUPGRADE.GENERAL.HOST" value="$$FLUPGRADE.GENERAL.HOST$$" id="flupgrade_host" class="form-control" style="width: 250px;">
+                <input type="text" name="FLUPGRADE.GENERAL.HOST" value="$$FLUPGRADE.GENERAL.HOST$$" id="flupgrade_host" class="form-control">
               </td>
             </tr>
             <tr>
               <td>FTP Login</td>
               <td>
-                <input type="text" name="FLUPGRADE.GENERAL.FTP_LOGIN" value="$$FLUPGRADE.GENERAL.FTP_LOGIN$$" id="flupgrade_login" class="form-control" style="width: 250px;">
+                <input type="text" name="FLUPGRADE.GENERAL.FTP_LOGIN" value="$$FLUPGRADE.GENERAL.FTP_LOGIN$$" id="flupgrade_login" class="form-control">
               </td>
             </tr>
             <tr>
               <td>FTP Password</td>
               <td>
-                <input type="password" name="FLUPGRADE.GENERAL.FTP_PASSWORD" value="$$FLUPGRADE.GENERAL.FTP_PASSWORD$$" id="flupgrade_password" class="form-control" style="width: 250px;">
+                <input type="password" name="FLUPGRADE.GENERAL.FTP_PASSWORD" value="$$FLUPGRADE.GENERAL.FTP_PASSWORD$$" id="flupgrade_password" class="form-control">
               </td>
             </tr>
             <tr>
               <td>Firmware File</td>
               <td>
-                <input type="file" name="FLUPGRADE.GENERAL.FILE" id="flupgrade_file" onChange="onFileSelected()" class="form-control" style="width: 300px;">
+                <input type="file" name="FLUPGRADE.GENERAL.FILE" id="flupgrade_file" onChange="onFileSelected()" class="form-control">
                 <input type="hidden" name="FLUPGRADE.GENERAL.FILENAME" id="flupgrade_filename" value="$$FLUPGRADE.GENERAL.FILENAME$$">
               </td>
             </tr>
           </table>
           <div class="button-group">
-            <input name="CANCEL" value="Cancel" type="reset" class="btn btn-secondary" id="device_swupdate_cancel">
-            <input name="OK" value="Update Firmware" type="button" id="device_swupdate_ok" class="btn btn-primary" onClick="onSWUpdateOKClick(this.form)">
+            <input name="CANCEL" value="Cancel" type="reset" id="device_swupdate_cancel">
+            <input name="OK" value="Update Firmware" type="button" id="device_swupdate_ok" onClick="onSWUpdateOKClick(this.form)">
           </div>
         </form>
       </div>
