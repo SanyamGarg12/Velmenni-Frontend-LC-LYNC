@@ -16,11 +16,18 @@ function loadContent(url) {
       link.classList.remove('active');
     }
   });
+  // Save last opened page
+  localStorage.setItem('lastTab', url);
 }
 
 window.onload = function() {
-  // Load default content
-  loadContent('ghn.html');
+  // Load last opened page or default
+  var lastTab = localStorage.getItem('lastTab');
+  if (lastTab) {
+    loadContent(lastTab);
+  } else {
+    loadContent('ghn.html');
+  }
   
   // Hide WiFi menu if not available
   if ("$$WLAN.GENERAL.WATCHDOG_ENABLED$$" === "") {

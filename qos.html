@@ -128,6 +128,42 @@ label {
   background: linear-gradient(90deg, var(--primary-dark), var(--primary-color));
   box-shadow: 0 4px 16px rgba(255,106,0,0.15);
 }
+input[type="button"],
+input[type="submit"] {
+  background: linear-gradient(90deg, var(--primary-color), var(--primary-light));
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 10px 28px;
+  font-size: 1em;
+  font-weight: 600;
+  cursor: pointer;
+  margin: 8px 0;
+  box-shadow: 0 2px 8px rgba(255,106,0,0.08);
+  transition: background 0.2s, box-shadow 0.2s;
+}
+input[type="button"]:hover,
+input[type="submit"]:hover {
+  background: linear-gradient(90deg, var(--primary-dark), var(--primary-color));
+  box-shadow: 0 4px 16px rgba(255,106,0,0.15);
+}
+input[type="reset"] {
+  background: linear-gradient(90deg, #6c757d, #5a6268);
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 10px 28px;
+  font-size: 1em;
+  font-weight: 600;
+  cursor: pointer;
+  margin: 8px 0;
+  box-shadow: 0 2px 8px rgba(255,106,0,0.08);
+  transition: background 0.2s, box-shadow 0.2s;
+}
+input[type="reset"]:hover {
+  background: linear-gradient(90deg, #5a6268, #4e555b);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+}
 .qos-top-row {
   display: flex;
   flex-wrap: wrap;
