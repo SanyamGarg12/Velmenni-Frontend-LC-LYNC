@@ -37,7 +37,6 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="stylesheet" href="styles.css">
 <script language="JavaScript" src="common.js"></script>
 <script language="JavaScript">
 function onLoadScript()
@@ -102,207 +101,492 @@ function onNDIMChange()
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Cache-Control" content="no-cache">
 <meta http-equiv="Expires" content="Mon, 06 Jan 1990 00:00:01 GMT">
+<style>
+:root {
+  --primary-color: #0066cc;
+  --secondary-color: #004d99;
+  --background-color: #f7f7f7;
+  --text-color: #333333;
+  --border-color: #dddddd;
+  --header-bg-color: white;
+  --footer-bg-color: #e8f5e9;
+  --success-color: #28a745;
+  --warning-color: #ffc107;
+  --danger-color: #dc3545;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  line-height: 1.6;
+  color: var(--text-color);
+  background-color: var(--background-color);
+  padding: 20px;
+}
+
+.section-container {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  margin-bottom: 40px;
+  overflow: hidden;
+}
+
+.section-header {
+  background-color: var(--primary-color);
+  color: white;
+  padding: 15px 20px;
+  font-size: 18px;
+  font-weight: 500;
+}
+
+.section-content {
+  padding: 20px;
+}
+
+.form-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.form-table tr:not(:last-child) {
+  border-bottom: 1px solid var(--border-color);
+}
+
+.form-table td {
+  padding: 12px 8px;
+  vertical-align: middle;
+}
+
+.form-table td:first-child {
+  font-weight: 500;
+  color: var(--text-color);
+}
+
+.form-table td:last-child {
+  text-align: right;
+}
+
+input[type="text"], select {
+  width: 100%;
+  max-width: 300px;
+  padding: 8px 12px;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  font-size: 14px;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+input[type="text"]:focus, select:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 2px rgba(0,102,204,0.1);
+}
+
+.button-group {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+button, input[type="button"], input[type="reset"] {
+  padding: 8px 20px;
+  border-radius: 4px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+input[type="button"] {
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+}
+
+input[type="button"]:hover {
+  background-color: var(--secondary-color);
+}
+
+input[type="reset"] {
+  background-color: white;
+  color: var(--text-color);
+  border: 1px solid var(--border-color);
+}
+
+input[type="reset"]:hover {
+  background-color: #f5f5f5;
+}
+
+input[disabled] {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.status-text {
+  font-size: 14px;
+  color: #666;
+  margin-top: 8px;
+}
+
+.encryption-status {
+  display: inline-block;
+  padding: 6px 12px;
+  border-radius: 4px;
+  font-weight: 500;
+  margin-bottom: 10px;
+}
+
+.encryption-enabled {
+  background-color: var(--success-color);
+  color: white;
+}
+
+.encryption-disabled {
+  background-color: var(--danger-color);
+  color: white;
+}
+
+@media (max-width: 600px) {
+  .form-table td {
+    display: block;
+    width: 100%;
+    text-align: left;
+    padding: 8px;
+  }
+  
+  .form-table td:last-child {
+    text-align: left;
+  }
+  
+  input[type="text"], select {
+    max-width: 100%;
+  }
+}
+
+.ghn-flex-container {
+  display: flex;
+  width: 100%;
+  min-height: 100vh;
+}
+.ghn-sidebar {
+  width: 220px;
+  background: #f5f5f5;
+  box-shadow: 2px 0 8px #e0e0e0;
+  padding: 30px 0 0 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow-y: auto;
+}
+.ghn-tab-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  width: 100%;
+}
+.ghn-tab-item {
+  padding: 16px 32px;
+  cursor: pointer;
+  border-radius: 0 20px 20px 0;
+  margin-bottom: 8px;
+  font-weight: 500;
+  color: #333;
+  background: none;
+  border: none;
+  text-align: left;
+  width: 100%;
+  transition: background 0.2s, color 0.2s;
+}
+.ghn-tab-item.active, .ghn-tab-item:hover {
+  background: #FF6B35;
+  color: #fff;
+}
+.ghn-tab-content {
+  flex: 1;
+  padding: 40px 40px 40px 40px;
+  width: 100%;
+  background: #fff;
+  overflow-y: visible;
+}
+</style>
 </head>
 <body bgcolor="white" onLoad="onLoadScript()">
 <script language="JavaScript">
 printErrorMsg("$$LASTERRORMESSAGE$$");
 </script>
 
-<div class="card">
-  <div class="card-header">
-    <span class="card-title">G.hn Basic Settings</span>
-  </div>
-  <div class="card-content section-content">
-    <form name="BASIC_FORM" method="POST" id="ghn_basic">
-      <input type="hidden" name="CSRFTOKEN" value="$$CSRFTOKEN$$">
-      <input type="hidden" name="REDIRECT" value="ghn.html" target="content">
-      
-      <table class="form-table">
-        <tr>
-          <td>MAC Address</td>
-          <td><span id="ghn_basic_mac">$$SYSTEM.PRODUCTION.MAC_ADDR$$</span></td>
-        </tr>
-        <tr>
-          <td>Device ID</td>
-          <td><span id="ghn_basic_did">$$NODE.GENERAL.DEVICE_ID$$</span></td>
-        </tr>
-        <tr>
-          <td>Domain Name</td>
-          <td>
-            <input type="text" name="NODE.GENERAL.DOMAIN_NAME" value="$$NODE.GENERAL.DOMAIN_NAME$$" id="ghn_basic_domain" maxlength="20">
-          </td>
-        </tr>
-        <tr>
-          <td>Force Node Type</td>
-          <td>
-            <select name="MASTERSELECTION.GENERAL.FORCE_NODE" id="ghn_basic_forcenodetype">
-              <script language="JavaScript">
-              var nt='$$MASTERSELECTION.GENERAL.FORCE_NODE$$';
-              var ntp=nt;
-              var ntt=new Array('END_POINT','DOMAIN_MASTER','AUTOMATIC');
-              var nto=new Array('END_POINT','DOMAIN_MASTER','NONE');
-              selectOptionsWithText(ntp,ntt,nto);
-              </script>
-            </select>
-          </td>
-        </tr>
-        <tr>
-          <td>Node Type*</td>
-          <td><span id="ghn_basic_nodetype">$$NODE.GENERAL.NODE_TYPE$$</span></td>
-        </tr>
-      </table>
-      <p class="status-text">* Node type change can take some time, please refresh page to update state</p>
-      <div class="button-group">
-        <input name="CANCEL" value="Cancel" type="reset" id="ghn_basic_cancel">
-        <input name="OK" value="Save Changes" type="button" id="ghn_basic_ok" onClick="onOKClick(this.form)">
-      </div>
-    </form>
+<div class="ghn-flex-container">
+  <nav class="ghn-sidebar">
+    <ul class="ghn-tab-list">
+      <li class="ghn-tab-item active" data-tab="basic-settings">Basic Settings</li>
+      <li class="ghn-tab-item" data-tab="ndim-settings">NDIM Settings</li>
+      <li class="ghn-tab-item" data-tab="encryption-settings">Encryption</li>
+      <li class="ghn-tab-item" data-tab="connections">Connections</li>
+    </ul>
+  </nav>
+  <div class="ghn-tab-content" id="ghn-tab-content">
+    <div id="basic-settings" class="section-container">
+      <!-- Basic Settings section (move your existing Basic Settings HTML here) -->
+      <div class="section-container">
+        <div class="section-header">Basic Settings</div>
+        <div class="section-content">
+          <form name="BASIC_FORM" method="POST" id="ghn_basic">
+            <input type="hidden" name="CSRFTOKEN" value="$$CSRFTOKEN$$">
+            <input type="hidden" name="REDIRECT" value="ghn.html" target="content">
+            
+            <table class="form-table">
+              <tr>
+                <td>MAC Address</td>
+                <td><span id="ghn_basic_mac">$$SYSTEM.PRODUCTION.MAC_ADDR$$</span></td>
+              </tr>
+              <tr>
+                <td>Device ID</td>
+                <td><span id="ghn_basic_did">$$NODE.GENERAL.DEVICE_ID$$</span></td>
+              </tr>
+              <tr>
+                <td>Domain Name</td>
+                <td>
+                  <input type="text" name="NODE.GENERAL.DOMAIN_NAME" value="$$NODE.GENERAL.DOMAIN_NAME$$" id="ghn_basic_domain" maxlength="20">
+                </td>
+              </tr>
+              <tr>
+                <td>Force Node Type</td>
+                <td>
+                  <select name="MASTERSELECTION.GENERAL.FORCE_NODE" id="ghn_basic_forcenodetype">
+                    <script language="JavaScript">
+                    var nt='$$MASTERSELECTION.GENERAL.FORCE_NODE$$';
+                    var ntp=nt;
+                    var ntt=new Array('END_POINT','DOMAIN_MASTER','AUTOMATIC');
+                    var nto=new Array('END_POINT','DOMAIN_MASTER','NONE');
+                    selectOptionsWithText(ntp,ntt,nto);
+                    </script>
+                  </select>
+                </td>
+              </tr>
+              <tr>
+                <td>Node Type*</td>
+                <td><span id="ghn_basic_nodetype">$$NODE.GENERAL.NODE_TYPE$$</span></td>
+              </tr>
+            </table>
+            <p class="status-text">* Node type change can take some time, please refresh page to update state</p>
+            <div class="button-group">
+              <input name="CANCEL" value="Cancel" type="reset" id="ghn_basic_cancel">
+              <input name="OK" value="Save Changes" type="button" id="ghn_basic_ok" onClick="onOKClick(this.form)">
+            </div>
+          </form>
 
-    <form name="BASIC_FORM2" method="POST" id="ghn_basic2" style="margin-top: 20px;">
-      <input type="hidden" name="CSRFTOKEN" value="$$CSRFTOKEN$$">
-      <input type="hidden" name="REDIRECT" value="ghn.html" target="content">
-      <table class="form-table">
-        <tr>
-          <td>G.hn Profile</td>
-          <td>
-            <select name="PHYMNG.GENERAL.RUNNING_PHYMODE_ID" id="ghn_basic2_profile">
-              <script language="JavaScript">
-              var sPhyMode='$$PHYMNG.GENERAL.RUNNING_PHYMODE_ID$$'
-              var profiles=new Array("PLC 100MHz","PLC 50MHz","PLC 100 MHz with MIMO", "COAX 100MHz","PHONE 100MHz","PLC 50MHz with MIMO", "PLC 50MHz MIMO_BOOST", "PLC 100MHz BOOST", "COAX 200 MHz", "PHONE 200MHz");
-              var mode    =new Array("1","4","7","9","10","20","22","23","25","26");
-              var nt=sPhyMode;
-              var ntp=nt;
-              selectOptionsWithText(ntp,profiles,mode);
-              </script>
-            </select>
-          </td>
-        </tr>
-      </table>
-      <div class="button-group">
-        <input name="CANCEL" value="Cancel" type="reset" id="ghn_basic2_cancel">
-        <input name="OK" value="Save Profile" type="button" id="ghn_basic2_ok" onClick="onOKClick(this.form)">
+          <form name="BASIC_FORM2" method="POST" id="ghn_basic2" style="margin-top: 20px;">
+            <input type="hidden" name="CSRFTOKEN" value="$$CSRFTOKEN$$">
+            <input type="hidden" name="REDIRECT" value="ghn.html" target="content">
+            <table class="form-table">
+              <tr>
+                <td>G.hn Profile</td>
+                <td>
+                  <select name="PHYMNG.GENERAL.RUNNING_PHYMODE_ID" id="ghn_basic2_profile">
+                    <script language="JavaScript">
+                    var sPhyMode='$$PHYMNG.GENERAL.RUNNING_PHYMODE_ID$$'
+                    var profiles=new Array("PLC 100MHz","PLC 50MHz","PLC 100 MHz with MIMO", "COAX 100MHz","PHONE 100MHz","PLC 50MHz with MIMO", "PLC 50MHz MIMO_BOOST", "PLC 100MHz BOOST", "COAX 200 MHz", "PHONE 200MHz");
+                    var mode    =new Array("1","4","7","9","10","20","22","23","25","26");
+                    var nt=sPhyMode;
+                    var ntp=nt;
+                    selectOptionsWithText(ntp,profiles,mode);
+                    </script>
+                  </select>
+                </td>
+              </tr>
+            </table>
+            <div class="button-group">
+              <input name="CANCEL" value="Cancel" type="reset" id="ghn_basic2_cancel">
+              <input name="OK" value="Save Profile" type="button" id="ghn_basic2_ok" onClick="onOKClick(this.form)">
+            </div>
+          </form>
+        </div>
       </div>
-    </form>
-  </div>
-</div>
-
-<!-- NDIM -->
-<div class="card">
-  <div class="card-header">
-    <span class="card-title">Neighboring Domain Interference Mitigation (NDIM)</span>
-  </div>
-  <div class="card-content section-content">
-    <form name="NDIM_FORM" method="POST">
-      <input type="hidden" name="CSRFTOKEN" value="$$CSRFTOKEN$$">
-      <input type="hidden" name="REDIRECT" value="ghn.html" target="content">
-      <table class="form-table">
-        <tr>
-          <td>NDIM Mode</td>
-          <td>
-            <select name="NODE.GENERAL.DOMAIN_ID_MODE" id="ghn_ndim_mode" onChange="onNDIMChange()">
-              <script language="JavaScript">
-              var nt='$$NODE.GENERAL.DOMAIN_ID_MODE$$';
-              var ntp=nt;
-              var ntt=new Array('MANUAL','AUTOMATIC');
-              var nto=new Array('0','1');
-              selectOptionsWithText(ntp,ntt,nto);
-              </script>
-            </select>
-          </td>
-        </tr>
-        <tr>
-          <td>Domain ID (DOD)</td>
-          <td>
-            <input type="text" name="NODE.GENERAL.DOMAIN_ID" value="$$NODE.GENERAL.DOMAIN_ID$$" id="ghn_ndim_dod">
-          </td>
-        </tr>
-      </table>
-      <div class="button-group">
-        <input name="CANCEL" value="Cancel" type="reset" id="ghn_ndim_cancel">
-        <input name="OK" value="Save NDIM Settings" type="button" id="ghn_ndim_ok" onClick="onOKClick(this.form)">
+    </div>
+    <div id="ndim-settings" class="section-container">
+      <!-- NDIM Settings section (move your existing NDIM HTML here) -->
+      <div class="section-container">
+        <div class="section-header">Neighboring Domain Interference Mitigation (NDIM)</div>
+        <div class="section-content">
+          <form name="NDIM_FORM" method="POST">
+            <input type="hidden" name="CSRFTOKEN" value="$$CSRFTOKEN$$">
+            <input type="hidden" name="REDIRECT" value="ghn.html" target="content">
+            <table class="form-table">
+              <tr>
+                <td>NDIM Mode</td>
+                <td>
+                  <select name="NODE.GENERAL.DOMAIN_ID_MODE" id="ghn_ndim_mode" onChange="onNDIMChange()">
+                    <script language="JavaScript">
+                    var nt='$$NODE.GENERAL.DOMAIN_ID_MODE$$';
+                    var ntp=nt;
+                    var ntt=new Array('MANUAL','AUTOMATIC');
+                    var nto=new Array('0','1');
+                    selectOptionsWithText(ntp,ntt,nto);
+                    </script>
+                  </select>
+                </td>
+              </tr>
+              <tr>
+                <td>Domain ID (DOD)</td>
+                <td>
+                  <input type="text" name="NODE.GENERAL.DOMAIN_ID" value="$$NODE.GENERAL.DOMAIN_ID$$" id="ghn_ndim_dod">
+                </td>
+              </tr>
+            </table>
+            <div class="button-group">
+              <input name="CANCEL" value="Cancel" type="reset" id="ghn_ndim_cancel">
+              <input name="OK" value="Save NDIM Settings" type="button" id="ghn_ndim_ok" onClick="onOKClick(this.form)">
+            </div>
+          </form>
+        </div>
       </div>
-    </form>
-  </div>
-</div>
+    </div>
+    <div id="encryption-settings" class="section-container">
+      <!-- Encryption section (move your existing Encryption HTML here) -->
+      <div class="section-container">
+        <div class="section-header">Encryption Configuration</div>
+        <div class="section-content">
+          <form name="ENCRYPTION_FORM" method="POST">
+            <input type="hidden" name="CSRFTOKEN" value="$$CSRFTOKEN$$">
+            <input type="hidden" name="REDIRECT" value="ghn.html">
+            
+            <script language="JavaScript">
+            var secured = "$$PAIRING.GENERAL.SECURED$$";
+            if (secured=='NO')
+              document.write('<div class="encryption-status encryption-disabled">Encryption is DISABLED</div>');
+            else
+              document.write('<div class="encryption-status encryption-enabled">Encryption is ENABLED</div>');
+            </script>
+            
+            <table class="form-table">
+              <tr>
+                <td>Pairing Password</td>
+                <td>
+                  <input type="text" name="PAIRING.GENERAL.PASSWORD" value="$$PAIRING.GENERAL.PASSWORD$$" id="ghn_pairing_password">
+                </td>
+              </tr>
+            </table>
+            
+            <div class="button-group">
+              <input name="CANCEL" value="Cancel" type="reset" id="ghn_crypto_cancel">
+              <script language="JavaScript">
+              if (secured=='NO')
+                document.write('<input name="OK" value="Enable Encryption" type="button" id="ghn_crypto_ok" onClick="onCryptoOKClick(this.form)">');
+              else
+                document.write('<input name="OK" value="Change Settings" type="button" id="ghn_crypto_ok" onClick="onCryptoOKClick(this.form)">');
+              </script>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+    <div id="connections" class="section-container">
+      <!-- Connections section (move your existing Connections HTML here) -->
+      <div style="padding:6px">
+        <table width=520 style="border:3px solid #dddddd">
+        <tr><td colspan=6><b>Available Connections</b></td></tr>
+        <tr><td colspan=6 style="background:#dddddd"></td></tr>
+        <tr><td colspan=6></td></tr>
 
-<!-- Encryption -->
-<div class="card">
-  <div class="card-header">
-    <span class="card-title">Encryption Configuration</span>
-  </div>
-  <div class="card-content section-content">
-    <form name="ENCRYPTION_FORM" method="POST">
-      <input type="hidden" name="CSRFTOKEN" value="$$CSRFTOKEN$$">
-      <input type="hidden" name="REDIRECT" value="ghn.html">
-      
+        <tr><th><font size=-1>Device ID</font></th><th><font size=-1>MAC Address</font></th><th><font size=-1>Phy Tx (Mbps)</font></th><th><font size=-1>Phy Rx (Mbps)</font></th></tr>
       <script language="JavaScript">
-      var secured = "$$PAIRING.GENERAL.SECURED$$";
-      if (secured=='NO')
-        document.write('<div class="encryption-status encryption-disabled">Encryption is DISABLED</div>');
+
+      var mymac='$$SYSTEM.PRODUCTION.MAC_ADDR$$';
+      var mydid='$$NODE.GENERAL.DEVICE_ID$$';
+      var pcdids=new Array($$DIDMNG.GENERAL.DIDS$$);
+      var pcmastr="$$DIDMNG.GENERAL.MACS$$";
+      var pcptx=new Array($$DIDMNG.GENERAL.TX_BPS$$);
+      var pcprx=new Array($$DIDMNG.GENERAL.RX_BPS$$);
+
+      //first convert pcmastr to array of connected MACs (remove own MAC)
+      var pcma = pcmastr.split(",");
+
+      if(pcma.length>2)  //if 2, it must be our own MAC, first element is always 00::00
+        {
+          for(var i=1;(i<pcma.length)&&(i<=32);i++)
+          {
+            if (pcma[i]!=mymac)
+            {
+               document.write('<tr><td align="center"><font size=-1 id="ghn_conn_did_'+i+'">'+pcdids[i]+'</font></td><td align="center"><tt id="ghn_conn_mac_'+i+'">'+pcma[i]+'</tt></td><td align="center"><font size=-1 id="ghn_conn_tx_'+i+'">'+Math.floor(pcptx[i]*32/1000)+'</font></td><td align="center"><font size=-1 id="ghn_conn_tx_'+i+'">'+Math.floor(pcprx[i]*32/1000)+'</font></td><td align="center"><font size=-1></font></td></tr>');
+            }
+          }
+          if(pcma.length>32)
+            document.write('<tr><td colspan=6 align="center"><font size=-1><i><b>Warning!</b> At least 33 items in the list</i></font></td></tr>');
+        }
       else
-        document.write('<div class="encryption-status encryption-enabled">Encryption is ENABLED</div>');
-      </script>
-      
-      <table class="form-table">
-        <tr>
-          <td>Pairing Password</td>
-          <td>
-            <input type="text" name="PAIRING.GENERAL.PASSWORD" value="$$PAIRING.GENERAL.PASSWORD$$" id="ghn_pairing_password">
-          </td>
-        </tr>
-      </table>
-      
-      <div class="button-group">
-        <input name="CANCEL" value="Cancel" type="reset" id="ghn_crypto_cancel">
-        <script language="JavaScript">
-        if (secured=='NO')
-          document.write('<input name="OK" value="Enable Encryption" type="button" id="ghn_crypto_ok" onClick="onCryptoOKClick(this.form)">');
-        else
-          document.write('<input name="OK" value="Change Settings" type="button" id="ghn_crypto_ok" onClick="onCryptoOKClick(this.form)">');
+      {
+        document.write('<tr><td colspan=6 align="center"><font size=-1><i>Empty list</i></font></td></tr>');
+      }
         </script>
+
+
       </div>
-    </form>
+    </div>
   </div>
 </div>
 
-<!-- G.hn connections -->
-<div style="padding:6px">
-  <table width=520 style="border:3px solid #dddddd">
-  <tr><td colspan=6><b>Available Connections</b></td></tr>
-  <tr><td colspan=6 style="background:#dddddd"></td></tr>
-  <tr><td colspan=6></td></tr>
+<script>
+const tabItems = document.querySelectorAll('.ghn-tab-item');
+const sections = [
+  document.getElementById('basic-settings'),
+  document.getElementById('ndim-settings'),
+  document.getElementById('encryption-settings'),
+  document.getElementById('connections')
+];
 
-  <tr><th><font size=-1>Device ID</font></th><th><font size=-1>MAC Address</font></th><th><font size=-1>Phy Tx (Mbps)</font></th><th><font size=-1>Phy Rx (Mbps)</font></th></tr>
-<script language="JavaScript">
-
-var mymac='$$SYSTEM.PRODUCTION.MAC_ADDR$$';
-var mydid='$$NODE.GENERAL.DEVICE_ID$$';
-var pcdids=new Array($$DIDMNG.GENERAL.DIDS$$);
-var pcmastr="$$DIDMNG.GENERAL.MACS$$";
-var pcptx=new Array($$DIDMNG.GENERAL.TX_BPS$$);
-var pcprx=new Array($$DIDMNG.GENERAL.RX_BPS$$);
-
-//first convert pcmastr to array of connected MACs (remove own MAC)
-var pcma = pcmastr.split(",");
-
-if(pcma.length>2)  //if 2, it must be our own MAC, first element is always 00::00
-  {
-    for(var i=1;(i<pcma.length)&&(i<=32);i++)
-    {
-      if (pcma[i]!=mymac)
-      {
-         document.write('<tr><td align="center"><font size=-1 id="ghn_conn_did_'+i+'">'+pcdids[i]+'</font></td><td align="center"><tt id="ghn_conn_mac_'+i+'">'+pcma[i]+'</tt></td><td align="center"><font size=-1 id="ghn_conn_tx_'+i+'">'+Math.floor(pcptx[i]*32/1000)+'</font></td><td align="center"><font size=-1 id="ghn_conn_tx_'+i+'">'+Math.floor(pcprx[i]*32/1000)+'</font></td><td align="center"><font size=-1></font></td></tr>');
-      }
-    }
-    if(pcma.length>32)
-      document.write('<tr><td colspan=6 align="center"><font size=-1><i><b>Warning!</b> At least 33 items in the list</i></font></td></tr>');
-  }
-else
-{
-  document.write('<tr><td colspan=6 align="center"><font size=-1><i>Empty list</i></font></td></tr>');
+function getVisibleRatio(section) {
+  const rect = section.getBoundingClientRect();
+  const windowHeight = window.innerHeight || document.documentElement.clientHeight;
+  if (rect.bottom <= 0 || rect.top >= windowHeight) return 0;
+  const visibleTop = Math.max(rect.top, 0);
+  const visibleBottom = Math.min(rect.bottom, windowHeight);
+  const visibleHeight = Math.max(0, visibleBottom - visibleTop);
+  return visibleHeight / rect.height;
 }
-  </script>
 
+function onScrollSpy() {
+  let maxRatio = 0;
+  let current = 0;
+  for (let i = 0; i < sections.length; i++) {
+    const ratio = getVisibleRatio(sections[i]);
+    if (ratio > 0.5 && ratio > maxRatio) {
+      maxRatio = ratio;
+      current = i;
+    }
+  }
+  tabItems.forEach((tab, idx) => {
+    if (idx === current) {
+      tab.classList.add('active');
+    } else {
+      tab.classList.remove('active');
+    }
+  });
+}
+window.addEventListener('scroll', onScrollSpy);
+
+// Smooth scroll to section on tab click
+tabItems.forEach(tab => {
+  tab.addEventListener('click', function() {
+    const tabId = this.getAttribute('data-tab');
+    const section = document.getElementById(tabId);
+    if (section) {
+      window.scrollTo({
+        top: section.getBoundingClientRect().top + window.scrollY - 40,
+        behavior: 'smooth'
+      });
+    }
+  });
+});
+</script>
 
 </body>
 </html>
