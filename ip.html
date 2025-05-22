@@ -41,35 +41,123 @@
 <script language="JavaScript" src="common.js"></script>
 <style>
 :root {
-  --primary-color: #0066cc;
-  --secondary-color: #004d99;
-  --background-color: #f5f5f5;
-  --text-color: #333333;
-  --border-color: #dddddd;
-  --input-border-color: #cccccc;
-  --button-text-color: white;
+  --primary-color: #ff6a00;
+  --primary-light: #ff922b;
+  --primary-dark: #c43e00;
+  --background-color: #fff7f0;
+  --card-bg: #fff;
+  --text-color: #222;
+  --border-color: #ffb380;
+  --input-border: #ff922b;
+  --shadow: 0 2px 12px rgba(255,106,0,0.08);
+  --radius: 12px;
 }
 
 body {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  font-size: 14px;
+  background: var(--background-color);
   color: var(--text-color);
-  background-color: white; /* Match iframe background */
   margin: 0;
-  padding: 15px; /* Add some padding to the body */
+  padding: 20px;
+  min-height: 100vh;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.ip-flex-container {
+  display: flex;
+  width: 100%;
+  min-height: 100vh;
+}
+
+.ip-sidebar {
+  width: 220px;
+  background: #f5f5f5;
+  box-shadow: 2px 0 8px #e0e0e0;
+  padding: 30px 0 0 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow-y: auto;
+}
+
+.ip-tab-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  width: 100%;
+}
+
+.ip-tab-item {
+  padding: 12px 24px;
+  cursor: pointer;
+  border-radius: 0 20px 20px 0;
+  margin-bottom: 8px;
+  font-weight: 500;
+  font-size: 14px;
+  color: #333;
+  background: none;
+  border: none;
+  text-align: left;
+  width: 100%;
+  transition: background 0.2s, color 0.2s;
+}
+
+.ip-tab-item.active,
+.ip-tab-item:hover {
+  background: #FF6B35;
+  color: #fff;
+}
+
+.ip-tab-content {
+  flex: 1;
+  padding: 40px 40px 40px 40px;
+  width: 100%;
+  background: #fff;
+  overflow-y: visible;
+}
+
+.section-container {
+  background: var(--card-bg);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  margin-bottom: 40px;
+  overflow: hidden;
+  scroll-margin-top: 100px;
+  max-width: 1200px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.section-header {
+  background: linear-gradient(90deg, var(--primary-color), var(--primary-light));
+  color: white;
+  padding: 15px 20px;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.section-content {
+  padding: 24px;
 }
 
 table {
   width: 100%;
-  max-width: 700px; /* Keep original max width but allow shrinking */
+  max-width: 100%;
   border-collapse: collapse;
   margin-bottom: 20px;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-  border: 1px solid var(--border-color);
+  background: var(--card-bg);
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: var(--shadow);
+  border: 1.5px solid var(--border-color);
 }
 
 th, td {
-  padding: 10px 12px;
+  padding: 12px 16px;
   text-align: left;
   border-bottom: 1px solid var(--border-color);
 }
@@ -83,7 +171,6 @@ td[colspan="2"] b {
   color: var(--primary-color);
 }
 
-/* Style for the header rows of each section */
 table > tbody > tr:first-child {
   background-color: var(--background-color);
 }
@@ -94,20 +181,17 @@ table > tbody > tr:first-child td {
   border-bottom: 2px solid var(--primary-color);
 }
 
-
-/* Separator rows */
 td[colspan="2"][style="background:#dddddd"] {
-  background-color: var(--background-color) !important; /* Override inline style */
+  background-color: var(--background-color) !important;
   height: 5px;
   padding: 0;
   border-top: 1px solid var(--border-color);
   border-bottom: 1px solid var(--border-color);
 }
-/* Remove duplicate top border if next to header */
-tr:nth-child(2) > td[colspan="2"][style="background:#dddddd"] {
-    border-top: none;
-}
 
+tr:nth-child(2) > td[colspan="2"][style="background:#dddddd"] {
+  border-top: none;
+}
 
 form {
   margin: 0;
@@ -115,109 +199,100 @@ form {
 
 input[type="text"],
 select {
-  width: 100%; /* Make inputs take available width in td */
-  padding: 8px;
-  border: 1px solid var(--input-border-color);
+  width: 100%;
+  max-width: 300px;
+  padding: 8px 12px;
+  border: 1px solid var(--border-color);
   border-radius: 4px;
-  box-sizing: border-box;
   font-size: 14px;
-  transition: border-color 0.2s;
+  margin: 4px 0 12px 0;
+  box-sizing: border-box;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  background: var(--card-bg);
 }
 
 input[type="text"]:focus,
 select:focus {
   border-color: var(--primary-color);
   outline: none;
-  box-shadow: 0 0 0 2px rgba(0, 102, 204, 0.2);
+  box-shadow: 0 0 0 2px var(--primary-light);
 }
 
-/* Adjust width for specific inputs if needed */
-input[name^="TCPIP.IPV4.IP_ADDRESS"],
-input[name^="TCPIP.IPV4.IP_NETMASK"],
-input[name^="TCPIP.IPV4.GATEWAY"],
-input[name^="DNS.GENERAL.IPV4"],
-input[name^="TCPIP.IPV4.ADDITIONAL_IP_ADDRESS"],
-input[name^="TCPIP.IPV4.ADDITIONAL_IP_NETMASK"] {
-  width: calc(50% - 5px); /* For side-by-side inputs like IP/Mask */
-}
-input[name^="TCPIP.IPV4.IP_ADDRESS"] ~ input[name^="TCPIP.IPV4.IP_NETMASK"] {
-    margin-left: 5px;
-}
-input[name^="TCPIP.IPV4.ADDITIONAL_IP_ADDRESS.1"] ~ input[name^="TCPIP.IPV4.ADDITIONAL_IP_NETMASK.1"],
-input[name^="TCPIP.IPV4.ADDITIONAL_IP_ADDRESS.2"] ~ input[name^="TCPIP.IPV4.ADDITIONAL_IP_NETMASK.2"] {
-    margin-left: 5px;
+.button-group {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 20px;
 }
 
-
-input[name^="TCPIP.IPV6.IP_ADDRESS"],
-input[name^="TCPIP.IPV6.GATEWAY"],
-input[name^="DNS.GENERAL.IPV6"],
-input[name^="TCPIP.IPV6.ADDITIONAL_IP_ADDRESS"] {
-  width: calc(100% - 60px); /* Adjust for prefix input */
-}
-input[name^="TCPIP.IPV6.IP_PREFIX"],
-input[name^="TCPIP.IPV6.ADDITIONAL_IP_PREFIX"] {
-  width: 50px;
-  margin-left: 5px;
-}
-
-input[name="NTP.GENERAL.RESYNC_TIME"] {
-    width: 80px;
-}
-
-
-/* Align text fields and selects to the right if they are in the second td */
-td:nth-child(2) > input[type="text"],
-td:nth-child(2) > select {
-  /* Default to full width as per above, but if specific widths are set, they take precedence */
-}
-
-/* Button styling */
-input[type="button"],
-input[type="reset"] {
+input[type="button"], input[type="reset"] {
   padding: 8px 20px;
-  border: none;
   border-radius: 4px;
-  cursor: pointer;
   font-size: 14px;
-  transition: background-color 0.2s, box-shadow 0.2s;
-  margin-left: 10px;
+  cursor: pointer;
+  transition: background-color 0.2s;
 }
 
 input[type="button"] {
   background-color: var(--primary-color);
-  color: var(--button-text-color);
+  color: white;
+  border: none;
 }
 
 input[type="button"]:hover {
-  background-color: var(--secondary-color);
-  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+  background-color: var(--primary-light);
 }
 
 input[type="reset"] {
-  background-color: #6c757d; /* A neutral grey */
-  color: var(--button-text-color);
+  background-color: white;
+  color: var(--text-color);
+  border: 1px solid var(--border-color);
 }
 
 input[type="reset"]:hover {
-  background-color: #5a6268;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+  background-color: #f5f5f5;
 }
 
-/* Container for buttons to align them right */
-td[align="right"] {
-  text-align: right;
+input:disabled, select:disabled {
+  background-color: #f5f5f5;
+  color: #888888;
+  cursor: not-allowed;
 }
 
-/* Small text for notes */
-font[size="-1"] {
-  font-size: 0.9em;
-  color: #555;
+.form-table td:first-child {
+  font-weight: 500;
+  font-size: 14px;
+  color: var(--text-color);
 }
 
-/* Remove direct styling from specific table cells */
-td[style="background:#dddddd"] {
-  background: transparent !important; /* Will be handled by tr:first-child or specific class if needed for section headers */
+@media (max-width: 768px) {
+  .ip-sidebar {
+    width: 180px;
+  }
+  
+  .ip-tab-content {
+    padding: 20px 20px 20px 200px;
+  }
+  
+  .section-container {
+    margin: 0 10px 40px 10px;
+  }
+  
+  .section-content {
+    padding: 16px;
+  }
+  
+  input[type="text"],
+  select {
+    font-size: 1em;
+    padding: 10px 12px;
+  }
+  
+  input[type="button"],
+  input[type="reset"] {
+    padding: 8px 20px;
+    font-size: 0.9em;
+  }
 }
 </style>
 <script language="JavaScript">
@@ -226,6 +301,10 @@ function onLoadScript()
   onDHCPv4Change();
   onDHCPv6Change();
   onNTPEnableChange();
+  // Set initial active tab
+  document.querySelector('.ip-tab-item').classList.add('active');
+  // Initialize scroll spy
+  initScrollSpy();
 }
 function onNTPEnableChange()
 {
@@ -254,6 +333,64 @@ function onOKClick(form)
   document.getElementById("ip_ntp_ok").disabled = true;
   form.submit();
 }
+
+function initScrollSpy() {
+  const sections = document.querySelectorAll('.section-container');
+  const navItems = document.querySelectorAll('.ip-tab-item');
+  let ticking = false;
+  
+  window.addEventListener('scroll', () => {
+    if (!ticking) {
+      window.requestAnimationFrame(() => {
+        let current = '';
+        const scrollPosition = window.scrollY + (window.innerHeight * 0.3); // Reduced threshold to 30%
+        
+        sections.forEach(section => {
+          const sectionTop = section.offsetTop;
+          const sectionHeight = section.clientHeight;
+          
+          if (scrollPosition >= sectionTop && scrollPosition < sectionTop + sectionHeight) {
+            current = section.getAttribute('id');
+          }
+        });
+        
+        navItems.forEach(item => {
+          const tabId = item.getAttribute('onclick').match(/'([^']+)'/)[1];
+          if (tabId === current) {
+            item.classList.add('active');
+          } else {
+            item.classList.remove('active');
+          }
+        });
+        
+        ticking = false;
+      });
+      
+      ticking = true;
+    }
+  });
+}
+
+function switchTab(tabId) {
+  // Update active tab
+  document.querySelectorAll('.ip-tab-item').forEach(tab => {
+    tab.classList.remove('active');
+  });
+  document.querySelector(`[onclick="switchTab('${tabId}')"]`).classList.add('active');
+  
+  // Smooth scroll to section
+  const section = document.getElementById(tabId);
+  if (section) {
+    const headerOffset = 40;
+    const elementPosition = section.getBoundingClientRect().top;
+    const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+
+    window.scrollTo({
+      top: offsetPosition,
+      behavior: 'smooth'
+    });
+  }
+}
 </script>
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Cache-Control" content="no-cache">
@@ -264,188 +401,193 @@ function onOKClick(form)
 printErrorMsg("$$LASTERRORMESSAGE$$");
 </script>
 
-<div class="card">
-  <div class="card-header">
-    <span class="card-title">IPv4 Configuration</span>
+<div class="ip-flex-container">
+  <div class="ip-sidebar">
+    <ul class="ip-tab-list">
+      <li><button class="ip-tab-item" onclick="switchTab('ipv4-section')">IPv4 Configuration</button></li>
+      <li><button class="ip-tab-item" onclick="switchTab('ipv6-section')">IPv6 Configuration</button></li>
+      <li><button class="ip-tab-item" onclick="switchTab('dns-section')">DNS Configuration</button></li>
+      <li><button class="ip-tab-item" onclick="switchTab('ntp-section')">NTP Configuration</button></li>
+    </ul>
   </div>
-  <div class="card-content section-content">
-    <form name="IPV4_FORM" method="POST">
-      <input type="hidden" name="CSRFTOKEN" value="$$CSRFTOKEN$$">
-      <input type="hidden" name="REDIRECT" value="ip.html" target="content">
-      
-      <table class="form-table">
-        <tr>
-          <td>DHCP Client</td>
-          <td>
-            <select name="TCPIP.IPV4.DHCP_ENABLE" id="ip_v4_dhcpenable" onChange="onDHCPv4Change()">
-              <script language="JavaScript">
-              var dhcp='$$TCPIP.IPV4.DHCP_ENABLE$$';
-              var dhcpp=dhcp;
-              var dhcpt=new Array('DISABLED','ENABLED');
-              var dhcpo=new Array('NO','YES');
-              selectOptionsWithText(dhcpp,dhcpt,dhcpo);
-              </script>
-            </select>
-          </td>
-        </tr>
-        <tr>
-          <td>IP Address</td>
-          <td>
-            <input type="text" name="TCPIP.IPV4.IP_ADDRESS" value="$$TCPIP.IPV4.IP_ADDRESS$$" id="ip_v4_address" class="form-control">
-          </td>
-        </tr>
-        <tr>
-          <td>Subnet Mask</td>
-          <td>
-            <input type="text" name="TCPIP.IPV4.IP_NETMASK" value="$$TCPIP.IPV4.IP_NETMASK$$" id="ip_v4_netmask" class="form-control">
-          </td>
-        </tr>
-        <tr>
-          <td>Default Gateway</td>
-          <td>
-            <input type="text" name="TCPIP.IPV4.GATEWAY" value="$$TCPIP.IPV4.GATEWAY$$" id="ip_v4_gw" class="form-control">
-          </td>
-        </tr>
-      </table>
-      <div class="button-group">
-        <input name="CANCEL" value="Cancel" type="reset" class="btn btn-secondary">
-        <input name="OK" value="Save Changes" type="button" id="ip_v4_ok" class="btn btn-primary" onClick="onOKClick(this.form)">
-      </div>
-    </form>
-  </div>
-</div>
 
-<div class="card">
-  <div class="card-header">
-    <span class="card-title">IPv6 Configuration</span>
-  </div>
-  <div class="card-content section-content">
-    <form name="IPV6_FORM" method="POST">
-      <input type="hidden" name="CSRFTOKEN" value="$$CSRFTOKEN$$">
-      <input type="hidden" name="REDIRECT" value="ip.html" target="content">
-      
-      <table class="form-table">
-        <tr>
-          <td>DHCPv6 Client</td>
-          <td>
-            <select name="TCPIP.IPV6.DHCP_ENABLE" id="ip_v6_dhcpenable" onChange="onDHCPv6Change()">
-              <script language="JavaScript">
-              var dhcp='$$TCPIP.IPV6.DHCP_ENABLE$$';
-              var dhcpp=dhcp;
-              var dhcpt=new Array('DISABLED','ENABLED');
-              var dhcpo=new Array('NO','YES');
-              selectOptionsWithText(dhcpp,dhcpt,dhcpo);
-              </script>
-            </select>
-          </td>
-        </tr>
-        <tr>
-          <td>IPv6 Address</td>
-          <td>
-            <input type="text" name="TCPIP.IPV6.IP_ADDRESS" value="$$TCPIP.IPV6.IP_ADDRESS$$" id="ip_v6_address" class="form-control">
-            <input type="text" name="TCPIP.IPV6.IP_PREFIX" value="$$TCPIP.IPV6.IP_PREFIX$$" id="ip_v6_prefix" class="form-control" style="width: 60px; margin-left: 8px;">
-          </td>
-        </tr>
-        <tr>
-          <td>Default Gateway</td>
-          <td>
-            <input type="text" name="TCPIP.IPV6.GATEWAY" value="$$TCPIP.IPV6.GATEWAY$$" id="ip_v6_gw" class="form-control">
-          </td>
-        </tr>
-      </table>
-      <div class="button-group">
-        <input name="CANCEL" value="Cancel" type="reset" class="btn btn-secondary">
-        <input name="OK" value="Save Changes" type="button" id="ip_v6_ok" class="btn btn-primary" onClick="onOKClick(this.form)">
+  <div class="ip-tab-content">
+    <div id="ipv4-section" class="section-container">
+      <div class="section-header">IPv4 Configuration</div>
+      <div class="section-content">
+        <form name="IPV4_FORM" method="POST">
+          <input type="hidden" name="CSRFTOKEN" value="$$CSRFTOKEN$$">
+          <input type="hidden" name="REDIRECT" value="ip.html" target="content">
+          
+          <table class="form-table">
+            <tr>
+              <td>DHCP Client</td>
+              <td>
+                <select name="TCPIP.IPV4.DHCP_ENABLE" id="ip_v4_dhcpenable" onChange="onDHCPv4Change()">
+                  <script language="JavaScript">
+                  var dhcp='$$TCPIP.IPV4.DHCP_ENABLE$$';
+                  var dhcpp=dhcp;
+                  var dhcpt=new Array('DISABLED','ENABLED');
+                  var dhcpo=new Array('NO','YES');
+                  selectOptionsWithText(dhcpp,dhcpt,dhcpo);
+                  </script>
+                </select>
+              </td>
+            </tr>
+            <tr>
+              <td>IP Address</td>
+              <td>
+                <input type="text" name="TCPIP.IPV4.IP_ADDRESS" value="$$TCPIP.IPV4.IP_ADDRESS$$" id="ip_v4_address" class="form-control">
+              </td>
+            </tr>
+            <tr>
+              <td>Subnet Mask</td>
+              <td>
+                <input type="text" name="TCPIP.IPV4.IP_NETMASK" value="$$TCPIP.IPV4.IP_NETMASK$$" id="ip_v4_netmask" class="form-control">
+              </td>
+            </tr>
+            <tr>
+              <td>Default Gateway</td>
+              <td>
+                <input type="text" name="TCPIP.IPV4.GATEWAY" value="$$TCPIP.IPV4.GATEWAY$$" id="ip_v4_gw" class="form-control">
+              </td>
+            </tr>
+          </table>
+          <div class="button-group">
+            <input name="CANCEL" value="Cancel" type="reset" class="btn btn-secondary">
+            <input name="OK" value="Save Changes" type="button" id="ip_v4_ok" class="btn btn-primary" onClick="onOKClick(this.form)">
+          </div>
+        </form>
       </div>
-    </form>
-  </div>
-</div>
+    </div>
 
-<div class="card">
-  <div class="card-header">
-    <span class="card-title">DNS Configuration</span>
-  </div>
-  <div class="card-content section-content">
-    <form name="DNS_FORM" method="POST">
-      <input type="hidden" name="CSRFTOKEN" value="$$CSRFTOKEN$$">
-      <input type="hidden" name="REDIRECT" value="ip.html" target="content">
-      
-      <table class="form-table">
-        <tr>
-          <td>Primary DNS Server (IPv4)</td>
-          <td>
-            <input type="text" name="DNS.GENERAL.IPV4.1" value="$$DNS.GENERAL.IPV4.1$$" id="ip_v4_dns" class="form-control">
-          </td>
-        </tr>
-        <tr>
-          <td>Secondary DNS Server (IPv4)</td>
-          <td>
-            <input type="text" name="DNS.GENERAL.IPV4.2" value="$$DNS.GENERAL.IPV4.2$$" class="form-control">
-          </td>
-        </tr>
-        <tr>
-          <td>Primary DNS Server (IPv6)</td>
-          <td>
-            <input type="text" name="DNS.GENERAL.IPV6.1" value="$$DNS.GENERAL.IPV6.1$$" id="ip_v6_dns" class="form-control">
-          </td>
-        </tr>
-        <tr>
-          <td>Secondary DNS Server (IPv6)</td>
-          <td>
-            <input type="text" name="DNS.GENERAL.IPV6.2" value="$$DNS.GENERAL.IPV6.2$$" class="form-control">
-          </td>
-        </tr>
-      </table>
-      <div class="button-group">
-        <input name="CANCEL" value="Cancel" type="reset" class="btn btn-secondary">
-        <input name="OK" value="Save Changes" type="button" id="ip_dns_ok" class="btn btn-primary" onClick="onOKClick(this.form)">
+    <div id="ipv6-section" class="section-container">
+      <div class="section-header">IPv6 Configuration</div>
+      <div class="section-content">
+        <form name="IPV6_FORM" method="POST">
+          <input type="hidden" name="CSRFTOKEN" value="$$CSRFTOKEN$$">
+          <input type="hidden" name="REDIRECT" value="ip.html" target="content">
+          
+          <table class="form-table">
+            <tr>
+              <td>DHCPv6 Client</td>
+              <td>
+                <select name="TCPIP.IPV6.DHCP_ENABLE" id="ip_v6_dhcpenable" onChange="onDHCPv6Change()">
+                  <script language="JavaScript">
+                  var dhcp='$$TCPIP.IPV6.DHCP_ENABLE$$';
+                  var dhcpp=dhcp;
+                  var dhcpt=new Array('DISABLED','ENABLED');
+                  var dhcpo=new Array('NO','YES');
+                  selectOptionsWithText(dhcpp,dhcpt,dhcpo);
+                  </script>
+                </select>
+              </td>
+            </tr>
+            <tr>
+              <td>IPv6 Address</td>
+              <td>
+                <input type="text" name="TCPIP.IPV6.IP_ADDRESS" value="$$TCPIP.IPV6.IP_ADDRESS$$" id="ip_v6_address" class="form-control">
+                <input type="text" name="TCPIP.IPV6.IP_PREFIX" value="$$TCPIP.IPV6.IP_PREFIX$$" id="ip_v6_prefix" class="form-control" style="width: 60px; margin-left: 8px;">
+              </td>
+            </tr>
+            <tr>
+              <td>Default Gateway</td>
+              <td>
+                <input type="text" name="TCPIP.IPV6.GATEWAY" value="$$TCPIP.IPV6.GATEWAY$$" id="ip_v6_gw" class="form-control">
+              </td>
+            </tr>
+          </table>
+          <div class="button-group">
+            <input name="CANCEL" value="Cancel" type="reset" class="btn btn-secondary">
+            <input name="OK" value="Save Changes" type="button" id="ip_v6_ok" class="btn btn-primary" onClick="onOKClick(this.form)">
+          </div>
+        </form>
       </div>
-    </form>
-  </div>
-</div>
+    </div>
 
-<div class="card">
-  <div class="card-header">
-    <span class="card-title">NTP Configuration</span>
-  </div>
-  <div class="card-content section-content">
-    <form name="NTP_FORM" method="POST">
-      <input type="hidden" name="CSRFTOKEN" value="$$CSRFTOKEN$$">
-      <input type="hidden" name="REDIRECT" value="ip.html" target="content">
-      
-      <table class="form-table">
-        <tr>
-          <td>NTP Client</td>
-          <td>
-            <select name="NTP.GENERAL.ENABLE" id="ip_ntp_enable" onChange="onNTPEnableChange()">
-              <script language="JavaScript">
-              var ntp='$$NTP.GENERAL.ENABLE$$';
-              var ntpp=ntp;
-              var ntpt=new Array('DISABLED','ENABLED');
-              var ntpo=new Array('NO','YES');
-              selectOptionsWithText(ntpp,ntpt,ntpo);
-              </script>
-            </select>
-          </td>
-        </tr>
-        <tr>
-          <td>NTP Server</td>
-          <td>
-            <input type="text" name="NTP.GENERAL.SERVER" value="$$NTP.GENERAL.SERVER$$" id="ip_ntp_address" class="form-control">
-          </td>
-        </tr>
-        <tr>
-          <td>Resync Time (minutes)</td>
-          <td>
-            <input type="text" name="NTP.GENERAL.RESYNC_TIME" value="$$NTP.GENERAL.RESYNC_TIME$$" id="ip_ntp_resynchtime" class="form-control" style="width: 80px;">
-          </td>
-        </tr>
-      </table>
-      <div class="button-group">
-        <input name="CANCEL" value="Cancel" type="reset" class="btn btn-secondary">
-        <input name="OK" value="Save Changes" type="button" id="ip_ntp_ok" class="btn btn-primary" onClick="onOKClick(this.form)">
+    <div id="dns-section" class="section-container">
+      <div class="section-header">DNS Configuration</div>
+      <div class="section-content">
+        <form name="DNS_FORM" method="POST">
+          <input type="hidden" name="CSRFTOKEN" value="$$CSRFTOKEN$$">
+          <input type="hidden" name="REDIRECT" value="ip.html" target="content">
+          
+          <table class="form-table">
+            <tr>
+              <td>Primary DNS Server (IPv4)</td>
+              <td>
+                <input type="text" name="DNS.GENERAL.IPV4.1" value="$$DNS.GENERAL.IPV4.1$$" id="ip_v4_dns" class="form-control">
+              </td>
+            </tr>
+            <tr>
+              <td>Secondary DNS Server (IPv4)</td>
+              <td>
+                <input type="text" name="DNS.GENERAL.IPV4.2" value="$$DNS.GENERAL.IPV4.2$$" class="form-control">
+              </td>
+            </tr>
+            <tr>
+              <td>Primary DNS Server (IPv6)</td>
+              <td>
+                <input type="text" name="DNS.GENERAL.IPV6.1" value="$$DNS.GENERAL.IPV6.1$$" id="ip_v6_dns" class="form-control">
+              </td>
+            </tr>
+            <tr>
+              <td>Secondary DNS Server (IPv6)</td>
+              <td>
+                <input type="text" name="DNS.GENERAL.IPV6.2" value="$$DNS.GENERAL.IPV6.2$$" class="form-control">
+              </td>
+            </tr>
+          </table>
+          <div class="button-group">
+            <input name="CANCEL" value="Cancel" type="reset" class="btn btn-secondary">
+            <input name="OK" value="Save Changes" type="button" id="ip_dns_ok" class="btn btn-primary" onClick="onOKClick(this.form)">
+          </div>
+        </form>
       </div>
-    </form>
+    </div>
+
+    <div id="ntp-section" class="section-container">
+      <div class="section-header">NTP Configuration</div>
+      <div class="section-content">
+        <form name="NTP_FORM" method="POST">
+          <input type="hidden" name="CSRFTOKEN" value="$$CSRFTOKEN$$">
+          <input type="hidden" name="REDIRECT" value="ip.html" target="content">
+          
+          <table class="form-table">
+            <tr>
+              <td>NTP Client</td>
+              <td>
+                <select name="NTP.GENERAL.ENABLE" id="ip_ntp_enable" onChange="onNTPEnableChange()">
+                  <script language="JavaScript">
+                  var ntp='$$NTP.GENERAL.ENABLE$$';
+                  var ntpp=ntp;
+                  var ntpt=new Array('DISABLED','ENABLED');
+                  var ntpo=new Array('NO','YES');
+                  selectOptionsWithText(ntpp,ntpt,ntpo);
+                  </script>
+                </select>
+              </td>
+            </tr>
+            <tr>
+              <td>NTP Server</td>
+              <td>
+                <input type="text" name="NTP.GENERAL.SERVER" value="$$NTP.GENERAL.SERVER$$" id="ip_ntp_address" class="form-control">
+              </td>
+            </tr>
+            <tr>
+              <td>Resync Time (minutes)</td>
+              <td>
+                <input type="text" name="NTP.GENERAL.RESYNC_TIME" value="$$NTP.GENERAL.RESYNC_TIME$$" id="ip_ntp_resynchtime" class="form-control" style="width: 80px;">
+              </td>
+            </tr>
+          </table>
+          <div class="button-group">
+            <input name="CANCEL" value="Cancel" type="reset" class="btn btn-secondary">
+            <input name="OK" value="Save Changes" type="button" id="ip_ntp_ok" class="btn btn-primary" onClick="onOKClick(this.form)">
+          </div>
+        </form>
+      </div>
+    </div>
   </div>
 </div>
 
