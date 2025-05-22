@@ -103,11 +103,16 @@ function onNDIMChange()
 <meta http-equiv="Expires" content="Mon, 06 Jan 1990 00:00:01 GMT">
 <style>
 :root {
-  --primary-color: #0066cc;
-  --secondary-color: #004d99;
-  --background-color: #f7f7f7;
-  --text-color: #333333;
-  --border-color: #dddddd;
+  --primary-color: #ff6a00;
+  --primary-light: #ff922b;
+  --primary-dark: #c43e00;
+  --background-color: #fff7f0;
+  --card-bg: #fff;
+  --text-color: #222;
+  --border-color: #ffb380;
+  --input-border: #ff922b;
+  --shadow: 0 2px 12px rgba(255,106,0,0.08);
+  --radius: 12px;
   --header-bg-color: white;
   --footer-bg-color: #e8f5e9;
   --success-color: #28a745;
@@ -141,7 +146,7 @@ body {
   background-color: var(--primary-color);
   color: white;
   padding: 15px 20px;
-  font-size: 18px;
+  font-size: 14px;
   font-weight: 500;
 }
 
@@ -165,6 +170,7 @@ body {
 
 .form-table td:first-child {
   font-weight: 500;
+  font-size: 14px;
   color: var(--text-color);
 }
 
@@ -210,7 +216,7 @@ input[type="button"] {
 }
 
 input[type="button"]:hover {
-  background-color: var(--secondary-color);
+  background-color: var(--primary-light);
 }
 
 input[type="reset"] {
@@ -294,11 +300,12 @@ input[disabled] {
   width: 100%;
 }
 .ghn-tab-item {
-  padding: 16px 32px;
+  padding: 12px 24px;
   cursor: pointer;
   border-radius: 0 20px 20px 0;
   margin-bottom: 8px;
   font-weight: 500;
+  font-size: 14px;
   color: #333;
   background: none;
   border: none;
@@ -307,7 +314,7 @@ input[disabled] {
   transition: background 0.2s, color 0.2s;
 }
 .ghn-tab-item.active, .ghn-tab-item:hover {
-  background: #FF6B35;
+  background: var(--primary-color);
   color: #fff;
 }
 .ghn-tab-content {
