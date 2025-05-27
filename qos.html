@@ -287,6 +287,14 @@ td {
 </style>
 <script language="JavaScript" type="text/javascript">
 //QoS functions
+function setAlwaysEnabledFields(dis) {
+    // Always keep these enabled
+    document.getElementById("qos_packetclassifier_defaultprio").disabled = false;
+    document.getElementById("qos_packetclassifier_tcpv4_ack_class").disabled = false;
+    document.getElementById("qos_packetclassifier_tcpv6_ack_class").disabled = false;
+    document.getElementById("qos_packetclassifier_arp_class_en").disabled = false;
+}
+
 function disableGeneralFields(dis)
 {
     //setQoSPacketDetector
@@ -320,6 +328,8 @@ function disableGeneralFields(dis)
 
     //typeofframe
     document.getElementById("qos_frametype").disabled=dis;
+
+    setAlwaysEnabledFields(false);
 }
 
 function disablePrioFields(dis)
@@ -331,6 +341,7 @@ function disablePrioFields(dis)
       document.getElementById("qos_pc_enabled_rule"+i).disabled=dis;
     }
  
+    setAlwaysEnabledFields(false);
 }
 
 function d2h(d) {return d.toString(16);}
@@ -407,11 +418,15 @@ function CriterionGUIPreset(criterion)
 {
   document.getElementById("qos_criterion").value=criterion;
 
+  // Always enable the 4 key parameters
+  setAlwaysEnabledFields(false);
+
   if (criterion=="None")
   {
     disableGeneralFields(true);
     disablePrioFields(true);
-
+    // Disable all except the 4 key parameters
+    // (Handled by disableGeneralFields/disablePrioFields + setAlwaysEnabledFields)
     document.forms.QOS_FORM.QOS_PD1.value="None";
     document.forms.QOS_FORM.QOS_PD2.value="None";
 
@@ -422,12 +437,12 @@ function CriterionGUIPreset(criterion)
   }
   else if (criterion=="Custom")
   {
+    // Enable only custom-related fields
     disableGeneralFields(false);
     disablePrioFields(false);
-
+    // Add logic to disable DSCP and 802.1p specific fields
     document.forms.QOS_FORM.QOS_PD1.value="None";
     document.forms.QOS_FORM.QOS_PD2.value="None";
-
 
     document.getElementById("PACKETCLASSIFIER_GENERAL_TYPE_CLASS_MAP_EN1").value="YES";
     document.getElementById("PACKETCLASSIFIER_GENERAL_VLAN_CLASS_MAP_EN1").value="NO";
@@ -436,12 +451,12 @@ function CriterionGUIPreset(criterion)
   }
   else if (criterion=="DSCP")
   {
+    // Enable only DSCP-related fields
     disableGeneralFields(true);
     disablePrioFields(true);
-
+    // Enable DSCP section, disable others
     document.forms.QOS_FORM.QOS_PD1.value="None";
     document.forms.QOS_FORM.QOS_PD2.value="None";
-
 
     document.getElementById("PACKETCLASSIFIER_GENERAL_TYPE_CLASS_MAP_EN1").value="NO";
     document.getElementById("PACKETCLASSIFIER_GENERAL_VLAN_CLASS_MAP_EN1").value="NO";
@@ -450,9 +465,10 @@ function CriterionGUIPreset(criterion)
   }
   else if (criterion=="802.1p")
   {
+    // Enable only 802.1p-related fields
     disableGeneralFields(true);
     disablePrioFields(true);
-
+    // Enable 802.1p section, disable others
     document.forms.QOS_FORM.QOS_PD1.value="None";
     document.forms.QOS_FORM.QOS_PD2.value="None";
 
@@ -475,9 +491,10 @@ function CriterionGUIPreset(criterion)
   }
   else if (criterion=="802.1p DSCP")
   {
+    // Enable both 802.1p and DSCP fields
     disableGeneralFields(true);
     disablePrioFields(true);
-
+    // Enable both sections
     document.forms.QOS_FORM.QOS_PD1.value="None";
     document.forms.QOS_FORM.QOS_PD2.value="None";
 
@@ -500,9 +517,10 @@ function CriterionGUIPreset(criterion)
   }
   else if (criterion=="DSCP 802.1p")
   {
+    // Enable both DSCP and 802.1p fields
     disableGeneralFields(true);
     disablePrioFields(true);
-
+    // Enable both sections
     document.forms.QOS_FORM.QOS_PD1.value="None";
     document.forms.QOS_FORM.QOS_PD2.value="None";
 
@@ -525,12 +543,12 @@ function CriterionGUIPreset(criterion)
   }
   else if (criterion=="Custom DSCP 802.1p")
   {
+    // Enable custom, DSCP, and 802.1p fields
     disableGeneralFields(false);
     disablePrioFields(false);
-
+    // Enable all sections
     document.forms.QOS_FORM.QOS_PD1.value="None";
     document.forms.QOS_FORM.QOS_PD2.value="None";
-
 
     document.getElementById("PACKETCLASSIFIER_GENERAL_TYPE_CLASS_MAP_EN1").value="YES";
     document.getElementById("PACKETCLASSIFIER_GENERAL_VLAN_CLASS_MAP_EN1").value="YES";
@@ -539,12 +557,12 @@ function CriterionGUIPreset(criterion)
   }
   else if (criterion=="Custom 802.1p DSCP")
   {
+    // Enable custom, 802.1p, and DSCP fields
     disableGeneralFields(false);
     disablePrioFields(false);
-
+    // Enable all sections
     document.forms.QOS_FORM.QOS_PD1.value="None";
     document.forms.QOS_FORM.QOS_PD2.value="None";
-
 
     document.getElementById("PACKETCLASSIFIER_GENERAL_TYPE_CLASS_MAP_EN1").value="YES";
     document.getElementById("PACKETCLASSIFIER_GENERAL_VLAN_CLASS_MAP_EN1").value="YES";
@@ -665,13 +683,37 @@ function onLoadScript()
 
   document.getElementById("qos_packetclassifier_defaultprio").value = default_prio;
 
+  populatePCPDropdowns();
+  updatePCPSectionVisibility();
 }
 
 function onCriteriaChange()
 {
   CriterionGUIPreset(document.forms.QOS_FORM.CRITERION.value);
+  updatePCPSectionVisibility();
 }
 
+function updatePCPSectionVisibility() {
+  var criterion = document.getElementById("qos_criterion").value;
+  var show = (criterion === "802.1p" || criterion === "DSCP 802.1p" || criterion === "Custom 802.1p DSCP");
+  document.getElementById("pcp_priority_section").style.display = show ? "" : "none";
+}
+
+function populatePCPDropdowns() {
+  var pcpMapStr = "$$PACKETCLASSIFIER.GENERAL.VLAN_CLASS_MAP$$";
+  var pcpMap = pcpMapStr.split(",");
+  for (var i = 0; i < 8; i++) {
+    var sel = document.getElementById("pcp_" + i);
+    sel.innerHTML = "";
+    for (var j = 0; j < 8; j++) {
+      var opt = document.createElement("option");
+      opt.value = j;
+      opt.text = j;
+      if (parseInt(pcpMap[i]) === j) opt.selected = true;
+      sel.appendChild(opt);
+    }
+  }
+}
 
 function onOKClick(form)
 {
@@ -1058,6 +1100,22 @@ document.write('</div>');
     </td></tr>
     <tr><td colspan=8 style="background:#dddddd"></td></tr>
     </table>
+    </div>
+
+    <!-- 802.1p PCP-to-Priority Mapping Section -->
+    <div id="pcp_priority_section" style="display:none; margin-top: 32px;">
+      <h3 style="text-align:center;">802.1p</h3>
+      <table style="margin: 0 auto;">
+        <tr><th style="text-align:left;">802.1p PCP</th><th style="text-align:left;">Priority:</th></tr>
+        <tr><td>PCP 0 (BE):</td><td><select id="pcp_0" name="PACKETCLASSIFIER.GENERAL.VLAN_CLASS_MAP.1"></select></td></tr>
+        <tr><td>PCP 1 (BK):</td><td><select id="pcp_1" name="PACKETCLASSIFIER.GENERAL.VLAN_CLASS_MAP.2"></select></td></tr>
+        <tr><td>PCP 2 (EE):</td><td><select id="pcp_2" name="PACKETCLASSIFIER.GENERAL.VLAN_CLASS_MAP.3"></select></td></tr>
+        <tr><td>PCP 3 (CA):</td><td><select id="pcp_3" name="PACKETCLASSIFIER.GENERAL.VLAN_CLASS_MAP.4"></select></td></tr>
+        <tr><td>PCP 4 (VI):</td><td><select id="pcp_4" name="PACKETCLASSIFIER.GENERAL.VLAN_CLASS_MAP.5"></select></td></tr>
+        <tr><td>PCP 5 (VO):</td><td><select id="pcp_5" name="PACKETCLASSIFIER.GENERAL.VLAN_CLASS_MAP.6"></select></td></tr>
+        <tr><td>PCP 6 (IC):</td><td><select id="pcp_6" name="PACKETCLASSIFIER.GENERAL.VLAN_CLASS_MAP.7"></select></td></tr>
+        <tr><td>PCP 7 (NC):</td><td><select id="pcp_7" name="PACKETCLASSIFIER.GENERAL.VLAN_CLASS_MAP.8"></select></td></tr>
+      </table>
     </div>
     </form>
   </div>
