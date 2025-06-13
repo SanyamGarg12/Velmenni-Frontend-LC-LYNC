@@ -1025,30 +1025,36 @@ document.write('</div>');
       <tr><td colspan=8 style="background:#dddddd"></td></tr>
       <tr><td colspan=8></td></tr>
       
-      <tr><td>DSCP Class  </td><td colspan=7 align="right">
-      <script language="JavaScript" type="text/javascript">
-      var dscp_class_map_str="$$PACKETCLASSIFIER.GENERAL.DSCP_CLASS_MAP$$";
-      var dscp_class_map = dscp_class_map_str.split(",");
-      var nto=new Array('0','1','2','3','4','5','6','7');
-
-      document.write('<table style="border:3px solid #dddddd">');
-      for(var i=0;i<=7;i++)
-      {
-         document.write('<tr>');
-         for(var x=1;x<=8;x++)
-         {
-             var nt=dscp_class_map[eval((i*8)+x-1)];
-             var ntp=nt;
-             document.write('<td><select name="PACKETCLASSIFIER.GENERAL.DSCP_CLASS_MAP.'+eval((i*8)+x)+'" id="dscp_class_map_'+eval((i*8)+x)+'">');
-             selectOptions(ntp,nto);
-             document.write('</select></td>');
-         }
-         document.write('</tr>');
-      }  
-      document.write('</table>');
-      </script>
-      </td>
-      </tr>
+      <tr><td>DSCP Class</td><td colspan=7 align="right">
+      <table style="border:3px solid #dddddd">
+        <tr><th>DSCP Range</th><th>Priority</th></tr>
+        <script language="JavaScript" type="text/javascript">
+        var dscp_class_map_str = "$$PACKETCLASSIFIER.GENERAL.DSCP_CLASS_MAP$$";
+        var dscp_class_map = dscp_class_map_str.split(",");
+        var nto = new Array('0','1','2','3','4','5','6','7');
+        for (var group = 0; group < 8; group++) {
+          var start = group * 8;
+          var end = start + 7;
+          // Use the first value in the group as the selected value
+          var nt = dscp_class_map[start];
+          document.write('<tr>');
+          document.write('<td>DSCP ' + start + '–' + end + '</td>');
+          document.write('<td>');
+          document.write('<select name="PACKETCLASSIFIER.GENERAL.DSCP_CLASS_MAP_GROUP.' + (group+1) + '" id="dscp_class_map_group_' + (group+1) + '" onchange="for(var i='+start+';i<='+end+';i++){document.getElementById(\'dscp_class_map_\'+(i+1)).value=this.value;}">');
+          for (var j = 0; j < nto.length; j++) {
+            document.write('<option value="' + nto[j] + '"' + (nt == nto[j] ? ' selected' : '') + '>' + nto[j] + '</option>');
+          }
+          document.write('</select>');
+          // Hidden selects for each DSCP value in the group (to submit the full 64-value map)
+          for (var k = start; k <= end; k++) {
+            document.write('<input type="hidden" name="PACKETCLASSIFIER.GENERAL.DSCP_CLASS_MAP.' + (k+1) + '" id="dscp_class_map_' + (k+1) + '" value="' + dscp_class_map[k] + '">');
+          }
+          document.write('</td>');
+          document.write('</tr>');
+        }
+        </script>
+      </table>
+      </td></tr>
 
       
       <tr><td colspan=8 style="background:#dddddd"></td></tr>
