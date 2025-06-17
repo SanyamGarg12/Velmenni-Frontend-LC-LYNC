@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>SNR & PSD Measurements</title>
+    <link rel="stylesheet" type="text/css" href="styles.css">
+    <script src="common.js"></script>
+    <script src="snr_measurements.js"></script>
+    <!-- Add Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation"></script>
+    <style>
+        .measurement-panel {
+            margin: 20px;
+            padding: 20px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: inline-block;
+            width: 100px;
+            font-weight: bold;
+        }
+        .notes-panel {
+            background-color: #FFFFD7;
+            border: 1px solid #808080;
+            padding: 15px;
+            margin-top: 20px;
+        }
+        .chart-container {
+            margin-top: 20px;
+            border: 1px solid #ccc;
+            padding: 10px;
+            height: 500px;
+            position: relative;
+        }
+        .chart-controls {
+            margin-top: 10px;
+            padding: 10px;
+            background-color: #f5f5f5;
+            border: 1px solid #ddd;
+        }
+        .chart-controls label {
+            margin-right: 15px;
+        }
+        #chartArea {
+            display: flex;
+            flex-direction: column;
+        }
+        .error-message {
+            color: red;
+            margin-top: 10px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="measurement-panel">
+        <h2 style="color: blue;">Choose TX Node and type of measurement to show</h2>
+        
+        <div class="form-group">
+            <label for="txNode">TX Node:</label>
+            <select id="txNode" style="width: 200px;">
+                <!-- Will be populated dynamically -->
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="rxNode">RX Node:</label>
+            <input type="text" id="rxNode" style="width: 200px;" readonly>
+        </div>
+
+        <div class="form-group">
+            <label for="measureType">Type:</label>
+            <select id="measureType" style="width: 200px;">
+                <option value="SNR_PROBE">SNR_PROBE</option>
+                <option value="SNR_DATA">SNR_DATA</option>
+                <option value="PSD_RX">PSD_RX</option>
+                <option value="NOISE">NOISE</option>
+            </select>
+            <button id="viewBtn" style="margin-left: 20px;">View</button>
+        </div>
+
+        <div id="chartArea">
+            <div class="chart-container">
+                <canvas id="measurementChart"></canvas>
+            </div>
+            <div class="chart-controls">
+                <input type="checkbox" id="minMaxMode" />
+                <label for="minMaxMode">Min/Max Mode</label>
+                <input type="checkbox" id="pauseUpdate" />
+                <label for="pauseUpdate">Pause Updates</label>
+                <button id="saveCSV">Save as CSV</button>
+                <button id="resetMinMax">Reset Min/Max</button>
+            </div>
+            <div class="error-message" id="errorMsg"></div>
+        </div>
+
+        <div class="notes-panel">
+            <h3>Notes:</h3>
+            <p>In order to get the measurements, this computer needs to have IP connectivity with the RX node.<br>
+            For example, if the RX node IP address is 192.168.10.250 netmask 255.255.255.0, the IP of this computer should be 192.168.10.XXX.</p>
+            
+            <p>There are several measurement types:</p>
+            <ul>
+                <li><b>SNR_PROBE</b> gets the Signal/Noise in dB from the TX node to RX node.</li>
+                <li><b>SNR_DATA</b> also gets the SNR value from the TX node to the RX node but it does not use PROBE frames and requires data traffic from TX node to RX node. Use of SNR_PROBE is recommended.</li>
+                <li><b>PSD_RX</b> gets the PSD received in dBm/Hz.</li>
+                <li><b>NOISE</b> gets the Noise with no signal in dBm/Hz.</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        // Initialize measurement handler
+        const snrMeasurements = new SNRMeasurements();
+        
+        let chart = null;
+        let measurementData = {
+            current: [],
+            min: [],
+            max: [],
+            minPrevious: [],
+            maxPrevious: []
+        };
+        
+        let updateInterval = null;
+        let minMaxMode = false;
+        let paused = false;
+
+        // Initialize the page
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeChart();
+            getCurrentNodeInfo();
+            
+            // Add event listeners
+            document.getElementById('viewBtn').addEventListener('click', startMeasurements);
+            document.getElementById('minMaxMode').addEventListener('change', toggleMinMaxMode);
+            document.getElementById('pauseUpdate').addEventListener('change', togglePause);
+            document.getElementById('saveCSV').addEventListener('click', saveToCSV);
+            document.getElementById('resetMinMax').addEventListener('click', resetMinMax);
+            document.getElementById('measureType').addEventListener('change', updateChartType);
+        });
+
+        function initializeChart() {
+            const ctx = document.getElementById('measurementChart').getContext('2d');
+            chart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: [], // Will be populated with frequency points
+                    datasets: [
+                        {
+                            label: 'Current',
+                            data: [],
+                            borderColor: 'rgb(75, 192, 192)',
+                            tension: 0.1
+                        },
+                        {
+                            label: 'Min',
+                            data: [],
+                            borderColor: 'rgb(255, 99, 132)',
+                            hidden: true
+                        },
+                        {
+                            label: 'Max',
+                            data: [],
+                            borderColor: 'rgb(54, 162, 235)',
+                            hidden: true
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    animation: false, // Disable animations for better performance
+                    scales: {
+                        y: {
+                            beginAtZero: false,
+                            title: {
+                                display: true,
+                                text: 'Value (dB)'
+                            }
+                        },
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Frequency (MHz)'
+                            }
+                        }
+                    },
+                    plugins: {
+                        annotation: {
+                            annotations: {
+                                agcLabel: {
+                                    type: 'label',
+                                    xValue: 2,
+                                    yValue: 2,
+                                    content: ['AGC: --'],
+                                    font: {
+                                        size: 12
+                                    }
+                                }
+                            }
+                        },
+                        legend: {
+                            position: 'top'
+                        }
+                    }
+                }
+            });
+        }
+
+        async function getCurrentNodeInfo() {
+            try {
+                // Mock data instead of API call
+                const mockData = {
+                    macAddress: "00:13:9D:00:05:73", // Example MAC address
+                    connectedNodes: [
+                        { did: "1", macAddress: "00:13:9D:00:05:74" },
+                        { did: "2", macAddress: "00:13:9D:00:05:75" },
+                        { did: "3", macAddress: "00:13:9D:00:05:76" }
+                    ]
+                };
+                
+                document.getElementById('rxNode').value = mockData.macAddress;
+                
+                const txSelect = document.getElementById('txNode');
+                txSelect.innerHTML = ''; // Clear existing options
+                
+                mockData.connectedNodes.forEach(node => {
+                    const option = document.createElement('option');
+                    option.value = node.did;
+                    option.text = node.macAddress;
+                    txSelect.appendChild(option);
+                });
+                hideError();
+            } catch (error) {
+                showError('Error getting node info: ' + error.message);
+            }
+        }
+
+        function startMeasurements() {
+            if (updateInterval) {
+                clearInterval(updateInterval);
+            }
+
+            const measureType = document.getElementById('measureType').value;
+            updateChartType(measureType);
+
+            // Reset min/max data if needed
+            if (minMaxMode) {
+                resetMinMax();
+            }
+
+            // Start periodic updates
+            updateInterval = setInterval(async () => {
+                if (!paused) {
+                    await updateMeasurements();
+                }
+            }, 1000);
+
+            // Initial update
+            updateMeasurements();
+        }
+
+        async function updateMeasurements() {
+            try {
+                const txNode = document.getElementById('txNode').value;
+                const measureType = document.getElementById('measureType').value;
+                
+                const data = await snrMeasurements.processMeasurements(txNode, measureType);
+                updateChartData(data);
+                hideError();
+            } catch (error) {
+                showError('Error updating measurements: ' + error.message);
+            }
+        }
+
+        function updateChartData(data) {
+            // Update frequency labels if needed
+            if (chart.data.labels.length !== data.frequencies.length) {
+                chart.data.labels = data.frequencies;
+            }
+
+            // Update current data
+            chart.data.datasets[0].data = data.measurements;
+            
+            if (minMaxMode) {
+                // Update min/max if enabled
+                for (let i = 0; i < data.measurements.length; i++) {
+                    const val = data.measurements[i];
+                    measurementData.min[i] = Math.min(measurementData.min[i] || val, val);
+                    measurementData.max[i] = Math.max(measurementData.max[i] || val, val);
+                }
+                
+                chart.data.datasets[1].data = measurementData.min;
+                chart.data.datasets[2].data = measurementData.max;
+            }
+
+            // Update AGC label if available
+            if (data.agc !== undefined) {
+                chart.options.plugins.annotation.annotations.agcLabel.content = [`AGC: ${data.agc}`];
+            }
+
+            chart.update('none'); // Update without animation for better performance
+        }
+
+        function updateChartType(type) {
+            const yAxisLabel = type === 'SNR_PROBE' || type === 'SNR_DATA' ? 'SNR (dB)' :
+                             type === 'PSD_RX' ? 'PSD (dBm/Hz)' : 'Noise (dBm/Hz)';
+            
+            chart.options.scales.y.title.text = yAxisLabel;
+            chart.update();
+        }
+
+        function toggleMinMaxMode(event) {
+            minMaxMode = event.target.checked;
+            chart.data.datasets[1].hidden = !minMaxMode;
+            chart.data.datasets[2].hidden = !minMaxMode;
+            chart.update();
+        }
+
+        function togglePause(event) {
+            paused = event.target.checked;
+        }
+
+        function resetMinMax() {
+            measurementData.min = [];
+            measurementData.max = [];
+            chart.data.datasets[1].data = [];
+            chart.data.datasets[2].data = [];
+            chart.update();
+        }
+
+        function saveToCSV() {
+            const csvContent = generateCSV();
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement("a");
+            link.href = URL.createObjectURL(blob);
+            link.download = `measurements_${Date.now()}.csv`;
+            link.click();
+        }
+
+        function generateCSV() {
+            const headers = ['Frequency', 'Current'];
+            if (minMaxMode) {
+                headers.push('Min', 'Max');
+            }
+            
+            let csv = headers.join(',') + '\n';
+            
+            for (let i = 0; i < chart.data.datasets[0].data.length; i++) {
+                const row = [
+                    chart.data.labels[i],
+                    chart.data.datasets[0].data[i]
+                ];
+                
+                if (minMaxMode) {
+                    row.push(
+                        chart.data.datasets[1].data[i],
+                        chart.data.datasets[2].data[i]
+                    );
+                }
+                
+                csv += row.join(',') + '\n';
+            }
+            
+            return csv;
+        }
+
+        function showError(message) {
+            const errorDiv = document.getElementById('errorMsg');
+            errorDiv.textContent = message;
+            errorDiv.style.display = 'block';
+        }
+
+        function hideError() {
+            const errorDiv = document.getElementById('errorMsg');
+            errorDiv.style.display = 'none';
+        }
+    </script>
+</body>
+</html> 
