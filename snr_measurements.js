@@ -13,12 +13,43 @@ const MEDIA_TYPES = {
 
 class SNRMeasurements {
     constructor() {
+        // Remove hardcoded values, will be set dynamically
         this.dStartFreq = 0;
         this.dCarrierSpacing = 0;
         this.dCorrectionFactor = 0;
         this.agc2only = false;
         this.muba = false;
         this.media = MEDIA_TYPES.PLC;
+        this.fAverage = 1;
+    }
+
+    // Set measurement parameters based on profile/media/turia/freqAvg (matches Java logic)
+    setMeasurementParams(profileId, media, turia, freqAvg) {
+        this.media = media;
+        this.fAverage = Math.pow(2, freqAvg);
+        // Default values from Java
+        if (media === MEDIA_TYPES.PLC) {
+            this.dStartFreq = 1.831112;
+            this.dCarrierSpacing = 0.195312;
+            if (turia) {
+                if (profileId === 15 || profileId === 17) {
+                    this.dCarrierSpacing /= 2;
+                    this.dCorrectionFactor = 74.5;
+                } else {
+                    this.dCorrectionFactor = 78.0;
+                }
+            } else {
+                this.dCorrectionFactor = 104.5;
+            }
+        } else if (media === MEDIA_TYPES.COAX) {
+            this.dStartFreq = 2.148224;
+            this.dCarrierSpacing = 0.195312 * 8;
+            this.dCorrectionFactor = turia ? 72.75 : 0;
+        } else if (media === MEDIA_TYPES.PHONE) {
+            this.dStartFreq = 3.564928;
+            this.dCarrierSpacing = 0.195312 * 2;
+            this.dCorrectionFactor = turia ? 80.0 : 0;
+        }
     }
 
     // Calculate SNR value based on JPanelChart.java implementation
@@ -32,7 +63,7 @@ class SNRMeasurements {
             return -100;
         }
         
-        return val - 100;
+        return val - 100; // Exact match with Java implementation
     }
 
     // Calculate signal value based on JPanelChart.java implementation
@@ -53,7 +84,7 @@ class SNRMeasurements {
             gain = this.getCoaxPhoneGain(agcGain);
         }
 
-        const freqMhz = this.dStartFreq + (idx * this.dCarrierSpacing);
+        const freqMhz = this.dStartFreq + (idx * this.fAverage) * this.dCarrierSpacing;
         const correction = noise ? 0 : this.dCorrectionFactor + (20 * Math.log10(freqMhz / 30.0));
         
         return -150 + val + gain + correction;
@@ -112,12 +143,39 @@ class SNRMeasurements {
     }
 
     // Process measurement data
-    async processMeasurements(txNode, measureType) {
+    async processMeasurements(txNode, measureType, params) {
+        // params: {profileId, media, turia, freqAvg}
+        if (params) {
+            this.setMeasurementParams(params.profileId, params.media, params.turia, params.freqAvg);
+        }
         try {
-            // Get raw measurement data from device
-            const measResponse = await this.fetchMeasurementData(txNode, measureType);
+            // Set measurement type parameters to match Java
+            let measType, askProbe, freqAvg;
+            switch(measureType) {
+                case 'SNR_PROBE':
+                    measType = 0;
+                    askProbe = 1;
+                    freqAvg = 0;
+                    break;
+                case 'SNR_DATA':
+                    measType = 1;
+                    askProbe = 0;
+                    freqAvg = 0;
+                    break;
+                case 'PSD_RX':
+                    measType = 3;
+                    askProbe = 0;
+                    freqAvg = 0;
+                    break;
+                case 'NOISE':
+                    measType = 20;
+                    askProbe = 1;
+                    freqAvg = 0;
+                    break;
+            }
+
+            const measResponse = await this.fetchMeasurementData(txNode, measType, askProbe);
             
-            // Process the data based on measurement type
             const data = {
                 measurements: [],
                 frequencies: [],
@@ -126,8 +184,9 @@ class SNRMeasurements {
 
             const numCarriers = measResponse.measurements.length;
             for (let i = 0; i < numCarriers; i++) {
-                const freq = this.dStartFreq + (i * this.dCarrierSpacing);
-                data.frequencies.push(freq);
+                // Calculate frequency exactly as in Java
+                const freq = this.dStartFreq + (i * this.fAverage) * this.dCarrierSpacing;
+                data.frequencies.push(parseFloat(freq.toFixed(3))); // Match Java precision
 
                 if (measureType === 'SNR_PROBE' || measureType === 'SNR_DATA') {
                     data.measurements.push(this.getSnrValue(i, measResponse.rmsc, measResponse.measurements[i]));
@@ -139,7 +198,10 @@ class SNRMeasurements {
 
             // Get AGC value if available
             if (measResponse.agcValues && measResponse.agcValues.length > 0) {
-                data.agc = measResponse.agcValues[0];
+                const agcValue = measResponse.agcValues[0];
+                if (agcValue !== AGC_VALUE_DISABLED) {
+                    data.agc = agcValue;
+                }
             }
 
             return data;
@@ -150,7 +212,7 @@ class SNRMeasurements {
     }
 
     // Fetch raw measurement data from device
-    async fetchMeasurementData(txNode, measureType) {
+    async fetchMeasurementData(txNode, measureType, askProbe) {
         // This would be replaced with actual device communication
         // For now, return simulated data
         return {
@@ -159,6 +221,13 @@ class SNRMeasurements {
             rmsc: Array(256).fill(true),
             timestamp: Date.now()
         };
+    }
+
+    // Export frequency range for chart axis
+    getFrequencyRange(numCarriers) {
+        const minFreq = this.dStartFreq;
+        const maxFreq = this.dStartFreq + (numCarriers - 1) * this.fAverage * this.dCarrierSpacing;
+        return { minFreq, maxFreq };
     }
 }
 

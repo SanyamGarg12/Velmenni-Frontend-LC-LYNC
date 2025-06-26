@@ -55,6 +55,7 @@
     </style>
 </head>
 <body>
+    <div id="debugPanel" style="position: fixed; top: 10px; right: 10px; background: #fffbe6; border: 1px solid #ffb380; padding: 10px; z-index: 1000; font-size: 13px; min-width: 220px; display: none;"></div>
     <div class="measurement-panel">
         <h2 style="color: blue;">Choose TX Node and type of measurement to show</h2>
         
@@ -147,24 +148,28 @@
             chart = new Chart(ctx, {
                 type: 'line',
                 data: {
-                    labels: [], // Will be populated with frequency points
                     datasets: [
                         {
                             label: 'Current',
                             data: [],
                             borderColor: 'rgb(75, 192, 192)',
-                            tension: 0.1
+                            tension: 0,
+                            pointRadius: 1 // Small points like Java
                         },
                         {
                             label: 'Min',
                             data: [],
                             borderColor: 'rgb(255, 99, 132)',
+                            tension: 0,
+                            pointRadius: 1,
                             hidden: true
                         },
                         {
                             label: 'Max',
                             data: [],
                             borderColor: 'rgb(54, 162, 235)',
+                            tension: 0,
+                            pointRadius: 1,
                             hidden: true
                         }
                     ]
@@ -172,38 +177,65 @@
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
-                    animation: false, // Disable animations for better performance
+                    animation: false,
                     scales: {
                         y: {
+                            type: 'linear',
                             beginAtZero: false,
                             title: {
                                 display: true,
                                 text: 'Value (dB)'
+                            },
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.2)', // Match Java's grid style
+                                drawBorder: true
                             }
                         },
                         x: {
+                            type: 'linear',
+                            position: 'bottom',
                             title: {
                                 display: true,
                                 text: 'Frequency (MHz)'
+                            },
+                            ticks: {
+                                stepSize: 5, // Match Java's tick spacing
+                                callback: function(value) {
+                                    return value.toFixed(1);
+                                }
+                            },
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.2)',
+                                drawBorder: true
                             }
                         }
                     },
                     plugins: {
+                        legend: {
+                            position: 'top',
+                            labels: {
+                                boxWidth: 40,
+                                font: {
+                                    family: 'Tahoma',
+                                    size: 12
+                                }
+                            }
+                        },
                         annotation: {
                             annotations: {
                                 agcLabel: {
                                     type: 'label',
                                     xValue: 2,
-                                    yValue: 2,
+                                    yValue: 140,
                                     content: ['AGC: --'],
                                     font: {
-                                        size: 12
-                                    }
+                                        family: 'Tahoma',
+                                        size: 12,
+                                        weight: 'bold'
+                                    },
+                                    color: 'white'
                                 }
                             }
-                        },
-                        legend: {
-                            position: 'top'
                         }
                     }
                 }
@@ -212,27 +244,26 @@
 
         async function getCurrentNodeInfo() {
             try {
-                // Mock data instead of API call
-                const mockData = {
-                    macAddress: "00:13:9D:00:05:73", // Example MAC address
-                    connectedNodes: [
-                        { did: "1", macAddress: "00:13:9D:00:05:74" },
-                        { did: "2", macAddress: "00:13:9D:00:05:75" },
-                        { did: "3", macAddress: "00:13:9D:00:05:76" }
-                    ]
-                };
-                
-                document.getElementById('rxNode').value = mockData.macAddress;
-                
-                const txSelect = document.getElementById('txNode');
-                txSelect.innerHTML = ''; // Clear existing options
-                
-                mockData.connectedNodes.forEach(node => {
-                    const option = document.createElement('option');
-                    option.value = node.did;
-                    option.text = node.macAddress;
-                    txSelect.appendChild(option);
-                });
+                // Get real values from backend-injected variables
+                var localMac = "$$SYSTEM.PRODUCTION.MAC_ADDR$$";
+                var localDid = "$$NODE.GENERAL.DEVICE_ID$$";
+                var dids = "$$DIDMNG.GENERAL.DIDS$$".split(",");
+                var macs = "$$DIDMNG.GENERAL.MACS$$".split(",");
+
+                // Set RX node to local MAC
+                document.getElementById('rxNode').value = localMac;
+
+                // Populate TX node dropdown with all other nodes with DID != 0 and not local
+                var txSelect = document.getElementById('txNode');
+                txSelect.innerHTML = '';
+                for (var i = 0; i < dids.length; i++) {
+                    if (dids[i] !== localDid && dids[i] !== "0" && macs[i] && macs[i] !== localMac) {
+                        var option = document.createElement('option');
+                        option.value = dids[i];
+                        option.text = macs[i];
+                        txSelect.appendChild(option);
+                    }
+                }
                 hideError();
             } catch (error) {
                 showError('Error getting node info: ' + error.message);
@@ -267,49 +298,126 @@
             try {
                 const txNode = document.getElementById('txNode').value;
                 const measureType = document.getElementById('measureType').value;
-                
-                const data = await snrMeasurements.processMeasurements(txNode, measureType);
-                updateChartData(data);
+                // Fetch parameters from backend-injected variables (no hardcoding)
+                const profileIdRaw = "$$PHYMNG.GENERAL.RUNNING_PHYMODE_ID$$";
+                const mediaRaw = "$$MEDIA_TYPE$$";
+                const asicTypeRaw = "$$ASIC_TYPE$$";
+                const freqAvgRaw = "$$FREQ_AVG$$";
+                let debugHtml = '<b>Debug Panel</b><br>';
+                let hasError = false;
+                // Parse and validate each variable
+                let profileId = parseInt(profileIdRaw);
+                if (isNaN(profileId)) {
+                    debugHtml += '<span style="color:red">profileId: INVALID (' + profileIdRaw + ')</span><br>';
+                    hasError = true;
+                } else {
+                    debugHtml += 'profileId: ' + profileId + '<br>';
+                }
+                let media = parseInt(mediaRaw);
+                if (isNaN(media)) {
+                    debugHtml += '<span style="color:red">media: INVALID (' + mediaRaw + ')</span><br>';
+                    hasError = true;
+                } else {
+                    debugHtml += 'media: ' + media + '<br>';
+                }
+                let turia = (asicTypeRaw === "3142") ? false : true;
+                if (!asicTypeRaw || asicTypeRaw === "$$ASIC_TYPE$$") {
+                    debugHtml += '<span style="color:red">turia/asicType: INVALID (' + asicTypeRaw + ')</span><br>';
+                    hasError = true;
+                } else {
+                    debugHtml += 'turia: ' + turia + ' (asicType: ' + asicTypeRaw + ')<br>';
+                }
+                let freqAvg = parseInt(freqAvgRaw);
+                if (isNaN(freqAvg)) {
+                    debugHtml += '<span style="color:red">freqAvg: INVALID (' + freqAvgRaw + ')</span><br>';
+                    hasError = true;
+                } else {
+                    debugHtml += 'freqAvg: ' + freqAvg + '<br>';
+                }
+                // Show debug panel if any variable is present
+                const debugPanel = document.getElementById('debugPanel');
+                debugPanel.innerHTML = debugHtml;
+                debugPanel.style.display = 'block';
+                // Also log to console
+                console.log('profileId:', profileId, 'media:', media, 'turia:', turia, 'asicType:', asicTypeRaw, 'freqAvg:', freqAvg);
+                if (hasError) {
+                    showError('One or more measurement parameters are missing or invalid. See debug panel.');
+                    return;
+                }
+                const params = { profileId, media, turia, freqAvg };
+                const data = await snrMeasurements.processMeasurements(txNode, measureType, params);
+                updateChartData(data, params);
                 hideError();
             } catch (error) {
                 showError('Error updating measurements: ' + error.message);
             }
         }
 
-        function updateChartData(data) {
-            // Update frequency labels if needed
-            if (chart.data.labels.length !== data.frequencies.length) {
-                chart.data.labels = data.frequencies;
-            }
+        function updateChartData(data, params) {
+            // Create data points array with proper x,y coordinates
+            const points = data.measurements.map((y, i) => ({
+                x: data.frequencies[i],
+                y: y
+            }));
 
             // Update current data
-            chart.data.datasets[0].data = data.measurements;
+            chart.data.datasets[0].data = points;
             
             if (minMaxMode) {
-                // Update min/max if enabled
-                for (let i = 0; i < data.measurements.length; i++) {
-                    const val = data.measurements[i];
-                    measurementData.min[i] = Math.min(measurementData.min[i] || val, val);
-                    measurementData.max[i] = Math.max(measurementData.max[i] || val, val);
+                // Update min/max if enabled (match Java's min/max tracking)
+                for (let i = 0; i < points.length; i++) {
+                    const val = points[i].y;
+                    if (!measurementData.min[i]) {
+                        measurementData.min[i] = { x: points[i].x, y: val };
+                        measurementData.max[i] = { x: points[i].x, y: val };
+                    } else {
+                        measurementData.min[i].y = Math.min(measurementData.min[i].y, val);
+                        measurementData.max[i].y = Math.max(measurementData.max[i].y, val);
+                    }
                 }
                 
                 chart.data.datasets[1].data = measurementData.min;
                 chart.data.datasets[2].data = measurementData.max;
             }
 
-            // Update AGC label if available
+            // Update AGC label if available (match Java's AGC display)
             if (data.agc !== undefined) {
-                chart.options.plugins.annotation.annotations.agcLabel.content = [`AGC: ${data.agc}`];
+                chart.options.plugins.annotation.annotations.agcLabel.content = [`AGC RX: ${data.agc}`];
             }
 
-            chart.update('none'); // Update without animation for better performance
+            // Set x-axis min/max based on frequency range (no hardcoding)
+            if (data.frequencies && data.frequencies.length > 0) {
+                const minFreq = Math.min(...data.frequencies);
+                const maxFreq = Math.max(...data.frequencies);
+                chart.options.scales.x.min = minFreq;
+                chart.options.scales.x.max = maxFreq;
+            } else {
+                delete chart.options.scales.x.min;
+                delete chart.options.scales.x.max;
+            }
+            if (points.length > 0) {
+                chart.options.scales.y.min = Math.min(0, ...points.map(p => p.y));
+                chart.options.scales.y.max = Math.max(...points.map(p => p.y)) + 10;
+            } else {
+                delete chart.options.scales.y.min;
+                delete chart.options.scales.y.max;
+            }
+            chart.update('none');
         }
 
         function updateChartType(type) {
+            // Update Y-axis label based on measurement type (match Java)
             const yAxisLabel = type === 'SNR_PROBE' || type === 'SNR_DATA' ? 'SNR (dB)' :
-                             type === 'PSD_RX' ? 'PSD (dBm/Hz)' : 'Noise (dBm/Hz)';
+                              type === 'PSD_RX' ? 'PSD (dBm/Hz)' : 'Noise (dBm/Hz)';
             
             chart.options.scales.y.title.text = yAxisLabel;
+            
+            // Update chart title based on measurement type
+            const chartTitle = document.getElementById('chartTitle');
+            if (chartTitle) {
+                chartTitle.textContent = type + ' Measurement';
+            }
+            
             chart.update();
         }
 
@@ -352,13 +460,13 @@
             for (let i = 0; i < chart.data.datasets[0].data.length; i++) {
                 const row = [
                     chart.data.labels[i],
-                    chart.data.datasets[0].data[i]
+                    chart.data.datasets[0].data[i].y
                 ];
                 
                 if (minMaxMode) {
                     row.push(
-                        chart.data.datasets[1].data[i],
-                        chart.data.datasets[2].data[i]
+                        chart.data.datasets[1].data[i].y,
+                        chart.data.datasets[2].data[i].y
                     );
                 }
                 

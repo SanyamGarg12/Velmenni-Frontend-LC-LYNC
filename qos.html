@@ -687,10 +687,19 @@ function onLoadScript()
   updatePCPSectionVisibility();
 }
 
-function onCriteriaChange()
-{
-  CriterionGUIPreset(document.forms.QOS_FORM.CRITERION.value);
-  updatePCPSectionVisibility();
+function onCriteriaChange() {
+  var criterion = document.getElementById("qos_criterion").value;
+  if (criterion === "802.1p" || criterion === "802.1p DSCP" || criterion === "DSCP 802.1p") {
+    // Enable 802.1p configuration
+    document.getElementById("PACKETCLASSIFIER_GENERAL_VLAN_CLASS_MAP_EN1").value = "YES";
+    document.getElementById("pcp_priority_section").style.display = "";
+    populatePCPDropdowns();
+  } else {
+    // Disable 802.1p configuration
+    document.getElementById("PACKETCLASSIFIER_GENERAL_VLAN_CLASS_MAP_EN1").value = "NO";
+    document.getElementById("pcp_priority_section").style.display = "none";
+  }
+  CriterionGUIPreset(criterion);
 }
 
 function updatePCPSectionVisibility() {
@@ -703,16 +712,24 @@ function updatePCPSectionVisibility() {
 function populatePCPDropdowns() {
   var pcpMapStr = "$$PACKETCLASSIFIER.GENERAL.VLAN_CLASS_MAP$$";
   var pcpMap = pcpMapStr ? pcpMapStr.split(",") : [];
+  
+  // Initialize with default values if not set
+  if (!pcpMap || pcpMap.length < 8) {
+    pcpMap = ["0", "1", "2", "3", "4", "5", "6", "7"];
+  }
+  
   for (var i = 0; i < 8; i++) {
     var sel = document.getElementById("pcp_" + i);
     if (!sel) continue;
+    
     sel.innerHTML = "";
     for (var j = 0; j < 8; j++) {
       var opt = document.createElement("option");
       opt.value = j;
       opt.text = j;
-      // fallback: if pcpMap[i] is not a number, select 0 by default
-      if (parseInt(pcpMap[i]) === j || (isNaN(parseInt(pcpMap[i])) && j === 0)) opt.selected = true;
+      if (parseInt(pcpMap[i]) === j) {
+        opt.selected = true;
+      }
       sel.appendChild(opt);
     }
   }
@@ -806,6 +823,32 @@ function onOKClick(form)
     {
       document.getElementById("qos_pc_enabled_rule"+i).disabled=false;
     }
+  }
+}
+
+function updateVLANClassMap(index, value) {
+  // Collect all PCP dropdown values
+  var pcpValues = [];
+  for (var i = 0; i < 8; i++) {
+    var sel = document.getElementById("pcp_" + i);
+    if (sel) {
+      pcpValues.push(sel.value);
+    } else {
+      pcpValues.push(i); // fallback default
+    }
+  }
+  // Set the full mapping string to the hidden input
+  var fullMap = pcpValues.join(",");
+  var hiddenInput = document.getElementsByName("PACKETCLASSIFIER.GENERAL.VLAN_CLASS_MAP")[0];
+  if (hiddenInput) {
+    hiddenInput.value = fullMap;
+  } else {
+    // If not present, create it
+    hiddenInput = document.createElement('input');
+    hiddenInput.type = 'hidden';
+    hiddenInput.name = 'PACKETCLASSIFIER.GENERAL.VLAN_CLASS_MAP';
+    hiddenInput.value = fullMap;
+    document.forms.QOS_FORM.appendChild(hiddenInput);
   }
 }
 
@@ -1094,17 +1137,17 @@ document.write('</div>');
     <tr><td colspan=8 style="background:#dddddd"></td></tr>
     <!-- 802.1p PCP-to-Priority Mapping Section -->
     <div id="pcp_priority_section" style="display:none; margin-top: 32px;">
-      <h3 style="text-align:center;">802.1p</h3>
+      <h3 style="text-align:center;">802.1p Priority Mapping</h3>
       <table style="margin: 0 auto;">
-        <tr><th style="text-align:left;">802.1p PCP</th><th style="text-align:left;">Priority:</th></tr>
-        <tr><td>PCP 0 (BE):</td><td><select id="pcp_0" name="PACKETCLASSIFIER.GENERAL.VLAN_CLASS_MAP.0"></select></td></tr>
-        <tr><td>PCP 1 (BK):</td><td><select id="pcp_1" name="PACKETCLASSIFIER.GENERAL.VLAN_CLASS_MAP.1"></select></td></tr>
-        <tr><td>PCP 2 (EE):</td><td><select id="pcp_2" name="PACKETCLASSIFIER.GENERAL.VLAN_CLASS_MAP.2"></select></td></tr>
-        <tr><td>PCP 3 (CA):</td><td><select id="pcp_3" name="PACKETCLASSIFIER.GENERAL.VLAN_CLASS_MAP.3"></select></td></tr>
-        <tr><td>PCP 4 (VI):</td><td><select id="pcp_4" name="PACKETCLASSIFIER.GENERAL.VLAN_CLASS_MAP.4"></select></td></tr>
-        <tr><td>PCP 5 (VO):</td><td><select id="pcp_5" name="PACKETCLASSIFIER.GENERAL.VLAN_CLASS_MAP.5"></select></td></tr>
-        <tr><td>PCP 6 (IC):</td><td><select id="pcp_6" name="PACKETCLASSIFIER.GENERAL.VLAN_CLASS_MAP.6"></select></td></tr>
-        <tr><td>PCP 7 (NC):</td><td><select id="pcp_7" name="PACKETCLASSIFIER.GENERAL.VLAN_CLASS_MAP.7"></select></td></tr>
+        <tr><th style="text-align:left;">802.1p PCP</th><th style="text-align:left;">Priority</th></tr>
+        <tr><td>PCP 0 (Best Effort):</td><td><select id="pcp_0" name="PACKETCLASSIFIER.GENERAL.VLAN_CLASS_MAP.0" onchange="updateVLANClassMap(0, this.value)"></select></td></tr>
+        <tr><td>PCP 1 (Background):</td><td><select id="pcp_1" name="PACKETCLASSIFIER.GENERAL.VLAN_CLASS_MAP.1" onchange="updateVLANClassMap(1, this.value)"></select></td></tr>
+        <tr><td>PCP 2 (Excellent Effort):</td><td><select id="pcp_2" name="PACKETCLASSIFIER.GENERAL.VLAN_CLASS_MAP.2" onchange="updateVLANClassMap(2, this.value)"></select></td></tr>
+        <tr><td>PCP 3 (Critical Applications):</td><td><select id="pcp_3" name="PACKETCLASSIFIER.GENERAL.VLAN_CLASS_MAP.3" onchange="updateVLANClassMap(3, this.value)"></select></td></tr>
+        <tr><td>PCP 4 (Video):</td><td><select id="pcp_4" name="PACKETCLASSIFIER.GENERAL.VLAN_CLASS_MAP.4" onchange="updateVLANClassMap(4, this.value)"></select></td></tr>
+        <tr><td>PCP 5 (Voice):</td><td><select id="pcp_5" name="PACKETCLASSIFIER.GENERAL.VLAN_CLASS_MAP.5" onchange="updateVLANClassMap(5, this.value)"></select></td></tr>
+        <tr><td>PCP 6 (Internetwork Control):</td><td><select id="pcp_6" name="PACKETCLASSIFIER.GENERAL.VLAN_CLASS_MAP.6" onchange="updateVLANClassMap(6, this.value)"></select></td></tr>
+        <tr><td>PCP 7 (Network Control):</td><td><select id="pcp_7" name="PACKETCLASSIFIER.GENERAL.VLAN_CLASS_MAP.7" onchange="updateVLANClassMap(7, this.value)"></select></td></tr>
       </table>
     </div>
     <!-- Ok/Cancel buttons below 802.1p section -->

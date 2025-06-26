@@ -521,15 +521,15 @@ printErrorMsg("$$LASTERRORMESSAGE$$");
           {
             if (pcma[i]!=mymac)
             {
-               document.write('<tr><td align="center"><font size=-1 id="ghn_conn_did_'+i+'">'+pcdids[i]+'</font></td><td align="center"><tt id="ghn_conn_mac_'+i+'">'+pcma[i]+'</tt></td><td align="center"><font size=-1 id="ghn_conn_tx_'+i+'">'+Math.floor(pcptx[i]*32/1000)+'</font></td><td align="center"><font size=-1 id="ghn_conn_tx_'+i+'">'+Math.floor(pcprx[i]*32/1000)+'</font></td><td align="center"><font size=-1></font></td></tr>');
+               document.write('<tr><td align="center"><font size=-1 id="ghn_conn_did_'+i+'">'+pcdids[i]+'</font></td><td align="center"><tt id="ghn_conn_mac_'+i+'">'+pcma[i]+'</tt></td><td align="center"><font size=-1 id="ghn_conn_tx_'+i+'">'+Math.floor(pcptx[i]*32/1000)+'</font></td><td align="center"><font size=-1 id="ghn_conn_rx_'+i+'">'+Math.floor(pcprx[i]*32/1000)+'</font></td></tr>');
             }
           }
           if(pcma.length>32)
-            document.write('<tr><td colspan=6 align="center"><font size=-1><i><b>Warning!</b> At least 33 items in the list</i></font></td></tr>');
+            document.write('<tr><td colspan=5 align="center"><font size=-1><i><b>Warning!</b> At least 33 items in the list</i></font></td></tr>');
         }
       else
       {
-        document.write('<tr><td colspan=6 align="center"><font size=-1><i>Empty list</i></font></td></tr>');
+        document.write('<tr><td colspan=5 align="center"><font size=-1><i>Empty list</i></font></td></tr>');
       }
         </script>
 
@@ -592,6 +592,11 @@ tabItems.forEach(tab => {
   });
 });
 </script>
-
+<script language="JavaScript">
+setInterval(function() {
+  window.location.reload();
+}, 1000);
+</script>
 </body>
 </html>
+

@@ -1,0 +1,83 @@
+# This file contains the definition of the so called "Sector 0" parameters.
+# and is used from the "mbr_gen" tool.
+#
+# These "Sector 0" parameters are usually set in the "production stage" (ie,
+# when individually testing each piece of hardware that leaves production), but
+# you can also define their value here (while building the flash image) so that
+# later, in the "production stage", you just have to modify the ones that you
+# want to be different for each individual piece of hardware.
+#
+# For example: You will certainly want to set a different MAC address and
+# serial number for each device (so it's probably a waste of time to set them
+# here), but you probably want to use the same "device manufacturer", "device
+# name" and "device description" strings for all of them.
+#
+#   NOTE: Even if setting the MAC address and serial number here might seem
+#         stupid, it is allowed for some special cases when it might come handy.
+#
+# Example:
+#
+#   IMAGE_TYPE           = REGULAR
+#   MAC_ADDRESS          = 21:13:4d:ee:05:01
+#   SERIAL_NUMBER        = 812812761919212A-2000-BBAX
+#   DEVICE_MANUFACTURER  = Velmenni
+#   DEVICE_NAME          = LC-LYNC
+#   DEVICE_DESCRIPTION   = G.hn modem with WiFi connectivity
+#   PRODUCT_CLASS        = GhnWifi
+#   CUSTOM_FIELD_1       = 00 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F
+#   MAC_ADDRESS_2        = 00:00:00:00:00:00
+#   FACTORY_PROFILE      = 0
+#
+# Take into consideration the following limitations:
+#
+#  1. The "IMAGE_TYPE" parameter must take one of the following two possible
+#     values: "REGULAR" (if you want to create an image which will be flashed
+#     into a final product, ready for final users) or "MANUFACTURER" (if you
+#     will later use the modem where the image has been flashed to to run the
+#     manufacturing process).
+#     Note that if you use the "MANUFACTURER" option the modem won't boot and
+#     you need to use the provided manufacturing tools to complete the
+#     manufacturing stage and obtain a final bootable modem.
+#
+#  2. The "MAC_ADDRESS" parameter value must follow the format shown in the
+#     previous example. Ie. XX:XX:XX:XX:XX:XX
+#     Only hexadecimal values (0-9, a-f, A-F) are allowed.
+#
+#  3. The rest of parameters can take any ASCII string, with a maximum length
+#     of 63 characters, except for the "DEVICE_DESCRIPTION" parameter, which
+#     can take up to 127 characters
+#
+#  4. There are 4 custom field parameters named "CUSTOM_FIELD_1" to 
+#     "CUSTOM_FIELD_4". Custom field parameters can take up to 32 bytes length 
+#     each. Each byte must be specified with two hexadecimal values (0-9, a-f, 
+#     A-F) and two consecutive bytes must be separated by one space character.
+#
+#  5. The "MAC_ADDRESS_2" parameter value must follow the format shown in the
+#     previous example. Ie. XX:XX:XX:XX:XX:XX
+#     Only hexadecimal values (0-9, a-f, A-F) are allowed.
+#     Set to 00:00:00:00:00:00 for a default value when not needed
+#  
+#  6. The "FACTORY PROFILE" parameter value must be in the range 0-254.
+#     Zero value means not using any factory profile.
+#     
+#
+# Also, for any of the parameters, if the special value "default" is used, an
+# internal (default) value will be used. This also happens when the entry for
+# a particular parameters is not present in this file.
+
+
+IMAGE_TYPE           = REGULAR
+
+MAC_ADDRESS          = 21:13:4d:ee:05:01
+SERIAL_NUMBER        = 812812761919212A-2000-BBAX
+DEVICE_MANUFACTURER  = velmenni
+DEVICE_NAME          = default
+DEVICE_DESCRIPTION   = default
+PRODUCT_CLASS        = default
+CUSTOM_FIELD_1       = default
+CUSTOM_FIELD_2       = default
+CUSTOM_FIELD_3       = default
+CUSTOM_FIELD_4       = default
+MAC_ADDRESS_2        = default
+FACTORY_PROFILE      = default
+

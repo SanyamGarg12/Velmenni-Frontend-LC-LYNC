@@ -1,0 +1,9 @@
+-r  /home/sanyam/Downloads/HomeNetworking/Spirit_HN_7.10/Release_GA/binSDK_SPIRIT.v7_10_r800+7_cvs-HN/binSDK-HN/resources/dcp962c_v1_x-HN/configuration/dcp962c_v1_x-HN_cfl_removed_files.txt                   0
+-l  ./dcp962c_v1_x-HN_loader-SPIRIT.v7_10_r800+7_cvs.ftp                 2
+-fw ./dcp962c_v1_x-HN_firmware-SPIRIT.v7_10_r800+7_cvs.ftp               2
+-c  ./dcp962c_v1_x-HN_configuration_settings-SPIRIT.v7_10_r800+7_cvs.ftp 3
+-fac ./dcp962c_v1_x-HN_factory_settings-SPIRIT.v7_10_r800+7_cvs.ftp      3
+-m /home/sanyam/Downloads/HomeNetworking/Spirit_HN_7.10/Release_GA/binSDK_SPIRIT.v7_10_r800+7_cvs-HN/binSDK-HN/resources/dcp962c_v1_x-HN/configuration/dcp962c_v1_x-HN_cfl_update_mode.txt                      3
+-fm /home/sanyam/Downloads/HomeNetworking/Spirit_HN_7.10/Release_GA/binSDK_SPIRIT.v7_10_r800+7_cvs-HN/binSDK-HN/resources/dcp962c_v1_x-HN/configuration/dcp962c_v1_x-HN_factory_update_mode.txt                 3
+-fi ./tmp/FFS.tar.xz FFS.tar.xz.upg 3
+-o ./dcp962c_v1_x-HN_osup-SPIRIT.v7_10_r800+7_cvs.ftp

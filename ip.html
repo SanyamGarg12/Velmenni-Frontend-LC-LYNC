@@ -64,6 +64,128 @@ body {
   box-sizing: border-box;
 }
 
+/* Reboot button styles */
+.reboot-button-container {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 1000;
+}
+
+.reboot-button {
+  background: linear-gradient(135deg, #ff6a00, #ff922b);
+  color: white;
+  border: none;
+  padding: 12px 20px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(255, 106, 0, 0.3);
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.reboot-button:hover {
+  background: linear-gradient(135deg, #ff922b, #ff6a00);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(255, 106, 0, 0.4);
+}
+
+.reboot-button:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 8px rgba(255, 106, 0, 0.3);
+}
+
+.reboot-button:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.reboot-icon {
+  width: 16px;
+  height: 16px;
+  fill: currentColor;
+}
+
+.reboot-confirmation {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: white;
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  z-index: 1001;
+  max-width: 400px;
+  text-align: center;
+  display: none;
+}
+
+.reboot-confirmation h3 {
+  margin: 0 0 15px 0;
+  color: var(--primary-color);
+  font-size: 18px;
+}
+
+.reboot-confirmation p {
+  margin: 0 0 25px 0;
+  color: var(--text-color);
+  line-height: 1.5;
+}
+
+.reboot-confirmation-buttons {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+}
+
+.reboot-confirm-btn {
+  background: var(--primary-color);
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background 0.2s;
+}
+
+.reboot-confirm-btn:hover {
+  background: var(--primary-light);
+}
+
+.reboot-cancel-btn {
+  background: #f5f5f5;
+  color: var(--text-color);
+  border: 1px solid #ddd;
+  padding: 10px 20px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background 0.2s;
+}
+
+.reboot-cancel-btn:hover {
+  background: #e5e5e5;
+}
+
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+  display: none;
+}
+
 .ip-flex-container {
   display: flex;
   width: 100%;
@@ -292,6 +414,16 @@ input[disabled] {
     padding: 8px 20px;
     font-size: 0.9em;
   }
+  
+  .reboot-button-container {
+    top: 10px;
+    right: 10px;
+  }
+  
+  .reboot-button {
+    padding: 10px 16px;
+    font-size: 12px;
+  }
 }
 </style>
 <script language="JavaScript">
@@ -305,11 +437,13 @@ function onLoadScript()
   // Initialize scroll spy
   initScrollSpy();
 }
+
 function onNTPEnableChange()
 {
   document.getElementById("ip_ntp_resynchtime").disabled = (document.getElementById("ip_ntp_enable").value == 'NO');
   document.getElementById("ip_ntp_address").disabled = (document.getElementById("ip_ntp_enable").value == 'NO');
 }
+
 function onDHCPv4Change()
 {
   document.getElementById("ip_v4_address").disabled = (document.getElementById("ip_v4_dhcpenable").value == 'YES');
@@ -317,12 +451,14 @@ function onDHCPv4Change()
   document.getElementById("ip_v4_gw").disabled = (document.getElementById("ip_v4_dhcpenable").value == 'YES');
   document.getElementById("ip_v4_dns").disabled = (document.getElementById("ip_v4_dhcpenable").value == 'YES');
 }
+
 function onDHCPv6Change()
 {
   document.getElementById("ip_v6_address").disabled = (document.getElementById("ip_v6_dhcpenable").value == 'YES');
   document.getElementById("ip_v6_prefix").disabled = (document.getElementById("ip_v6_dhcpenable").value == 'YES');
   document.getElementById("ip_v6_dns").disabled = (document.getElementById("ip_v6_dhcpenable").value == 'YES');
 }
+
 function onOKClick(form)
 {
   //disable all OK buttons after clicking to avoid sending 'OK' to the web server
@@ -331,6 +467,107 @@ function onOKClick(form)
   document.getElementById("ip_dns_ok").disabled = true;
   document.getElementById("ip_ntp_ok").disabled = true;
   form.submit();
+}
+
+function showRebootConfirmation() {
+  document.getElementById('reboot-overlay').style.display = 'block';
+  document.getElementById('reboot-confirmation').style.display = 'block';
+}
+
+function hideRebootConfirmation() {
+  document.getElementById('reboot-overlay').style.display = 'none';
+  document.getElementById('reboot-confirmation').style.display = 'none';
+}
+
+function performReboot() {
+  // Disable the reboot button to prevent multiple clicks
+  document.getElementById('reboot-button').disabled = true;
+  
+  // Create and submit the reboot form
+  var form = document.createElement('form');
+  form.method = 'POST';
+  form.action = '';
+  
+  // Add CSRF token
+  var csrfInput = document.createElement('input');
+  csrfInput.type = 'hidden';
+  csrfInput.name = 'CSRFTOKEN';
+  csrfInput.value = '$$CSRFTOKEN$$';
+  form.appendChild(csrfInput);
+  
+  // Add redirect parameter
+  var redirectInput = document.createElement('input');
+  redirectInput.type = 'hidden';
+  redirectInput.name = 'REDIRECT';
+  redirectInput.value = 'ip.html';
+  form.appendChild(redirectInput);
+  
+  // Add the reboot parameter (same as SctDevice.java rebootByHWReset method)
+  var rebootInput = document.createElement('input');
+  rebootInput.type = 'hidden';
+  rebootInput.name = 'SYSTEM.GENERAL.HW_RESET';
+  rebootInput.value = '1';
+  form.appendChild(rebootInput);
+  
+  // Hide the confirmation dialog
+  hideRebootConfirmation();
+  
+  // Show a brief message that reboot is in progress
+  showRebootProgress();
+  
+  // Add form to page and submit
+  document.body.appendChild(form);
+  form.submit();
+  
+  // Set a timeout to refresh the page after reboot is initiated
+  // This gives the device time to process the reboot command
+  setTimeout(function() {
+    // Force a complete page refresh to get updated values
+    window.location.reload(true);
+  }, 3000); // Wait 3 seconds for reboot to be processed
+}
+
+function showRebootProgress() {
+  // Create a progress message
+  var progressDiv = document.createElement('div');
+  progressDiv.id = 'reboot-progress';
+  progressDiv.style.cssText = `
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    z-index: 1002;
+    text-align: center;
+    max-width: 400px;
+  `;
+  
+  progressDiv.innerHTML = `
+    <h3 style="color: var(--primary-color); margin: 0 0 15px 0;">Rebooting Device</h3>
+    <p style="margin: 0 0 20px 0; color: var(--text-color);">The device is rebooting. Please wait...</p>
+    <div style="display: flex; justify-content: center;">
+      <div style="width: 20px; height: 20px; border: 2px solid #f3f3f3; border-top: 2px solid var(--primary-color); border-radius: 50%; animation: spin 1s linear infinite;"></div>
+    </div>
+    <style>
+      @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+      }
+    </style>
+  `;
+  
+  document.body.appendChild(progressDiv);
+  
+  // Remove the progress message after a delay
+  setTimeout(function() {
+    var progressElement = document.getElementById('reboot-progress');
+    if (progressElement) {
+      progressElement.remove();
+    }
+  }, 5000);
 }
 
 function initScrollSpy() {
@@ -399,6 +636,27 @@ function switchTab(tabId) {
 <script language="JavaScript">
 printErrorMsg("$$LASTERRORMESSAGE$$");
 </script>
+
+<!-- Reboot Button -->
+<div class="reboot-button-container">
+  <button id="reboot-button" class="reboot-button" onclick="showRebootConfirmation()">
+    <svg class="reboot-icon" viewBox="0 0 24 24">
+      <path d="M12 5V1L7 6l5 5V7c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6H4c0 4.42 3.58 8 8 8s8-3.58 8-8-3.58-8-8-8z"/>
+    </svg>
+    Reboot Device
+  </button>
+</div>
+
+<!-- Reboot Confirmation Dialog -->
+<div id="reboot-overlay" class="overlay"></div>
+<div id="reboot-confirmation" class="reboot-confirmation">
+  <h3>Confirm Reboot</h3>
+  <p>Are you sure you want to reboot the device? This will restart the system and may temporarily disconnect your connection.</p>
+  <div class="reboot-confirmation-buttons">
+    <button class="reboot-cancel-btn" onclick="hideRebootConfirmation()">Cancel</button>
+    <button class="reboot-confirm-btn" onclick="performReboot()">Reboot</button>
+  </div>
+</div>
 
 <div class="ip-flex-container">
   <div class="ip-sidebar">
