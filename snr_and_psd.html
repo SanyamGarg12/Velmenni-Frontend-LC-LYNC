@@ -52,11 +52,29 @@
             margin-top: 10px;
             display: none;
         }
+        .disabled-message {
+            background-color: #fff3cd;
+            border: 1px solid #ffeaa7;
+            color: #856404;
+            padding: 20px;
+            margin: 20px;
+            border-radius: 5px;
+            text-align: center;
+        }
     </style>
 </head>
 <body>
     <div id="debugPanel" style="position: fixed; top: 10px; right: 10px; background: #fffbe6; border: 1px solid #ffb380; padding: 10px; z-index: 1000; font-size: 13px; min-width: 220px; display: none;"></div>
-    <div class="measurement-panel">
+    
+    <!-- Check if measurements are enabled -->
+    <div id="measurementsDisabled" class="disabled-message" style="display: none;">
+        <h2>SNR & PSD Measurements Disabled</h2>
+        <p>SNR and PSD measurements are currently disabled on this device.</p>
+        <p>To enable measurements, set the parameter <strong>MEASUREDEBUG.GENERAL.ENABLE</strong> to <strong>YES</strong> in the device configuration.</p>
+        <p>Current setting: <strong>$$MEASUREDEBUG.GENERAL.ENABLE$$</strong></p>
+    </div>
+    
+    <div id="measurementContent" class="measurement-panel">
         <h2 style="color: blue;">Choose TX Node and type of measurement to show</h2>
         
         <div class="form-group">
@@ -113,9 +131,8 @@
     </div>
 
     <script>
-        // Initialize measurement handler
-        const snrMeasurements = new SNRMeasurements();
-        
+        // Declare all measurement-related variables at the top level (like Java class fields)
+        let updateInterval = null;
         let chart = null;
         let measurementData = {
             current: [],
@@ -124,13 +141,17 @@
             minPrevious: [],
             maxPrevious: []
         };
-        
-        let updateInterval = null;
         let minMaxMode = false;
         let paused = false;
-
-        // Initialize the page
+        let snrMeasurements = null;
+        
+        // Check if measurements are enabled on page load
         document.addEventListener('DOMContentLoaded', function() {
+           
+            // Initialize measurement handler
+            snrMeasurements = new SNRMeasurements();
+            
+            // Initialize the page
             initializeChart();
             getCurrentNodeInfo();
             
@@ -298,11 +319,9 @@
             try {
                 const txNode = document.getElementById('txNode').value;
                 const measureType = document.getElementById('measureType').value;
-                // Fetch parameters from backend-injected variables (no hardcoding)
+                // Get profileId from backend-injected variable
                 const profileIdRaw = "$$PHYMNG.GENERAL.RUNNING_PHYMODE_ID$$";
-                const mediaRaw = "$$MEDIA_TYPE$$";
-                const asicTypeRaw = "$$ASIC_TYPE$$";
-                const freqAvgRaw = "$$FREQ_AVG$$";
+                const asicTypeRaw = "$$SYSTEM.GENERAL.ASIC$$";
                 let debugHtml = '<b>Debug Panel</b><br>';
                 let hasError = false;
                 // Parse and validate each variable
@@ -313,27 +332,32 @@
                 } else {
                     debugHtml += 'profileId: ' + profileId + '<br>';
                 }
-                let media = parseInt(mediaRaw);
-                if (isNaN(media)) {
-                    debugHtml += '<span style="color:red">media: INVALID (' + mediaRaw + ')</span><br>';
-                    hasError = true;
-                } else {
-                    debugHtml += 'media: ' + media + '<br>';
-                }
+                // ASIC type logic (Java: turia = (asic == "3142") ? false : true)
                 let turia = (asicTypeRaw === "3142") ? false : true;
-                if (!asicTypeRaw || asicTypeRaw === "$$ASIC_TYPE$$") {
+                
+                if (!asicTypeRaw) {
                     debugHtml += '<span style="color:red">turia/asicType: INVALID (' + asicTypeRaw + ')</span><br>';
                     hasError = true;
                 } else {
                     debugHtml += 'turia: ' + turia + ' (asicType: ' + asicTypeRaw + ')<br>';
                 }
-                let freqAvg = parseInt(freqAvgRaw);
-                if (isNaN(freqAvg)) {
-                    debugHtml += '<span style="color:red">freqAvg: INVALID (' + freqAvgRaw + ')</span><br>';
-                    hasError = true;
-                } else {
-                    debugHtml += 'freqAvg: ' + freqAvg + '<br>';
+                // Derive media type from profileId (Java logic)
+                let media;
+                switch (profileId) {
+                    case 9: case 25:
+                        media = 1; // COAX
+                        break;
+                    case 10: case 11: case 24: case 26: case 28: case 29:
+                        media = 2; // PHONE
+                        break;
+                    default:
+                        media = 0; // PLC
+                        break;
                 }
+                debugHtml += 'media: ' + media + '<br>';
+                // FreqAvg is always 0 in Java
+                let freqAvg = 0;
+                debugHtml += 'freqAvg: ' + freqAvg + '<br>';
                 // Show debug panel if any variable is present
                 const debugPanel = document.getElementById('debugPanel');
                 debugPanel.innerHTML = debugHtml;
@@ -346,14 +370,24 @@
                 }
                 const params = { profileId, media, turia, freqAvg };
                 const data = await snrMeasurements.processMeasurements(txNode, measureType, params);
-                updateChartData(data, params);
-                hideError();
+                if (data && data.measurements && data.frequencies) {
+                    updateChartData(data, params);
+                    hideError();
+                } else {
+                    showError('No measurement data received');
+                }
             } catch (error) {
                 showError('Error updating measurements: ' + error.message);
+                console.error('Measurement error:', error);
             }
         }
 
         function updateChartData(data, params) {
+            if (!data || !data.measurements || !data.frequencies || data.measurements.length === 0) {
+                console.error('Invalid measurement data:', data);
+                return;
+            }
+
             // Create data points array with proper x,y coordinates
             const points = data.measurements.map((y, i) => ({
                 x: data.frequencies[i],
@@ -381,8 +415,10 @@
             }
 
             // Update AGC label if available (match Java's AGC display)
-            if (data.agc !== undefined) {
+            if (data.agc !== undefined && data.agc !== null) {
                 chart.options.plugins.annotation.annotations.agcLabel.content = [`AGC RX: ${data.agc}`];
+            } else {
+                chart.options.plugins.annotation.annotations.agcLabel.content = ['AGC: --'];
             }
 
             // Set x-axis min/max based on frequency range (no hardcoding)
@@ -395,13 +431,27 @@
                 delete chart.options.scales.x.min;
                 delete chart.options.scales.x.max;
             }
+            
+            // Set y-axis range based on data
             if (points.length > 0) {
-                chart.options.scales.y.min = Math.min(0, ...points.map(p => p.y));
-                chart.options.scales.y.max = Math.max(...points.map(p => p.y)) + 10;
+                const yValues = points.map(p => p.y).filter(y => !isNaN(y) && isFinite(y));
+                if (yValues.length > 0) {
+                    const minY = Math.min(...yValues);
+                    const maxY = Math.max(...yValues);
+                    const range = maxY - minY;
+                    // For SNR, always start Y-axis at 0 (never negative)
+                    if (chart.options.scales.y.title.text.includes('SNR')) {
+                        chart.options.scales.y.min = 0;
+                    } else {
+                        chart.options.scales.y.min = minY - range * 0.1;
+                    }
+                    chart.options.scales.y.max = maxY + range * 0.1;
+                }
             } else {
                 delete chart.options.scales.y.min;
                 delete chart.options.scales.y.max;
             }
+            
             chart.update('none');
         }
 
@@ -450,23 +500,27 @@
         }
 
         function generateCSV() {
-            const headers = ['Frequency', 'Current'];
+            const headers = ['Frequency (MHz)', 'Current'];
             if (minMaxMode) {
                 headers.push('Min', 'Max');
             }
             
             let csv = headers.join(',') + '\n';
             
-            for (let i = 0; i < chart.data.datasets[0].data.length; i++) {
+            const currentData = chart.data.datasets[0].data;
+            const minData = minMaxMode ? chart.data.datasets[1].data : [];
+            const maxData = minMaxMode ? chart.data.datasets[2].data : [];
+            
+            for (let i = 0; i < currentData.length; i++) {
                 const row = [
-                    chart.data.labels[i],
-                    chart.data.datasets[0].data[i].y
+                    currentData[i].x.toFixed(6),
+                    currentData[i].y.toFixed(2)
                 ];
                 
-                if (minMaxMode) {
+                if (minMaxMode && minData[i] && maxData[i]) {
                     row.push(
-                        chart.data.datasets[1].data[i].y,
-                        chart.data.datasets[2].data[i].y
+                        minData[i].y.toFixed(2),
+                        maxData[i].y.toFixed(2)
                     );
                 }
                 

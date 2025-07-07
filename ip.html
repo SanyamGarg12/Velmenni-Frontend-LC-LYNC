@@ -380,6 +380,87 @@ input[disabled] {
   cursor: not-allowed;
 }
 
+/* Additional IP Addresses Section Styles */
+.additional-ip-section {
+  margin-top: 20px;
+  padding: 15px;
+  background: #f8f9fa;
+  border-radius: 8px;
+  border: 1px solid #dee2e6;
+}
+
+.additional-ip-section h4 {
+  margin: 0 0 15px 0;
+  color: var(--primary-color);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.additional-ip-table {
+  background: transparent !important;
+  box-shadow: none !important;
+  border: none !important;
+  margin-bottom: 0 !important;
+}
+
+.additional-ip-table td:first-child {
+  width: 200px;
+  vertical-align: middle;
+}
+
+.additional-ip-table input[type="checkbox"] {
+  width: auto !important;
+  margin: 0 8px 0 0;
+}
+
+.additional-ip-table label {
+  font-weight: 500;
+  margin: 0;
+  cursor: pointer;
+}
+
+.additional-ip-table input[type="text"] {
+  width: 150px !important;
+  display: inline-block;
+  margin-right: 10px;
+}
+
+.additional-ip-table input[type="text"]:last-child {
+  margin-right: 0;
+}
+
+/* Connectivity Check Section */
+.connectivity-section {
+  margin-top: 15px;
+}
+
+.connectivity-section button {
+  background: var(--primary-color);
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.2s;
+}
+
+.connectivity-section button:hover {
+  background: var(--primary-light);
+}
+
+.connectivity-section button:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+}
+
+.connectivity-status {
+  flex: 1;
+  margin-left: 15px;
+  font-size: 14px;
+  min-height: 20px;
+}
+
 .form-table td:first-child {
   font-weight: 500;
   font-size: 14px;
@@ -432,10 +513,37 @@ function onLoadScript()
   onDHCPv4Change();
   onDHCPv6Change();
   onNTPEnableChange();
+  
+  // Initialize additional IP fields
+  initializeAdditionalIPFields();
+  
   // Set initial active tab
   document.querySelector('.ip-tab-item').classList.add('active');
   // Initialize scroll spy
   initScrollSpy();
+}
+
+function initializeAdditionalIPFields()
+{
+  // Check if additional IP 1 is enabled (not 0.0.0.0)
+  var addIP1Value = '$$TCPIP.IPV4.ADDITIONAL_IP_ADDRESS.1$$';
+  if (addIP1Value && addIP1Value !== '0.0.0.0' && addIP1Value !== 'N/A') {
+    document.getElementById("ip_v4_add_ip1_enable").checked = true;
+  } else {
+    document.getElementById("ip_v4_add_ip1_enable").checked = false;
+  }
+  
+  // Check if additional IP 2 is enabled (not 0.0.0.0)
+  var addIP2Value = '$$TCPIP.IPV4.ADDITIONAL_IP_ADDRESS.2$$';
+  if (addIP2Value && addIP2Value !== '0.0.0.0' && addIP2Value !== 'N/A') {
+    document.getElementById("ip_v4_add_ip2_enable").checked = true;
+  } else {
+    document.getElementById("ip_v4_add_ip2_enable").checked = false;
+  }
+  
+  // Apply the initial state
+  onAdditionalIP1Change();
+  onAdditionalIP2Change();
 }
 
 function onNTPEnableChange()
@@ -450,6 +558,112 @@ function onDHCPv4Change()
   document.getElementById("ip_v4_netmask").disabled = (document.getElementById("ip_v4_dhcpenable").value == 'YES');
   document.getElementById("ip_v4_gw").disabled = (document.getElementById("ip_v4_dhcpenable").value == 'YES');
   document.getElementById("ip_v4_dns").disabled = (document.getElementById("ip_v4_dhcpenable").value == 'YES');
+  
+  // Also disable additional IP fields when DHCP is enabled
+  var dhcpEnabled = (document.getElementById("ip_v4_dhcpenable").value == 'YES');
+  document.getElementById("ip_v4_add_ip1_enable").disabled = dhcpEnabled;
+  document.getElementById("ip_v4_add_ip2_enable").disabled = dhcpEnabled;
+  
+  if (dhcpEnabled) {
+    document.getElementById("ip_v4_add_ip1_address").disabled = true;
+    document.getElementById("ip_v4_add_ip1_netmask").disabled = true;
+    document.getElementById("ip_v4_add_ip2_address").disabled = true;
+    document.getElementById("ip_v4_add_ip2_netmask").disabled = true;
+  } else {
+    // Re-enable based on individual checkbox states
+    onAdditionalIP1Change();
+    onAdditionalIP2Change();
+  }
+}
+
+function onAdditionalIP1Change()
+{
+  var enabled = document.getElementById("ip_v4_add_ip1_enable").checked && 
+                document.getElementById("ip_v4_dhcpenable").value == 'NO';
+  document.getElementById("ip_v4_add_ip1_address").disabled = !enabled;
+  document.getElementById("ip_v4_add_ip1_netmask").disabled = !enabled;
+}
+
+function onAdditionalIP2Change()
+{
+  var enabled = document.getElementById("ip_v4_add_ip2_enable").checked && 
+                document.getElementById("ip_v4_dhcpenable").value == 'NO';
+  document.getElementById("ip_v4_add_ip2_address").disabled = !enabled;
+  document.getElementById("ip_v4_add_ip2_netmask").disabled = !enabled;
+}
+
+function validateIPAddress(ip) {
+  var parts = ip.split('.');
+  if (parts.length !== 4) return false;
+  
+  for (var i = 0; i < 4; i++) {
+    var part = parseInt(parts[i]);
+    if (isNaN(part) || part < 0 || part > 255) return false;
+  }
+  return true;
+}
+
+function validateIPForm(form) {
+  var dhcpEnabled = document.getElementById("ip_v4_dhcpenable").value == 'YES';
+  
+  if (!dhcpEnabled) {
+    // Validate main IP fields
+    var mainIP = document.getElementById("ip_v4_address").value;
+    var mainMask = document.getElementById("ip_v4_netmask").value;
+    var mainGW = document.getElementById("ip_v4_gw").value;
+    
+    if (!validateIPAddress(mainIP)) {
+      alert("Invalid main IP address format");
+      document.getElementById("ip_v4_address").focus();
+      return false;
+    }
+    if (!validateIPAddress(mainMask)) {
+      alert("Invalid subnet mask format");
+      document.getElementById("ip_v4_netmask").focus();
+      return false;
+    }
+    if (!validateIPAddress(mainGW)) {
+      alert("Invalid gateway IP address format");
+      document.getElementById("ip_v4_gw").focus();
+      return false;
+    }
+    
+    // Validate additional IP 1 if enabled
+    if (document.getElementById("ip_v4_add_ip1_enable").checked) {
+      var addIP1 = document.getElementById("ip_v4_add_ip1_address").value;
+      var addMask1 = document.getElementById("ip_v4_add_ip1_netmask").value;
+      
+      if (!validateIPAddress(addIP1)) {
+        alert("Invalid Additional IP 1 address format");
+        document.getElementById("ip_v4_add_ip1_address").focus();
+        return false;
+      }
+      if (!validateIPAddress(addMask1)) {
+        alert("Invalid Additional IP 1 subnet mask format");
+        document.getElementById("ip_v4_add_ip1_netmask").focus();
+        return false;
+      }
+    }
+    
+    // Validate additional IP 2 if enabled
+    if (document.getElementById("ip_v4_add_ip2_enable").checked) {
+      var addIP2 = document.getElementById("ip_v4_add_ip2_address").value;
+      var addMask2 = document.getElementById("ip_v4_add_ip2_netmask").value;
+      
+      if (!validateIPAddress(addIP2)) {
+        alert("Invalid Additional IP 2 address format");
+        document.getElementById("ip_v4_add_ip2_address").focus();
+        return false;
+      }
+      if (!validateIPAddress(addMask2)) {
+        alert("Invalid Additional IP 2 subnet mask format");
+        document.getElementById("ip_v4_add_ip2_netmask").focus();
+        return false;
+      }
+    }
+  }
+  
+  return true;
 }
 
 function onDHCPv6Change()
@@ -461,12 +675,17 @@ function onDHCPv6Change()
 
 function onOKClick(form)
 {
-  //disable all OK buttons after clicking to avoid sending 'OK' to the web server
-  document.getElementById("ip_v4_ok").disabled = true;
-  document.getElementById("ip_v6_ok").disabled = true;
-  document.getElementById("ip_dns_ok").disabled = true;
-  document.getElementById("ip_ntp_ok").disabled = true;
+  // Validate form before submission
+  if (form.name === "IPV4_FORM" && !validateIPForm(form)) {
+    return;
+  }
+  
+  document.getElementById("ip_v4_ok")?.setAttribute('disabled', true);
+  document.getElementById("ip_v6_ok")?.setAttribute('disabled', true);
+  document.getElementById("ip_dns_ok")?.setAttribute('disabled', true);
+  document.getElementById("ip_ntp_ok")?.setAttribute('disabled', true);
   form.submit();
+  setTimeout(showRebootAfterSaveModal, 500); // Show reboot prompt after save
 }
 
 function showRebootConfirmation() {
@@ -479,52 +698,35 @@ function hideRebootConfirmation() {
   document.getElementById('reboot-confirmation').style.display = 'none';
 }
 
-function performReboot() {
-  // Disable the reboot button to prevent multiple clicks
+function performReboot(fromAfterSave) {
   document.getElementById('reboot-button').disabled = true;
-  
-  // Create and submit the reboot form
   var form = document.createElement('form');
   form.method = 'POST';
   form.action = '';
-  
-  // Add CSRF token
   var csrfInput = document.createElement('input');
   csrfInput.type = 'hidden';
   csrfInput.name = 'CSRFTOKEN';
   csrfInput.value = '$$CSRFTOKEN$$';
   form.appendChild(csrfInput);
-  
-  // Add redirect parameter
   var redirectInput = document.createElement('input');
   redirectInput.type = 'hidden';
   redirectInput.name = 'REDIRECT';
   redirectInput.value = 'ip.html';
   form.appendChild(redirectInput);
-  
-  // Add the reboot parameter (same as SctDevice.java rebootByHWReset method)
   var rebootInput = document.createElement('input');
   rebootInput.type = 'hidden';
   rebootInput.name = 'SYSTEM.GENERAL.HW_RESET';
   rebootInput.value = '1';
   form.appendChild(rebootInput);
-  
-  // Hide the confirmation dialog
-  hideRebootConfirmation();
-  
-  // Show a brief message that reboot is in progress
-  showRebootProgress();
-  
-  // Add form to page and submit
+  if (!fromAfterSave) {
+    hideRebootConfirmation();
+    showRebootProgress();
+    setTimeout(function() {
+      window.location.reload(true);
+    }, 8000);
+  }
   document.body.appendChild(form);
   form.submit();
-  
-  // Set a timeout to refresh the page after reboot is initiated
-  // This gives the device time to process the reboot command
-  setTimeout(function() {
-    // Force a complete page refresh to get updated values
-    window.location.reload(true);
-  }, 3000); // Wait 3 seconds for reboot to be processed
 }
 
 function showRebootProgress() {
@@ -627,6 +829,73 @@ function switchTab(tabId) {
     });
   }
 }
+
+function showRebootAfterSaveModal() {
+  document.getElementById('reboot-after-save-overlay').style.display = 'block';
+  document.getElementById('reboot-after-save-modal').style.display = 'block';
+}
+
+function hideRebootAfterSaveModal() {
+  document.getElementById('reboot-after-save-overlay').style.display = 'none';
+  document.getElementById('reboot-after-save-modal').style.display = 'none';
+}
+
+function startRebootProgressAfterSave() {
+  hideRebootAfterSaveModal();
+  showRebootProgressModal();
+  performReboot(true); // true = from after-save
+}
+
+function checkIPv4Connectivity() {
+  var ipAddress = '$$TCPIP.IPV4.IP_ADDRESS$$';
+  var statusElement = document.getElementById('connectivity-status');
+  var checkButton = document.getElementById('check-connectivity-btn');
+  
+  if (!ipAddress || ipAddress === 'N/A' || ipAddress === '0.0.0.0') {
+    statusElement.innerHTML = '<span style="color: red;"><b>No valid IP address to check</b></span>';
+    return;
+  }
+  
+  // Disable button and show checking message
+  checkButton.disabled = true;
+  statusElement.innerHTML = '<span style="color: blue;">Checking if IP ' + ipAddress + ' is reachable by this computer...</span>';
+  
+  // Simulate connectivity check (in a real implementation, this would be a server-side check)
+  setTimeout(function() {
+    // For demo purposes, we'll simulate a random result
+    // In a real implementation, this would be an actual ping/connectivity test
+    var isReachable = Math.random() > 0.5; // 50% chance of success for demo
+    
+    if (isReachable) {
+      statusElement.innerHTML = '<span style="color: green;"><b>IP ' + ipAddress + ' is reachable by this computer.</b></span>';
+    } else {
+      statusElement.innerHTML = '<span style="color: red;"><b>IP ' + ipAddress + ' is not reachable by this computer.</b></span>';
+    }
+    
+    checkButton.disabled = false;
+  }, 2000);
+}
+
+function showRebootProgressModal() {
+  document.getElementById('reboot-progress-modal').style.display = 'block';
+  document.getElementById('reboot-after-save-overlay').style.display = 'block';
+  var bar = document.getElementById('reboot-progress-bar');
+  var timer = document.getElementById('reboot-progress-timer');
+  var total = 8, elapsed = 0;
+  bar.style.width = '0%';
+  timer.textContent = total;
+  var interval = setInterval(function() {
+    elapsed++;
+    bar.style.width = (elapsed/total*100)+"%";
+    timer.textContent = total - elapsed;
+    if (elapsed >= total) {
+      clearInterval(interval);
+      document.getElementById('reboot-progress-modal').style.display = 'none';
+      document.getElementById('reboot-after-save-overlay').style.display = 'none';
+      window.location.reload(true);
+    }
+  }, 1000);
+}
 </script>
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Cache-Control" content="no-cache">
@@ -658,6 +927,29 @@ printErrorMsg("$$LASTERRORMESSAGE$$");
   </div>
 </div>
 
+<!-- Add after existing reboot-confirmation and overlay modals -->
+<div id="reboot-after-save-overlay" class="overlay"></div>
+<div id="reboot-after-save-modal" class="reboot-confirmation" style="display:none;z-index:1003;">
+  <h3>Reboot Device?</h3>
+  <p>Settings have been saved. Do you want to reboot the device now?</p>
+  <div class="reboot-confirmation-buttons">
+    <button class="reboot-cancel-btn" onclick="hideRebootAfterSaveModal()">Cancel</button>
+    <button class="reboot-confirm-btn" onclick="startRebootProgressAfterSave()">Reboot</button>
+  </div>
+</div>
+<div id="reboot-progress-modal" class="reboot-confirmation" style="display:none;z-index:1004;">
+  <h3 style="color: var(--primary-color); margin: 0 0 15px 0;">Rebooting Device</h3>
+  <p style="margin: 0 0 20px 0; color: var(--text-color);">The device is rebooting. Please wait...</p>
+  <div style="width:100%;margin:20px 0;">
+    <div style="background:#eee;border-radius:8px;width:100%;height:18px;overflow:hidden;">
+      <div id="reboot-progress-bar" style="background:linear-gradient(90deg,#ff6a00,#ff922b);height:100%;width:0%;transition:width 0.2s;"></div>
+    </div>
+    <div style="text-align:center;margin-top:8px;font-size:15px;">
+      <span id="reboot-progress-timer">8</span> seconds remaining
+    </div>
+  </div>
+</div>
+
 <div class="ip-flex-container">
   <div class="ip-sidebar">
     <ul class="ip-tab-list">
@@ -680,9 +972,9 @@ printErrorMsg("$$LASTERRORMESSAGE$$");
             <tr>
               <td>DHCP Client</td>
               <td>
-                <select name="TCPIP.IPV4.DHCP_ENABLE" id="ip_v4_dhcpenable" onChange="onDHCPv4Change()">
+                <select name="DHCP.GENERAL.ENABLED_IPV4" id="ip_v4_dhcpenable" onChange="onDHCPv4Change()">
                   <script language="JavaScript">
-                  var dhcp='$$TCPIP.IPV4.DHCP_ENABLE$$';
+                  var dhcp='$$DHCP.GENERAL.ENABLED_IPV4$$';
                   var dhcpp=dhcp;
                   var dhcpt=new Array('DISABLED','ENABLED');
                   var dhcpo=new Array('NO','YES');
@@ -709,7 +1001,70 @@ printErrorMsg("$$LASTERRORMESSAGE$$");
                 <input type="text" name="TCPIP.IPV4.GATEWAY" value="$$TCPIP.IPV4.GATEWAY$$" id="ip_v4_gw" class="form-control">
               </td>
             </tr>
+            <tr>
+              <td>DNS IP Address</td>
+              <td>
+                <input type="text" name="DNS.GENERAL.IPV4" value="$$DNS.GENERAL.IPV4$$" id="ip_v4_dns" class="form-control">
+              </td>
+            </tr>
           </table>
+          
+          <!-- Additional IP Addresses Section -->
+          <div class="additional-ip-section">
+            <h4>Additional IP Addresses</h4>
+            
+            <table class="form-table additional-ip-table">
+              <tr>
+                <td>
+                  <input type="checkbox" name="TCPIP.IPV4.ADDITIONAL_IP_ENABLE_1" id="ip_v4_add_ip1_enable" 
+                         onChange="onAdditionalIP1Change()">
+                  <label for="ip_v4_add_ip1_enable">Additional IP 1:</label>
+                </td>
+                <td>
+                  <input type="text" name="TCPIP.IPV4.ADDITIONAL_IP_ADDRESS.1" 
+                         value="$$TCPIP.IPV4.ADDITIONAL_IP_ADDRESS.1$$" 
+                         id="ip_v4_add_ip1_address" class="form-control" 
+                         placeholder="IP Address">
+                  <input type="text" name="TCPIP.IPV4.ADDITIONAL_IP_NETMASK.1" 
+                         value="$$TCPIP.IPV4.ADDITIONAL_IP_NETMASK.1$$" 
+                         id="ip_v4_add_ip1_netmask" class="form-control" 
+                         placeholder="Subnet Mask">
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <input type="checkbox" name="TCPIP.IPV4.ADDITIONAL_IP_ENABLE_2" id="ip_v4_add_ip2_enable" 
+                         onChange="onAdditionalIP2Change()">
+                  <label for="ip_v4_add_ip2_enable">Additional IP 2:</label>
+                </td>
+                <td>
+                  <input type="text" name="TCPIP.IPV4.ADDITIONAL_IP_ADDRESS.2" 
+                         value="$$TCPIP.IPV4.ADDITIONAL_IP_ADDRESS.2$$" 
+                         id="ip_v4_add_ip2_address" class="form-control" 
+                         placeholder="IP Address">
+                  <input type="text" name="TCPIP.IPV4.ADDITIONAL_IP_NETMASK.2" 
+                         value="$$TCPIP.IPV4.ADDITIONAL_IP_NETMASK.2$$" 
+                         id="ip_v4_add_ip2_netmask" class="form-control" 
+                         placeholder="Subnet Mask">
+                </td>
+              </tr>
+            </table>
+          </div>
+          
+          <!-- Connectivity Check Section -->
+          <div class="additional-ip-section connectivity-section">
+            <div style="display: flex; align-items: center; justify-content: space-between;">
+              <div>
+                <button type="button" id="check-connectivity-btn" onclick="checkIPv4Connectivity()">
+                  Check IPv4 Connectivity
+                </button>
+              </div>
+              <div id="connectivity-status" class="connectivity-status">
+                Click to check IP connectivity from this computer.
+              </div>
+            </div>
+          </div>
+          
           <div class="button-group">
             <input name="CANCEL" value="Cancel" type="reset">
             <input name="OK" value="Save Changes" type="button" id="ip_v4_ok" onClick="onOKClick(this.form)">

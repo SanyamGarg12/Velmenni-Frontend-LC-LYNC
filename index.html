@@ -1,91 +1,110 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-<meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>$$SYSTEM.PRODUCTION.DEVICE_NAME$$ Web Configuration - Main Page</title>
-<link rel="stylesheet" href="styles.css">
-<script>
-function loadContent(url) {
-  document.getElementById('content-frame').src = url;
-  const links = document.querySelectorAll('.nav-menu a');
-  links.forEach(link => {
-    if (link.getAttribute('href') === url) {
-      link.classList.add('active');
-    } else {
-      link.classList.remove('active');
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LC-LYNC</title>
+  <link rel="stylesheet" href="styles.css">
+  <script>
+    function loadContent(url) {
+      document.getElementById('content-frame').src = url;
+      const links = document.querySelectorAll('.nav-menu a');
+      links.forEach(link => {
+        if (link.getAttribute('href') === url) {
+          link.classList.add('active');
+        } else {
+          link.classList.remove('active');
+        }
+      });
+      // Save last opened page
+      localStorage.setItem('lastTab', url);
     }
-  });
-  // Save last opened page
-  localStorage.setItem('lastTab', url);
-}
 
-window.onload = function() {
-  // Load last opened page or default
-  var lastTab = localStorage.getItem('lastTab');
-  if (lastTab) {
-    loadContent(lastTab);
-  } else {
-    loadContent('ghn.html');
-  }
-  
-  // Hide WiFi menu if not available
-  if ("$$WLAN.GENERAL.WATCHDOG_ENABLED$$" === "") {
-    document.getElementById('wifi-link').style.display = 'none';
-  }
-  
-  // Hide ACL menu if not a P2MP product
-  if ("$$PHYMNG.GENERAL.ACCESS_POLICY$$" !== "2") {
-    document.getElementById('acl-link').style.display = 'none';
-  }
-};
-</script>
+    window.onload = function () {
+      // Load last opened page or default
+      var lastTab = localStorage.getItem('lastTab');
+      if (lastTab) {
+        loadContent(lastTab);
+      } else {
+        loadContent('ghn.html');
+      }
+
+      // Hide WiFi menu if not available
+      var wifiLink = document.getElementById('wifi-link');
+      if (wifiLink && "$$WLAN.GENERAL.WATCHDOG_ENABLED$$" === "") {
+        wifiLink.style.display = 'none';
+      }
+
+      // Hide ACL menu if not a P2MP product
+      var aclLink = document.getElementById('acl-link');
+      if (aclLink && "$$PHYMNG.GENERAL.ACCESS_POLICY$$" !== "2") {
+        aclLink.style.display = 'none';
+      }
+
+    };
+  </script>
 </head>
+
 <body>
-<div class="wrapper">
-  <header>
-    <div class="header-content">
-      <div class="logo-container">
-        <a href="http://www.Velmenni.com" target="_blank">
-          <img src="velmenni_logo.png" alt="Velmenni Logo">
-        </a>
+  <div class="wrapper">
+    <header>
+      <div class="header-content">
+        <div class="logo-container">
+          <a href="http://www.Velmenni.com" target="_blank">
+            <img src="velmenni_logo.png" alt="Velmenni Logo">
+          </a>
+        </div>
+        <style>
+          .title-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+          }
+        </style>
+        <div class="title-container">
+          <h1>LC-LYNC</h1>
+        </div>
+        <div class="logout-container">
+          <form name="LOG_OUT_FORM" method="POST" style="margin: 0;">
+            <input type="hidden" name="CSRFTOKEN" value="$$CSRFTOKEN$$">
+            <input type="hidden" name="REDIRECT" value="/">
+            <input name="LOG_OUT_OK" value="Log Out" type="submit" class="btn btn-primary">
+          </form>
+        </div>
       </div>
-      <div class="title-container">
-        <h1>$$SYSTEM.PRODUCTION.DEVICE_NAME$$ Web Configuration</h1>
-      </div>
-      <div class="logout-container">
-        <form name="LOG_OUT_FORM" method="POST" style="margin: 0;">
-          <input type="hidden" name="CSRFTOKEN" value="$$CSRFTOKEN$$">
-          <input type="hidden" name="REDIRECT" value="/">
-          <input name="LOG_OUT_OK" value="Log Out" type="submit" class="btn btn-primary">
-        </form>
-      </div>
-    </div>
-  </header>
+    </header>
 
-  <nav class="top-nav">
-    <div class="nav-container">
-      <ul class="nav-menu">
-        <li><a href="ghn.html" onclick="loadContent('ghn.html'); return false;">G.hn</a></li>
-        <li><a href="ip.html" onclick="loadContent('ip.html'); return false;">IP</a></li>
-        <li><a href="ethernet.html" onclick="loadContent('ethernet.html'); return false;">Ethernet</a></li>
-        <li><a href="device.html" onclick="loadContent('device.html'); return false;">Device</a></li>
-        <li><a href="multicast.html" onclick="loadContent('multicast.html'); return false;">Multicast</a></li>
-        <li><a href="qos.html" onclick="loadContent('qos.html'); return false;">QoS</a></li>
-        <li><a href="vlan.html" onclick="loadContent('vlan.html'); return false;">VLAN</a></li>
-        <li><a href="ghn_spectrum.html" onclick="loadContent('ghn_spectrum.html'); return false;">G.hn spectrum</a></li>
-        <li><a href="acl.html" id="acl-link" onclick="loadContent('acl.html'); return false;">ACL</a></li>
-        <li><a href="logfile.html" onclick="loadContent('logfile.html'); return false;">Log file</a></li>
-        <!-- <li><a href="wifi.html" id="wifi-link" onclick="loadContent('wifi.html'); return false;">Wifi</a></li> -->
-        <li><a href="advanced.html" onclick="loadContent('advanced.html'); return false;">Advanced</a></li>
-        <li><a href="snr_and_psd.html" onclick="loadContent('snr_and_psd.html'); return false;">SNR AND PSD</a></li>
-      </ul>
-    </div>
-  </nav>
+    <nav class="top-nav">
+      <div class="nav-container">
+        <ul class="nav-menu">
+          <li><a href="ghn.html" onclick="loadContent('ghn.html'); return false;">G.hn</a></li>
+          <li><a href="ip.html" onclick="loadContent('ip.html'); return false;">IP</a></li>
+          <li><a href="ethernet.html" onclick="loadContent('ethernet.html'); return false;">Ethernet</a></li>
+          <li><a href="device.html" onclick="loadContent('device.html'); return false;">Device</a></li>
+          <li><a href="multicast.html" onclick="loadContent('multicast.html'); return false;">Multicast</a></li>
+          <li><a href="qos.html" onclick="loadContent('qos.html'); return false;">QoS</a></li>
+          <li><a href="vlan.html" onclick="loadContent('vlan.html'); return false;">VLAN</a></li>
+          <li><a href="ghn_spectrum.html" onclick="loadContent('ghn_spectrum.html'); return false;">G.hn spectrum</a>
+          </li>
+          <li><a href="acl.html" id="acl-link" onclick="loadContent('acl.html'); return false;">ACL</a></li>
+          <li><a href="logfile.html" onclick="loadContent('logfile.html'); return false;">Log file</a></li>
+          <!-- <li><a href="wifi.html" id="wifi-link" onclick="loadContent('wifi.html'); return false;">Wifi</a></li> -->
+          <li><a href="advanced.html" onclick="loadContent('advanced.html'); return false;">Advanced</a></li>
+          <li><a href="snr_and_psd.html" id="snr-link" onclick="loadContent('snr_and_psd.html'); return false;">SNR AND
+              PSD</a></li>
+          <li><a href="test_snr.html" onclick="loadContent('test_snr.html'); return false;">Test SNR (Debug)</a></li>
+        </ul>
+      </div>
+    </nav>
 
-  <main class="content-area" style="position: fixed; top: 112px; left: 0; right: 0; bottom: 0; height: calc(100vh - 112px); width: 100vw; padding: 0; margin: 0; background: #f8fafc;">
-    <iframe id="content-frame" class="content-frame" name="content" style="width: 100vw; height: 100%; min-height: 0; border: none; background: white; display: block;"></iframe>
-  </main>
-</div>
+    <main class="content-area"
+      style="position: fixed; top: 112px; left: 0; right: 0; bottom: 0; height: calc(100vh - 112px); width: 100vw; padding: 0; margin: 0; background: #f8fafc;">
+      <iframe id="content-frame" class="content-frame" name="content"
+        style="width: 100vw; height: 100%; min-height: 0; border: none; background: white; display: block;"></iframe>
+    </main>
+  </div>
 </body>
+
 </html>

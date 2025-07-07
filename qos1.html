@@ -37,264 +37,8 @@
 <head>
 <meta charset="utf-8" content="HTML,CSS,XML,JavaScript" />
 <script language="JavaScript" src="common.js"></script>
-<style>
-:root {
-  --primary-color: #ff6a00;
-  --primary-light: #ff922b;
-  --primary-dark: #c43e00;
-  --background-color: #fff7f0;
-  --card-bg: #fff;
-  --text-color: #222;
-  --border-color: #ffb380;
-  --input-border: #ff922b;
-  --shadow: 0 2px 12px rgba(255,106,0,0.08);
-  --radius: 12px;
-}
-body {
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background: var(--background-color);
-  color: var(--text-color);
-  margin: 0;
-  padding: 0;
-  min-height: 100vh;
-  width: 100%;
-  box-sizing: border-box;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-.card, .qos-card {
-  background: var(--card-bg);
-  border-radius: var(--radius);
-  box-shadow: var(--shadow);
-  border: 1.5px solid var(--border-color);
-  margin: 24px auto;
-  padding: 24px 32px;
-  width: 95%;
-  max-width: 1200px;
-  box-sizing: border-box;
-}
-.card-header, .qos-card-header {
-  font-size: 1.5em;
-  font-weight: bold;
-  color: var(--primary-color);
-  margin-bottom: 18px;
-  letter-spacing: 1px;
-}
-.card-title {
-  color: var(--primary-dark);
-  font-size: 1.3em;
-  font-weight: 600;
-}
-form {
-  margin: 0;
-  width: 100%;
-}
-input[type="text"], select, input[type="password"] {
-  padding: 8px 10px;
-  border: 1.5px solid var(--input-border);
-  border-radius: 6px;
-  font-size: 1em;
-  margin: 4px 0 12px 0;
-  width: 100%;
-  max-width: 200px;
-  box-sizing: border-box;
-  transition: border-color 0.2s, box-shadow 0.2s;
-}
-input[type="text"]:focus, select:focus, input[type="password"]:focus {
-  border-color: var(--primary-color);
-  outline: none;
-  box-shadow: 0 0 0 2px var(--primary-light);
-}
-label {
-  font-weight: 500;
-  margin-bottom: 2px;
-  color: var(--primary-dark);
-}
-.btn, input[type="button"], input[type="submit"] {
-  background: linear-gradient(90deg, var(--primary-color), var(--primary-light));
-  color: #fff;
-  border: none;
-  border-radius: 6px;
-  padding: 10px 28px;
-  font-size: 1em;
-  font-weight: 600;
-  cursor: pointer;
-  margin: 8px 0;
-  box-shadow: 0 2px 8px rgba(255,106,0,0.08);
-  transition: background 0.2s, box-shadow 0.2s;
-}
-.btn:hover, input[type="button"]:hover, input[type="submit"]:hover {
-  background: linear-gradient(90deg, var(--primary-dark), var(--primary-color));
-  box-shadow: 0 4px 16px rgba(255,106,0,0.15);
-}
-input[type="button"],
-input[type="submit"] {
-  background: linear-gradient(90deg, var(--primary-color), var(--primary-light));
-  color: #fff;
-  border: none;
-  border-radius: 6px;
-  padding: 10px 28px;
-  font-size: 1em;
-  font-weight: 600;
-  cursor: pointer;
-  margin: 8px 0;
-  box-shadow: 0 2px 8px rgba(255,106,0,0.08);
-  transition: background 0.2s, box-shadow 0.2s;
-}
-input[type="button"]:hover,
-input[type="submit"]:hover {
-  background: linear-gradient(90deg, var(--primary-dark), var(--primary-color));
-  box-shadow: 0 4px 16px rgba(255,106,0,0.15);
-}
-input[type="reset"] {
-  background: linear-gradient(90deg, #6c757d, #5a6268);
-  color: #fff;
-  border: none;
-  border-radius: 6px;
-  padding: 10px 28px;
-  font-size: 1em;
-  font-weight: 600;
-  cursor: pointer;
-  margin: 8px 0;
-  box-shadow: 0 2px 8px rgba(255,106,0,0.08);
-  transition: background 0.2s, box-shadow 0.2s;
-}
-input[type="reset"]:hover {
-  background: linear-gradient(90deg, #5a6268, #4e555b);
-  box-shadow: 0 4px 16px rgba(0,0,0,0.15);
-}
-.qos-top-row {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 24px;
-  align-items: flex-end;
-  justify-content: center;
-  margin: 32px auto 0 auto;
-  width: 95%;
-  max-width: 1200px;
-}
-.qos-top-group {
-  display: flex;
-  flex-direction: column;
-  min-width: 180px;
-  flex: 1;
-}
-.qos-update-btn {
-  align-self: flex-start;
-  margin-left: 24px;
-}
-.qos-main-columns {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 32px;
-  justify-content: center;
-  margin: 0 auto 32px auto;
-  width: 95%;
-  max-width: 1200px;
-}
-.qos-card {
-  flex: 1 1 320px;
-  min-width: 320px;
-  max-width: 370px;
-  margin: 0;
-  padding: 24px 18px 18px 18px;
-  border: 1.5px solid var(--primary-light);
-  background: #fff;
-  box-shadow: var(--shadow);
-  border-radius: var(--radius);
-}
-.qos-card-header {
-  font-size: 1.2em;
-  color: var(--primary-color);
-  margin-bottom: 16px;
-  font-weight: 600;
-  text-align: center;
-}
-.qos-row {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 10px;
-}
-.qos-row label {
-  min-width: 120px;
-  margin-bottom: 0;
-}
-.qos-classification-table {
-  margin-top: 10px;
-  width: 100%;
-  overflow-x: auto;
-}
-.qos-classification-row {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-bottom: 6px;
-}
-.qos-classification-row span {
-  min-width: 70px;
-  color: var(--primary-dark);
-  font-weight: 500;
-}
-table {
-  width: 100%;
-  max-width: 100%;
-  border-collapse: collapse;
-}
-td {
-  padding: 8px;
-  vertical-align: middle;
-}
-@media (max-width: 1200px) {
-  .qos-main-columns {
-    flex-direction: column;
-    align-items: center;
-  }
-  .qos-card {
-    max-width: 100%;
-  }
-}
-@media (max-width: 768px) {
-  .qos-top-row {
-    flex-direction: column;
-    gap: 10px;
-    align-items: stretch;
-  }
-  .qos-main-columns {
-    flex-direction: column;
-    gap: 18px;
-  }
-  .qos-card {
-    min-width: 0;
-    padding: 16px 6px;
-  }
-  input[type="text"], select, input[type="password"] {
-    max-width: 100%;
-  }
-  .qos-row label {
-    min-width: 100px;
-  }
-}
-.error-message {
-  width: 95%;
-  max-width: 1200px;
-  margin: 24px auto 0 auto;
-  padding: 0 32px;
-  box-sizing: border-box;
-}
-</style>
 <script language="JavaScript" type="text/javascript">
 //QoS functions
-function setAlwaysEnabledFields(dis) {
-    // Always keep these enabled
-    document.getElementById("qos_packetclassifier_defaultprio").disabled = false;
-    document.getElementById("qos_packetclassifier_tcpv4_ack_class").disabled = false;
-    document.getElementById("qos_packetclassifier_tcpv6_ack_class").disabled = false;
-    document.getElementById("qos_packetclassifier_arp_class_en").disabled = false;
-}
-
 function disableGeneralFields(dis)
 {
     //setQoSPacketDetector
@@ -328,8 +72,6 @@ function disableGeneralFields(dis)
 
     //typeofframe
     document.getElementById("qos_frametype").disabled=dis;
-
-    setAlwaysEnabledFields(false);
 }
 
 function disablePrioFields(dis)
@@ -341,7 +83,6 @@ function disablePrioFields(dis)
       document.getElementById("qos_pc_enabled_rule"+i).disabled=dis;
     }
  
-    setAlwaysEnabledFields(false);
 }
 
 function d2h(d) {return d.toString(16);}
@@ -418,15 +159,11 @@ function CriterionGUIPreset(criterion)
 {
   document.getElementById("qos_criterion").value=criterion;
 
-  // Always enable the 4 key parameters
-  setAlwaysEnabledFields(false);
-
   if (criterion=="None")
   {
     disableGeneralFields(true);
     disablePrioFields(true);
-    // Disable all except the 4 key parameters
-    // (Handled by disableGeneralFields/disablePrioFields + setAlwaysEnabledFields)
+
     document.forms.QOS_FORM.QOS_PD1.value="None";
     document.forms.QOS_FORM.QOS_PD2.value="None";
 
@@ -437,12 +174,12 @@ function CriterionGUIPreset(criterion)
   }
   else if (criterion=="Custom")
   {
-    // Enable only custom-related fields
     disableGeneralFields(false);
     disablePrioFields(false);
-    // Add logic to disable DSCP and 802.1p specific fields
+
     document.forms.QOS_FORM.QOS_PD1.value="None";
     document.forms.QOS_FORM.QOS_PD2.value="None";
+
 
     document.getElementById("PACKETCLASSIFIER_GENERAL_TYPE_CLASS_MAP_EN1").value="YES";
     document.getElementById("PACKETCLASSIFIER_GENERAL_VLAN_CLASS_MAP_EN1").value="NO";
@@ -451,12 +188,12 @@ function CriterionGUIPreset(criterion)
   }
   else if (criterion=="DSCP")
   {
-    // Enable only DSCP-related fields
     disableGeneralFields(true);
     disablePrioFields(true);
-    // Enable DSCP section, disable others
+
     document.forms.QOS_FORM.QOS_PD1.value="None";
     document.forms.QOS_FORM.QOS_PD2.value="None";
+
 
     document.getElementById("PACKETCLASSIFIER_GENERAL_TYPE_CLASS_MAP_EN1").value="NO";
     document.getElementById("PACKETCLASSIFIER_GENERAL_VLAN_CLASS_MAP_EN1").value="NO";
@@ -465,10 +202,9 @@ function CriterionGUIPreset(criterion)
   }
   else if (criterion=="802.1p")
   {
-    // Enable only 802.1p-related fields
     disableGeneralFields(true);
     disablePrioFields(true);
-    // Enable 802.1p section, disable others
+
     document.forms.QOS_FORM.QOS_PD1.value="None";
     document.forms.QOS_FORM.QOS_PD2.value="None";
 
@@ -491,10 +227,9 @@ function CriterionGUIPreset(criterion)
   }
   else if (criterion=="802.1p DSCP")
   {
-    // Enable both 802.1p and DSCP fields
     disableGeneralFields(true);
     disablePrioFields(true);
-    // Enable both sections
+
     document.forms.QOS_FORM.QOS_PD1.value="None";
     document.forms.QOS_FORM.QOS_PD2.value="None";
 
@@ -517,10 +252,9 @@ function CriterionGUIPreset(criterion)
   }
   else if (criterion=="DSCP 802.1p")
   {
-    // Enable both DSCP and 802.1p fields
     disableGeneralFields(true);
     disablePrioFields(true);
-    // Enable both sections
+
     document.forms.QOS_FORM.QOS_PD1.value="None";
     document.forms.QOS_FORM.QOS_PD2.value="None";
 
@@ -543,12 +277,12 @@ function CriterionGUIPreset(criterion)
   }
   else if (criterion=="Custom DSCP 802.1p")
   {
-    // Enable custom, DSCP, and 802.1p fields
     disableGeneralFields(false);
     disablePrioFields(false);
-    // Enable all sections
+
     document.forms.QOS_FORM.QOS_PD1.value="None";
     document.forms.QOS_FORM.QOS_PD2.value="None";
+
 
     document.getElementById("PACKETCLASSIFIER_GENERAL_TYPE_CLASS_MAP_EN1").value="YES";
     document.getElementById("PACKETCLASSIFIER_GENERAL_VLAN_CLASS_MAP_EN1").value="YES";
@@ -557,12 +291,12 @@ function CriterionGUIPreset(criterion)
   }
   else if (criterion=="Custom 802.1p DSCP")
   {
-    // Enable custom, 802.1p, and DSCP fields
     disableGeneralFields(false);
     disablePrioFields(false);
-    // Enable all sections
+
     document.forms.QOS_FORM.QOS_PD1.value="None";
     document.forms.QOS_FORM.QOS_PD2.value="None";
+
 
     document.getElementById("PACKETCLASSIFIER_GENERAL_TYPE_CLASS_MAP_EN1").value="YES";
     document.getElementById("PACKETCLASSIFIER_GENERAL_VLAN_CLASS_MAP_EN1").value="YES";
@@ -626,15 +360,15 @@ function onLoadScript()
 
   if ( custom=="YES" )
   {
-      var offset = "$$PACKETCLASSIFIER.GENERAL.MATCHING_RULES.1.1$$";
-      var bitmask = "$$PACKETCLASSIFIER.GENERAL.MATCHING_RULES.1.2$$";
-      var pattern = "$$PACKETCLASSIFIER.GENERAL.MATCHING_RULES.1.3$$";
+      var offset = $$PACKETCLASSIFIER.GENERAL.MATCHING_RULES.1.1$$;
+      var bitmask = $$PACKETCLASSIFIER.GENERAL.MATCHING_RULES.1.2$$;
+      var pattern = $$PACKETCLASSIFIER.GENERAL.MATCHING_RULES.1.3$$;
 
-      if(parseInt(offset) == 6 && parseInt(bitmask) == 0xffff && parseInt(pattern) == 0x800)
+      if(offset == 6 && bitmask == 0xffff && pattern == 0x800)
       {
         document.getElementById("qos_pd1").selectedIndex = 1;
       }
-      else if(parseInt(offset) == 0 && parseInt(bitmask) == 0 && parseInt(pattern) == 0)
+      else if(offset == 0 && bitmask == 0 && pattern == 0)
       {
         document.getElementById("qos_pd1").selectedIndex = 0;
       }
@@ -643,15 +377,16 @@ function onLoadScript()
         document.getElementById("qos_pd1").selectedIndex = 2;
       }
 
-      document.getElementById("qos_pd1_offset").value=parseInt(offset);
+      document.getElementById("qos_pd1_offset").value=h2d(offset);
       document.getElementById("qos_pd1_bitmask").value="$$PACKETCLASSIFIER.GENERAL.MATCHING_RULES.1.2$$";
       document.getElementById("qos_pd1_pattern").value="$$PACKETCLASSIFIER.GENERAL.MATCHING_RULES.1.3$$";
 
-      var offset2 = "$$PACKETCLASSIFIER.GENERAL.MATCHING_RULES.2.1$$";
-      var bitmask2 = "$$PACKETCLASSIFIER.GENERAL.MATCHING_RULES.2.2$$";
-      var pattern2 = "$$PACKETCLASSIFIER.GENERAL.MATCHING_RULES.2.3$$";
 
-      if(parseInt(offset2) == 0 && parseInt(bitmask2) == 0 && parseInt(pattern2) == 0)
+      var offset2 = $$PACKETCLASSIFIER.GENERAL.MATCHING_RULES.2.1$$;
+      var bitmask2 = $$PACKETCLASSIFIER.GENERAL.MATCHING_RULES.2.2$$;
+      var pattern2 = $$PACKETCLASSIFIER.GENERAL.MATCHING_RULES.2.3$$;
+
+      if(offset2 == 0 && bitmask2 == 0 && pattern2 == 0)
       {
         document.getElementById("qos_pd2").selectedIndex = 0;
       }
@@ -660,7 +395,7 @@ function onLoadScript()
         document.getElementById("qos_pd2").selectedIndex = 1;
       }
 
-      document.getElementById("qos_pd2_offset").value=parseInt(offset2);
+      document.getElementById("qos_pd2_offset").value=h2d(offset2);
       document.getElementById("qos_pd2_bitmask").value="$$PACKETCLASSIFIER.GENERAL.MATCHING_RULES.2.2$$";
       document.getElementById("qos_pd2_pattern").value="$$PACKETCLASSIFIER.GENERAL.MATCHING_RULES.2.3$$";
 
@@ -683,13 +418,13 @@ function onLoadScript()
 
   document.getElementById("qos_packetclassifier_defaultprio").value = default_prio;
 
-
 }
 
-function onCriteriaChange() {
-  var criterion = document.getElementById("qos_criterion").value;
-  CriterionGUIPreset(criterion);
+function onCriteriaChange()
+{
+  CriterionGUIPreset(document.forms.QOS_FORM.CRITERION.value);
 }
+
 
 function onOKClick(form)
 {
@@ -782,8 +517,6 @@ function onOKClick(form)
   }
 }
 
-
-
 </script>
 
 
@@ -795,281 +528,284 @@ function onOKClick(form)
 <body bgcolor="white" onLoad="onLoadScript()">
     
 <script language="JavaScript" type="text/javascript">
-document.write('<div class="error-message">');
 printErrorMsg("$$LASTERRORMESSAGE$$");
-document.write('</div>');
 </script> 
 
-<div class="card">
-  <div class="card-header">
-    <span class="card-title">QoS Settings</span>
-  </div>
-  <!-- Always-accessible QoS core options -->
-  <div style="padding:6px; margin-bottom: 24px;">
-    <table width="100%" style="/*border:3px solid #dddddd*/">
-      <tr><td colspan=6><b>Core QoS Options (Always Accessible):</b></td></tr>
-      <tr><td colspan=6 style="background:#dddddd"></td></tr>
-      <tr>
-        <td>&#8226;Default prio</td>
-        <td align="right">
-          <select name="PACKETCLASSIFIER.GENERAL.DEFAULT_CLASS" id="qos_packetclassifier_defaultprio">
-            <script language="JavaScript">
-            var nt='$$PACKETCLASSIFIER.GENERAL.DEFAULT_CLASS$$';
-            var ntp=nt;
-            var nto=new Array('0','1','2','3','4','5','6','7');
-            selectOptions(ntp,nto);
-            </script>
-          </select>
-        </td>
-        <td>&#8226;TCP Ack Class in IPv4</td>
-        <td align="right">
-          <select name="PACKETCLASSIFIER.GENERAL.TCPACKV4_CLASS_MAP" id="qos_packetclassifier_tcpv4_ack_class">
-            <script language="JavaScript">
-            var nt='$$PACKETCLASSIFIER.GENERAL.TCPACKV4_CLASS_MAP$$';
-            var ntp=nt;
-            var nto=new Array('0','1','2','3','4','5','6','7');
-            selectOptions(ntp,nto);
-            </script>
-          </select>
-        </td>
-        <td align="right">
-          <select name="PACKETCLASSIFIER.GENERAL.TCPACKV4_CLASS_MAP_EN" id="qos_packetclassifier_tcpv4_ack_class_en">
-            <script language="JavaScript">
-            var nt='$$PACKETCLASSIFIER.GENERAL.TCPACKV4_CLASS_MAP_EN$$';
-            var ntp=nt;
-            var nto=new Array('YES','NO');
-            selectOptions(ntp,nto);
-            </script>
-          </select>
-        </td>
-      </tr>
-      <tr>
-        <td>&#8226;TCP Ack Class in IPv6</td>
-        <td align="right">
-          <select name="PACKETCLASSIFIER.GENERAL.TCPACKV6_CLASS_MAP" id="qos_packetclassifier_tcpv6_ack_class">
-            <script language="JavaScript">
-            var nt='$$PACKETCLASSIFIER.GENERAL.TCPACKV6_CLASS_MAP$$';
-            var ntp=nt;
-            var nto=new Array('0','1','2','3','4','5','6','7');
-            selectOptions(ntp,nto);
-            </script>
-          </select>
-        </td>
-        <td align="right">
-          <select name="PACKETCLASSIFIER.GENERAL.TCPACKV6_CLASS_MAP_EN" id="qos_packetclassifier_tcpv6_ack_class_en">
-            <script language="JavaScript">
-            var nt='$$PACKETCLASSIFIER.GENERAL.TCPACKV6_CLASS_MAP_EN$$';
-            var ntp=nt;
-            var nto=new Array('YES','NO');
-            selectOptions(ntp,nto);
-            </script>
-          </select>
-        </td>
-        <td>&#8226;ARP Class</td>
-        <td align="right">
-          <select name="PACKETCLASSIFIER.GENERAL.ARP_CLASS_MAP" id="qos_packetclassifier_arp_ack_class">
-            <script language="JavaScript">
-            var nt='$$PACKETCLASSIFIER.GENERAL.ARP_CLASS_MAP$$';
-            var ntp=nt;
-            var nto=new Array('0','1','2','3','4','5','6','7');
-            selectOptions(ntp,nto);
-            </script>
-          </select>
-        </td>
-        <td align="right">
-          <select name="PACKETCLASSIFIER.GENERAL.ARP_CLASS_MAP_EN" id="qos_packetclassifier_arp_class_en">
-            <script language="JavaScript">
-            var nt='$$PACKETCLASSIFIER.GENERAL.ARP_CLASS_MAP_EN$$';
-            var ntp=nt;
-            var nto=new Array('YES','NO');
-            selectOptions(ntp,nto);
-            </script>
-          </select>
-        </td>
-      </tr>
-      <tr><td colspan=6 style="background:#dddddd"></td></tr>
-    </table>
-  </div>
-  <div class="card-content section-content">
-    <form name="QOS_FORM" method="POST">
-    <input type="hidden" name="CSRFTOKEN" value="$$CSRFTOKEN$$" />
+<form name="QOS_FORM" method="POST">
+<input type="hidden" name="CSRFTOKEN" value="$$CSRFTOKEN$$" />
 
-    <input type="hidden" name="REDIRECT" value="qos.html" target="content">
-    <input type="hidden" name="PACKETCLASSIFIER.GENERAL.TYPE_CLASS_MAP_EN" value="NO" />
-    <input type="hidden" name="PACKETCLASSIFIER.GENERAL.VLAN_CLASS_MAP_EN" value="NO" />
-    <input type="hidden" name="PACKETCLASSIFIER.GENERAL.DSCP_CLASS_MAP_EN" value="NO" />
+<input type="hidden" name="REDIRECT" value="qos.html" target="content">
+<input type="hidden" name="PACKETCLASSIFIER.GENERAL.TYPE_CLASS_MAP_EN" value="NO" />
+<input type="hidden" name="PACKETCLASSIFIER.GENERAL.VLAN_CLASS_MAP_EN" value="NO" />
+<input type="hidden" name="PACKETCLASSIFIER.GENERAL.DSCP_CLASS_MAP_EN" value="NO" />
 
 
-    <!-- QoS -->
-    <div style="padding:6px">
-      <table width="100%" style="/*border:3px solid #dddddd*/\">
-      <tr><td colspan=2><b>QoS Configuration general settings:</b></td></tr>
+<!-- QoS -->
+<div style="padding:6px">
+  <table width=520 style="border:3px solid #dddddd">
+  <tr><td colspan=2><b>QoS Configuration</b></td></tr>
 
-      <tr><td colspan=2 style="background:#dddddd"></td></tr>
-      <tr><td colspan=2></td></tr>
+  <tr><td colspan=2 style="background:#dddddd"></td></tr>
+  <tr><td colspan=2></td></tr>
 
-      <tr><td>QoS criterion</td><td align="right">
-      <select name="CRITERION" id="qos_criterion" onChange="onCriteriaChange()">
-      <script language="JavaScript" type="text/javascript">
-      var nt='0';
-      var ntp=nt;
-      var nto=new Array('None','Custom','802.1p','DSCP','DSCP 802.1p','802.1p DSCP','Custom 802.1p DSCP','Custom DSCP 802.1p');
-      selectOptions(ntp,nto);
-      </script>
-      </select>
-      </td></tr>
+  <tr><td>QoS criterion</td><td align="right">
+  <select name="CRITERION" id="qos_criterion" onChange="onCriteriaChange()">
+  <script language="JavaScript" type="text/javascript">
+  var nt='0';
+  var ntp=nt;
+  var nto=new Array('None','Custom','802.1p','DSCP','DSCP 802.1p','802.1p DSCP','Custom 802.1p DSCP','Custom DSCP 802.1p');
+  selectOptions(ntp,nto);
+  </script>
+  </select>
+  </td></tr>
 
-      
-      <tr><td>Type of frame</td><td align="right">
-      <select name="PACKETCLASSIFIER.GENERAL.FRAME_TYPE" value="$$PACKETCLASSIFIER.GENERAL.FRAME_TYPE$$" id="qos_frametype" onChange="">
-      <script language="JavaScript" type="text/javascript">
-      var nt='0';
-      var ntp=nt;
-      var nto=new Array('0','1','2');
-      var ntt=new Array('Ethernet frame','802.1Q tagged frame','802.1ad double tagged frame');
-      selectOptionsWithText(ntp,ntt,nto);
-      </script>
-      </select>
-      </td></tr>
-
-
-      <tr><td colspan=2></td></tr>
-      <tr><td colspan=2 style="background:#dddddd"></td></tr>
-
-      <tr><td>Packet detection 1</td><td align="right">
-      <select name="QOS_PD1" id="qos_pd1" onChange="onPD1Change()">
-      <script language="JavaScript" type="text/javascript">
-      var nt='0';
-      var ntp=nt;
-      var nto=new Array('None','IPv4','Custom');
-      selectOptions(ntp,nto);
-      </script>
-      </select>
-      </td></tr>
-
-      <tr>
-      <td>Offset</td><td align="right">
-      <input type="text" size=6 maxlength=6 name="PACKETCLASSIFIER.GENERAL.MATCHING_RULES.1.1" id="qos_pd1_offset">
-      </td>
-      <tr>
-      <td>Bitmask</td><td align="right">
-      <input type="text" size=6 maxlength=6 name="PACKETCLASSIFIER.GENERAL.MATCHING_RULES.1.2" value="$$PACKETCLASSIFIER.GENERAL.MATCHING_RULES.1.2$$" id="qos_pd1_bitmask"></td></tr>
-      <tr>
-      <td>Pattern</td><td align="right">
-      <input type="text" size=6 maxlength=6 name="PACKETCLASSIFIER.GENERAL.MATCHING_RULES.1.3" value="$$PACKETCLASSIFIER.GENERAL.MATCHING_RULES.1.3$$" id="qos_pd1_pattern"></td></tr>
-      <tr>
-      <td align="right">
-      <input type="hidden" name="PACKETCLASSIFIER.GENERAL.MATCHING_RULES.1.4" value="$$PACKETCLASSIFIER.GENERAL.MATCHING_RULES.1.4$$" id="qos_pd1_enabled"></td></tr>
-      <tr><td colspan=2></td></tr>
+  
+  <tr><td>Type of frame</td><td align="right">
+  <select name="PACKETCLASSIFIER.GENERAL.FRAME_TYPE" value="$$PACKETCLASSIFIER.GENERAL.FRAME_TYPE$$" id="qos_frametype" onChange="">
+  <script language="JavaScript" type="text/javascript">
+  var nt='0';
+  var ntp=nt;
+  var nto=new Array('0','1','2');
+  var ntt=new Array('Ethernet frame','802.1Q tagged frame','802.1ad double tagged frame');
+  selectOptionsWithText(ntp,ntt,nto);
+  </script>
+  </select>
+  </td></tr>
 
 
-      <tr><td colspan=2 style="background:#dddddd"></td></tr>
-      <tr><td>Packet detection 2</td><td align="right">
-      <select name="QOS_PD2" id="qos_pd2" onChange="onPD2Change()">
-      <script language="JavaScript" type="text/javascript">
-      var nt='0';
-      var ntp=nt;
-      var nto=new Array('None','Custom');
-      selectOptions(ntp,nto);
-      </script>
-      </select>
-      </td></tr>
-      <tr>
-      <td>Offset</td><td align="right">
-      <input type="text" size=6 maxlength=6 name="PACKETCLASSIFIER.GENERAL.MATCHING_RULES.2.1" id="qos_pd2_offset">
-      </td>
-      </tr>
-      <tr>
-      <td>Bitmask</td><td align="right">
-      <input type="text" size=6 maxlength=6 name="PACKETCLASSIFIER.GENERAL.MATCHING_RULES.2.2" value="$$PACKETCLASSIFIER.GENERAL.MATCHING_RULES.2.2$$" id="qos_pd2_bitmask"></td></tr>
-      <tr>
-      <td>Pattern</td><td align="right">
-      <input type="text" size=6 maxlength=6 name="PACKETCLASSIFIER.GENERAL.MATCHING_RULES.2.3" value="$$PACKETCLASSIFIER.GENERAL.MATCHING_RULES.2.3$$" id="qos_pd2_pattern"></td></tr>
-      <tr>
-      <td align="right">
-      <input type="hidden" name="PACKETCLASSIFIER.GENERAL.MATCHING_RULES.2.4" value="$$PACKETCLASSIFIER.GENERAL.MATCHING_RULES.2.4$$" id="qos_pd2_enabled"></td></tr>
-      <tr><td colspan=2></td></tr>
-      </table>
-    </div>
+  <tr><td colspan=2></td></tr>
+  <tr><td colspan=2 style="background:#dddddd"></td></tr>
+
+  <tr><td>Packet detection 1</td><td align="right">
+  <select name="QOS_PD1" id="qos_pd1" onChange="onPD1Change()">
+  <script language="JavaScript" type="text/javascript">
+  var nt='0';
+  var ntp=nt;
+  var nto=new Array('None','IPv4','Custom');
+  selectOptions(ntp,nto);
+  </script>
+  </select>
+  </td></tr>
+
+  <tr>
+  <td>Offset</td><td align="right">
+  <input type="text" size=6 maxlength=6 name="PACKETCLASSIFIER.GENERAL.MATCHING_RULES.1.1" id="qos_pd1_offset">
+  </td>
+  <tr>
+  <td>Bitmask</td><td align="right">
+  <input type="text" size=6 maxlength=6 name="PACKETCLASSIFIER.GENERAL.MATCHING_RULES.1.2" value="$$PACKETCLASSIFIER.GENERAL.MATCHING_RULES.1.2$$" id="qos_pd1_bitmask"></td></tr>
+  <tr>
+  <td>Pattern</td><td align="right">
+  <input type="text" size=6 maxlength=6 name="PACKETCLASSIFIER.GENERAL.MATCHING_RULES.1.3" value="$$PACKETCLASSIFIER.GENERAL.MATCHING_RULES.1.3$$" id="qos_pd1_pattern"></td></tr>
+  <tr>
+  <td align="right">
+  <input type="hidden" name="PACKETCLASSIFIER.GENERAL.MATCHING_RULES.1.4" value="$$PACKETCLASSIFIER.GENERAL.MATCHING_RULES.1.4$$" id="qos_pd1_enabled"></td></tr>
+  <tr><td colspan=2></td></tr>
 
 
-    <!-- Packet classification -->
-    <div style="padding:6px">
-      <table width="100%" style="/*border:3px solid #dddddd*/\">
-      <tr><td colspan=8><b>Packet classifier parameters:</b></td></tr>
-      <tr><td colspan=8 style="background:#dddddd"></td></tr>
-      <tr><td colspan=8></td></tr>
-      
-      <tr><td>DSCP Class  </td><td colspan=5 align="right">
-      <script language="JavaScript" type="text/javascript">
-      var dscp_class_map_str="$$PACKETCLASSIFIER.GENERAL.DSCP_CLASS_MAP$$";
-      var dscp_class_map = dscp_class_map_str.split(",");
-      var nto=new Array('0','1','2','3','4','5','6','7');
+  <tr><td colspan=2 style="background:#dddddd"></td></tr>
+  <tr><td>Packet detection 2</td><td align="right">
+  <select name="QOS_PD2" id="qos_pd2" onChange="onPD2Change()">
+  <script language="JavaScript" type="text/javascript">
+  var nt='0';
+  var ntp=nt;
+  var nto=new Array('None','Custom');
+  selectOptions(ntp,nto);
+  </script>
+  </select>
+  </td></tr>
+  <tr>
+  <td>Offset</td><td align="right">
+  <input type="text" size=6 maxlength=6 name="PACKETCLASSIFIER.GENERAL.MATCHING_RULES.2.1" id="qos_pd2_offset">
+  </td>
+  </tr>
+  <tr>
+  <td>Bitmask</td><td align="right">
+  <input type="text" size=6 maxlength=6 name="PACKETCLASSIFIER.GENERAL.MATCHING_RULES.2.2" value="$$PACKETCLASSIFIER.GENERAL.MATCHING_RULES.2.2$$" id="qos_pd2_bitmask"></td></tr>
+  <tr>
+  <td>Pattern</td><td align="right">
+  <input type="text" size=6 maxlength=6 name="PACKETCLASSIFIER.GENERAL.MATCHING_RULES.2.3" value="$$PACKETCLASSIFIER.GENERAL.MATCHING_RULES.2.3$$" id="qos_pd2_pattern"></td></tr>
+  <tr>
+  <td align="right">
+  <input type="hidden" name="PACKETCLASSIFIER.GENERAL.MATCHING_RULES.2.4" value="$$PACKETCLASSIFIER.GENERAL.MATCHING_RULES.2.4$$" id="qos_pd2_enabled"></td></tr>
+  <tr><td colspan=2></td></tr>
+  </table>
+</div>
 
-      document.write('<table style="border:3px solid #dddddd">');
-      for(var i=0;i<=7;i++)
-      {
-         document.write('<tr>');
-         for(var x=1;x<=8;x++)
-         {
-             var nt=dscp_class_map[eval((i*8)+x-1)];
-             var ntp=nt;
-             document.write('<td><select name="PACKETCLASSIFIER.GENERAL.DSCP_CLASS_MAP.'+eval((i*8)+x)+'" id="dscp_class_map_'+eval((i*8)+x)+'">');
-             selectOptions(ntp,nto);
-             document.write('</select></td>');
-         }
-         document.write('</tr>');
-      }  
-      document.write('</table>');
-      </script>
-      </td>
-      </tr>
 
-      
-      <tr><td colspan=8 style="background:#dddddd"></td></tr>
-      <tr><td colspan=8></td></tr>
+<!-- Packet classification -->
+<div style="padding:6px">
+  <table width=520 style="border:3px solid #dddddd">
+  <tr><td colspan=6><b>Packet classification</b></td></tr>
+  <tr><td colspan=6 style="background:#dddddd"></td></tr>
+  <tr><td colspan=6></td></tr>
+  
+  <tr><td>&#8226;Default prio</td><td align="right">
+  <select name="PACKETCLASSIFIER.GENERAL.DEFAULT_CLASS" id="qos_packetclassifier_defaultprio">
+  <script language="JavaScript">
+  var nt='$$PACKETCLASSIFIER.GENERAL.DEFAULT_CLASS$$';
+  var ntp=nt;
+  var nto=new Array('0','1','2','3','4','5','6','7');
+  selectOptions(ntp,nto);
+  </script>
+  </select>
+  </td></tr>
 
-      <tr><th><font size=-1>PC</font></th><th><font size=-1>Offset</font></th><th><font size=-1>Bitmask</font></th><th><font size=-1>Pattern</font></th><th><font size=-1>Priority</font></th></tr>
+ 
+  <tr><td colspan=6 style="background:#dddddd"></td></tr>
 
-      <script language="JavaScript">
-  var rules_str='$$PACKETCLASSIFIER.GENERAL.CLASSIFY_RULES$$';
-  var rules = rules_str.split(",");
-  var prio_str='$$PACKETCLASSIFIER.GENERAL.TYPE_CLASS_MAP$$';
-  var prio = prio_str.split(",");
+  
+  <input type="hidden" name="PACKETCLASSIFIER.GENERAL.TCPACKV4_CLASS_MAP_EN" value="NO"/>
 
-    for(var i=1;i<=8;i++)
-    {
-        document.write('<tr><td align="center"><font size=-1>Rule '+i+'</font></td><td align="center"><tt><input type="text" size=6 maxlength=6 name="PACKETCLASSIFIER.GENERAL.CLASSIFY_RULES.'+i+'.1" value="'+h2d(rules[(i-1)*4])+'" id="qos_pc_offset_rule'+i+'"></tt></td>'+
+  <tr>
+  <td>&#8226;TCP Ack Class in IPv4</td>
+  <td align="right">
+  <select name="PACKETCLASSIFIER.GENERAL.TCPACKV4_CLASS_MAP" id="qos_packetclassifier_tcpv4_ack_class">
+  <script language="JavaScript">
+  var nt='$$PACKETCLASSIFIER.GENERAL.TCPACKV4_CLASS_MAP$$';
+  var ntp=nt;
+  var nto=new Array('0','1','2','3','4','5','6','7');
+  selectOptions(ntp,nto);
+  </script>
+  </select>
+  </td>
+  <td align="right">
+  <select name="PACKETCLASSIFIER.GENERAL.TCPACKV4_CLASS_MAP_EN" id="qos_packetclassifier_tcpv4_ack_class_en">
+  <script language="JavaScript">
+  var nt='$$PACKETCLASSIFIER.GENERAL.TCPACKV4_CLASS_MAP_EN$$';
+  var ntp=nt;
+  var nto=new Array('YES','NO');
+  selectOptions(ntp,nto);
+  </script>
+  </select>
+  </td>
+  </tr>
+
+  <input type="hidden" name="PACKETCLASSIFIER.GENERAL.TCPACKV6_CLASS_MAP_EN" value="NO"/>
+
+  <tr>
+  <td>&#8226;TCP Ack Class in IPv6</td>
+  <td align="right">
+  <select name="PACKETCLASSIFIER.GENERAL.TCPACKV6_CLASS_MAP" id="qos_packetclassifier_tcpv6_ack_class">
+  <script language="JavaScript">
+  var nt='$$PACKETCLASSIFIER.GENERAL.TCPACKV6_CLASS_MAP$$';
+  var ntp=nt;
+  var nto=new Array('0','1','2','3','4','5','6','7');
+  selectOptions(ntp,nto);
+  </script>
+  </select>
+  </td>
+  <td align="right">
+  <select name="PACKETCLASSIFIER.GENERAL.TCPACKV6_CLASS_MAP_EN" id="qos_packetclassifier_tcpv6_ack_class_en">
+  <script language="JavaScript">
+  var nt='$$PACKETCLASSIFIER.GENERAL.TCPACKV6_CLASS_MAP_EN$$';
+  var ntp=nt;
+  var nto=new Array('YES','NO');
+  selectOptions(ntp,nto);
+  </script>
+  </select>
+  </td>
+  </tr>
+
+  <input type="hidden" name="PACKETCLASSIFIER.GENERAL.ARP_CLASS_MAP_EN" value="NO"/>
+
+  <tr>
+  <td>&#8226;ARP Class</td>
+  <td align="right">
+  <select name="PACKETCLASSIFIER.GENERAL.ARP_CLASS_MAP" id="qos_packetclassifier_arp_ack_class">
+  <script language="JavaScript">
+  var nt='$$PACKETCLASSIFIER.GENERAL.ARP_CLASS_MAP$$';
+  var ntp=nt;
+  var nto=new Array('0','1','2','3','4','5','6','7');
+  selectOptions(ntp,nto);
+  </script>
+  </select>
+  </td>
+  <td align="right">
+  <select name="PACKETCLASSIFIER.GENERAL.ARP_CLASS_MAP_EN" id="qos_packetclassifier_arp_class_en">
+  <script language="JavaScript">
+  var nt='$$PACKETCLASSIFIER.GENERAL.ARP_CLASS_MAP_EN$$';
+  var ntp=nt;
+  var nto=new Array('YES','NO');
+  selectOptions(ntp,nto);
+  </script>
+  </select>
+  </td>
+  </tr>
+
+
+
+  <tr><td colspan=6 style="background:#dddddd"></td></tr>
+
+
+  <tr><td>DSCP Class  </td><td colspan=5 align="right">
+  <script language="JavaScript" type="text/javascript">
+  var dscp_class_map_str="$$PACKETCLASSIFIER.GENERAL.DSCP_CLASS_MAP$$";
+  var dscp_class_map = dscp_class_map_str.split(",");
+  var nto=new Array('0','1','2','3','4','5','6','7');
+
+  document.write('<table style="border:3px solid #dddddd">');
+  for(var i=0;i<=7;i++)
+  {
+     document.write('<tr>');
+     for(var x=1;x<=8;x++)
+     {
+         var nt=dscp_class_map[eval((i*8)+x-1)];
+         var ntp=nt;
+         document.write('<td><select name="PACKETCLASSIFIER.GENERAL.DSCP_CLASS_MAP.'+eval((i*8)+x)+'" id="dscp_class_map_'+eval((i*8)+x)+'">');
+         selectOptions(ntp,nto);
+         document.write('</select></td>');
+     }
+     document.write('</tr>');
+  }  
+  document.write('</table>');
+  </script>
+  </td>
+  </tr>
+
+  
+  <tr><td colspan=6 style="background:#dddddd"></td></tr>
+  <tr><td colspan=6></td></tr>
+
+  <tr><th><font size=-1>PC</font></th><th><font size=-1>Offset</font></th><th><font size=-1>Bitmask</font></th><th><font size=-1>Pattern</font></th><th><font size=-1>Priority</font></th></tr>
+
+  <script language="JavaScript">
+var rules_str='$$PACKETCLASSIFIER.GENERAL.CLASSIFY_RULES$$';
+var rules = rules_str.split(",");
+var prio_str='$$PACKETCLASSIFIER.GENERAL.TYPE_CLASS_MAP$$';
+var prio = prio_str.split(",");
+
+  for(var i=1;i<=8;i++)
+  {
+      document.write('<tr><td align="center"><font size=-1>Rule '+i+'</font></td><td align="center"><tt><input type="text" size=6 maxlength=6 name="PACKETCLASSIFIER.GENERAL.CLASSIFY_RULES.'+i+'.1" value="'+h2d(rules[(i-1)*4])+'" id="qos_pc_offset_rule'+i+'"></tt></td>'+
 '<td align="center"><font size=-1><input type="text" size=6 maxlength=6 name="PACKETCLASSIFIER.GENERAL.CLASSIFY_RULES.'+i+'.2" value="'+rules[(i-1)*4+1]+'" id="qos_pc_bitmask_rule'+i+'"></font></td>'+
 '<td align="center"><font size=-1><input type="text" size=6 maxlength=6 name="PACKETCLASSIFIER.GENERAL.CLASSIFY_RULES.'+i+'.3" value="'+rules[(i-1)*4+2]+'" id="qos_pc_pattern_rule'+i+'"></font></td><td align="center">'+
  '<input type="hidden" name="PACKETCLASSIFIER.GENERAL.CLASSIFY_RULES.'+i+'.4" value="'+h2d(rules[(i-1)*4+3])+'" id="qos_pc_enabled_rule'+i+'">' );
 
-     document.write( '<select name="PACKETCLASSIFIER.GENERAL.TYPE_CLASS_MAP.'+i+'" id="qos_pc_prio_rule'+i+'">');
-     var nt=prio[i-1];
-     var ntp=nt;
-     var nto=new Array('0','1','2','3','4','5','6','7');
-     selectOptions(ntp,nto);
-     document.write('</select>');
-     document.write('</td></tr>');
-    }  //for
-    </script>
+   document.write( '<select name="PACKETCLASSIFIER.GENERAL.TYPE_CLASS_MAP.'+i+'" id="qos_pc_prio_rule'+i+'">');
+   var nt=prio[i-1];
+   var ntp=nt;
+   var nto=new Array('0','1','2','3','4','5','6','7');
+   selectOptions(ntp,nto);
+   document.write('</select>');
+   document.write('</td></tr>');
+  }  //for
+  </script>
 
-    <input type="hidden" name="PACKETCLASSIFIER.GENERAL.TYPE_CLASS_MAP_EN" id="PACKETCLASSIFIER_GENERAL_TYPE_CLASS_MAP_EN1" value="$$PACKETCLASSIFIER.GENERAL.TYPE_CLASS_MAP_EN$$" />
-    <input type="hidden" name="PACKETCLASSIFIER.GENERAL.VLAN_CLASS_MAP_EN" id="PACKETCLASSIFIER_GENERAL_VLAN_CLASS_MAP_EN1" value="$$PACKETCLASSIFIER.GENERAL.VLAN_CLASS_MAP_EN$$" />
-    <input type="hidden" name="PACKETCLASSIFIER.GENERAL.DSCP_CLASS_MAP_EN" id="PACKETCLASSIFIER_GENERAL_DSCP_CLASS_MAP_EN1" value="$$PACKETCLASSIFIER.GENERAL.DSCP_CLASS_MAP_EN$$" />
-    <input type="hidden" name="PACKETCLASSIFIER.GENERAL.RULES_ORDER" id="PACKETCLASSIFIER_GENERAL_RULES_ORDER1" value="$$PACKETCLASSIFIER.GENERAL.RULES_ORDER$$" />
+  <input type="hidden" name="PACKETCLASSIFIER.GENERAL.TYPE_CLASS_MAP_EN" id="PACKETCLASSIFIER_GENERAL_TYPE_CLASS_MAP_EN1" value="$$PACKETCLASSIFIER.GENERAL.TYPE_CLASS_MAP_EN$$" />
+  <input type="hidden" name="PACKETCLASSIFIER.GENERAL.VLAN_CLASS_MAP_EN" id="PACKETCLASSIFIER_GENERAL_VLAN_CLASS_MAP_EN1" value="$$PACKETCLASSIFIER.GENERAL.VLAN_CLASS_MAP_EN$$" />
+  <input type="hidden" name="PACKETCLASSIFIER.GENERAL.DSCP_CLASS_MAP_EN" id="PACKETCLASSIFIER_GENERAL_DSCP_CLASS_MAP_EN1" value="$$PACKETCLASSIFIER.GENERAL.DSCP_CLASS_MAP_EN$$" />
+  <input type="hidden" name="PACKETCLASSIFIER.GENERAL.RULES_ORDER" id="PACKETCLASSIFIER_GENERAL_RULES_ORDER1" value="$$PACKETCLASSIFIER.GENERAL.RULES_ORDER$$" />
 
 
-    <tr><td colspan=8 style="background:#dddddd"></td></tr>
-    <tr><td colspan=8 align="center">
-    <input name="OK" value="Ok" type="button" id="qos_ok" onclick="onOKClick(this.form)"><input name="CANCEL" value="Cancel" type="reset" id="qos_cancel">
-    </td></tr>
-    <tr><td colspan=8 style="background:#dddddd"></td></tr>
-    </table>
-    </div>
-    </form>
-  </div>
+  <tr><td colspan=6 style="background:#dddddd"></td></tr>
+  <tr><td colspan=6 align="center">
+  <input name="OK" value="Ok" type="button" id="qos_ok" onclick="onOKClick(this.form)"><input name="CANCEL" value="Cancel" type="reset" id="qos_cancel">
+  </td></tr>
+  <tr><td colspan=6 style="background:#dddddd"></td></tr>
+</table>
 </div>
+</form>
 
 </body>
 </html>

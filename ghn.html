@@ -44,7 +44,7 @@ function onLoadScript()
   onNDIMChange();
   onCryptoEnableChange();
 }
-function onCryptoEnableChange()
+function onCryptoEnableChange() // CHECK TODO!!!
 {
   var secured = "$$PAIRING.GENERAL.SECURED$$";
   document.getElementById("ghn_crypto_unpair").disabled = (secured == 'NO');
@@ -497,43 +497,9 @@ printErrorMsg("$$LASTERRORMESSAGE$$");
     </div>
     <div id="connections" class="section-container">
       <div style="padding:6px">
-        <table width=520 style="border:3px solid #dddddd">
-        <tr><td colspan=6><b>Available Connections</b></td></tr>
-        <tr><td colspan=6 style="background:#dddddd"></td></tr>
-        <tr><td colspan=6></td></tr>
-
-        <tr><th><font size=-1>Device ID</font></th><th><font size=-1>MAC Address</font></th><th><font size=-1>Phy Tx (Mbps)</font></th><th><font size=-1>Phy Rx (Mbps)</font></th></tr>
-      <script language="JavaScript">
-
-      var mymac='$$SYSTEM.PRODUCTION.MAC_ADDR$$';
-      var mydid='$$NODE.GENERAL.DEVICE_ID$$';
-      var pcdids=new Array($$DIDMNG.GENERAL.DIDS$$);
-      var pcmastr="$$DIDMNG.GENERAL.MACS$$";
-      var pcptx=new Array($$DIDMNG.GENERAL.TX_BPS$$);
-      var pcprx=new Array($$DIDMNG.GENERAL.RX_BPS$$);
-
-      //first convert pcmastr to array of connected MACs (remove own MAC)
-      var pcma = pcmastr.split(",");
-
-      if(pcma.length>2)  //if 2, it must be our own MAC, first element is always 00::00
-        {
-          for(var i=1;(i<pcma.length)&&(i<=32);i++)
-          {
-            if (pcma[i]!=mymac)
-            {
-               document.write('<tr><td align="center"><font size=-1 id="ghn_conn_did_'+i+'">'+pcdids[i]+'</font></td><td align="center"><tt id="ghn_conn_mac_'+i+'">'+pcma[i]+'</tt></td><td align="center"><font size=-1 id="ghn_conn_tx_'+i+'">'+Math.floor(pcptx[i]*32/1000)+'</font></td><td align="center"><font size=-1 id="ghn_conn_rx_'+i+'">'+Math.floor(pcprx[i]*32/1000)+'</font></td></tr>');
-            }
-          }
-          if(pcma.length>32)
-            document.write('<tr><td colspan=5 align="center"><font size=-1><i><b>Warning!</b> At least 33 items in the list</i></font></td></tr>');
-        }
-      else
-      {
-        document.write('<tr><td colspan=5 align="center"><font size=-1><i>Empty list</i></font></td></tr>');
-      }
-        </script>
-
-
+        <div id="connections-table">
+          <!-- The table will be loaded here via AJAX -->
+        </div>
       </div>
     </div>
   </div>
@@ -591,11 +557,26 @@ tabItems.forEach(tab => {
     }
   });
 });
-</script>
-<script language="JavaScript">
-setInterval(function() {
-  window.location.reload();
-}, 1000);
+
+// Add table refresh logic
+function refreshConnectionsTable() {
+  fetch('connections-table.html')
+    .then(response => response.text())
+    .then(html => {
+      const container = document.getElementById('connections-table');
+      container.innerHTML = html;
+      // Check if the loaded HTML contains a table
+      if (!container.querySelector('table')) {
+        container.innerHTML = '<div class="status-text">No connections</div>';
+      }
+    })
+    .catch(err => {
+      document.getElementById('connections-table').innerHTML = '<div class="status-text">No connections</div>';
+      console.error('Error refreshing connections table:', err);
+    });
+}
+setInterval(refreshConnectionsTable, 1000);
+refreshConnectionsTable();
 </script>
 </body>
 </html>

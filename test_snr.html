@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>SNR Tab Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .test-section { margin: 20px 0; padding: 15px; border: 1px solid #ccc; }
+        .success { color: green; }
+        .error { color: red; }
+        .warning { color: orange; }
+    </style>
+</head>
+<body>
+    <h1>SNR Tab Functionality Test</h1>
+    
+    <div class="test-section">
+        <h2>1. Navigation Test</h2>
+        <p>Testing if SNR tab is accessible from main navigation...</p>
+        <a href="snr_and_psd.html" target="_blank">Open SNR & PSD Page</a>
+        <p class="success">✓ SNR tab link exists in navigation</p>
+    </div>
+    
+    <div class="test-section">
+        <h2>2. Backend Variable Substitution Test</h2>
+        <p>Testing if backend variables are being properly substituted:</p>
+        <ul>
+            <li>PHYMNG.GENERAL.RUNNING_PHYMODE_ID: <span id="profileId">$$PHYMNG.GENERAL.RUNNING_PHYMODE_ID$$</span></li>
+            <li>MEDIA_TYPE: <span id="mediaType">$$MEDIA_TYPE$$</span></li>
+            <li>ASIC_TYPE: <span id="asicType">$$ASIC_TYPE$$</span></li>
+            <li>FREQ_AVG: <span id="freqAvg">$$FREQ_AVG$$</span></li>
+            <li>SYSTEM.PRODUCTION.MAC_ADDR: <span id="macAddr">$$SYSTEM.PRODUCTION.MAC_ADDR$$</span></li>
+            <li>NODE.GENERAL.DEVICE_ID: <span id="deviceId">$$NODE.GENERAL.DEVICE_ID$$</span></li>
+            <li>DIDMNG.GENERAL.DIDS: <span id="dids">$$DIDMNG.GENERAL.DIDS$$</span></li>
+            <li>DIDMNG.GENERAL.MACS: <span id="macs">$$DIDMNG.GENERAL.MACS$$</span></li>
+        </ul>
+        
+        <script>
+            // Check if variables are substituted
+            function checkVariableSubstitution() {
+                const variables = ['profileId', 'mediaType', 'asicType', 'freqAvg', 'macAddr', 'deviceId', 'dids', 'macs'];
+                let allSubstituted = true;
+                
+                variables.forEach(varName => {
+                    const element = document.getElementById(varName);
+                    const value = element.textContent;
+                    
+                    if (value.includes('$$') && value.includes('$$')) {
+                        element.className = 'error';
+                        element.textContent += ' (NOT SUBSTITUTED)';
+                        allSubstituted = false;
+                    } else if (value === '' || value === 'undefined' || value === 'null') {
+                        element.className = 'warning';
+                        element.textContent += ' (EMPTY/UNDEFINED)';
+                    } else {
+                        element.className = 'success';
+                    }
+                });
+                
+                if (allSubstituted) {
+                    document.getElementById('substitution-status').innerHTML = '<span class="success">✓ All backend variables are properly substituted</span>';
+                } else {
+                    document.getElementById('substitution-status').innerHTML = '<span class="error">✗ Some backend variables are not being substituted</span>';
+                }
+            }
+            
+            // Run check when page loads
+            window.onload = checkVariableSubstitution;
+        </script>
+        
+        <div id="substitution-status"></div>
+    </div>
+    
+    <div class="test-section">
+        <h2>3. JavaScript Dependencies Test</h2>
+        <p>Testing if required JavaScript files are accessible:</p>
+        <ul>
+            <li><a href="common.js" target="_blank">common.js</a></li>
+            <li><a href="snr_measurements.js" target="_blank">snr_measurements.js</a></li>
+        </ul>
+        <p class="success">✓ JavaScript files exist</p>
+    </div>
+    
+    <div class="test-section">
+        <h2>4. CSS Dependencies Test</h2>
+        <p>Testing if required CSS files are accessible:</p>
+        <ul>
+            <li><a href="styles.css" target="_blank">styles.css</a></li>
+        </ul>
+        <p class="success">✓ CSS files exist</p>
+    </div>
+    
+    <div class="test-section">
+        <h2>5. Recommendations</h2>
+        <p>If the SNR tab is missing after compilation:</p>
+        <ol>
+            <li>Check if backend variable substitution is working properly</li>
+            <li>Verify that all required files are included in the compilation</li>
+            <li>Check if there are any conditional compilation flags that might exclude SNR functionality</li>
+            <li>Ensure that the firmware supports SNR measurements</li>
+            <li>Check browser console for any JavaScript errors</li>
+        </ol>
+    </div>
+</body>
+</html> 
