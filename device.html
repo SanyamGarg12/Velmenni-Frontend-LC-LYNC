@@ -1,500 +1,946 @@
-<!--
-    <legal_notice>
-     MaxLinear, Inc. retains all right, title and interest (including all intellectual
-     property rights) in and to this computer program, which is protected by applicable
-     intellectual property laws.  Unless you have obtained a separate written license from
-     MaxLinear, Inc. or an authorized licensee of MaxLinear, Inc., you are not authorized
-     to utilize all or a part of this computer program for any purpose (including
-     reproduction, distribution, modification, and compilation into object code), and you
-     must immediately destroy or return all copies of this computer program.  If you are
-     licensed by MaxLinear, Inc. or an authorized licensee of MaxLinear, Inc., your rights
-     to utilize this computer program are limited by the terms of that license.
-    
-     This computer program contains trade secrets owned by MaxLinear, Inc. and, unless
-     authorized by MaxLinear, Inc. in writing, you agree to maintain the confidentiality
-     of this computer program and related information and to not disclose this computer
-     program and related information to any other person or entity.
-    
-     Misuse of this computer program or any information contained in it may results in
-     violations of applicable law.  MaxLinear, Inc. vigorously enforces its copyright,
-     trade secret, patent, contractual, and other legal rights.
-    
-     THIS COMPUTER PROGRAM IS PROVIDED "AS IS" WITHOUT ANY WARRANTIES, AND 
-      MAXLINEAR, INC.
-     EXPRESSLY DISCLAIMS ALL WARRANTIES, EXPRESS OR IMPLIED, INCLUDING THE 
-     WARRANTIES OF
-     MERCHANTIBILITY, FITNESS FOR A PARTICULAR PURPOSE, TITLE, AND 
-     NONINFRINGEMENT.
-    
-    ***************************************************************************************
-                                            Copyright (c) 2016/2020, MaxLinear, Inc.
-    ***************************************************************************************
-    </legal_notice>
--->
-
 <!DOCTYPE html>
+
 <html>
+
 <head>
+
 <meta charset="utf-8"/>
+
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <link rel="stylesheet" href="styles.css">
+
 <script language="JavaScript" src="common.js"></script>
+
 <script language="JavaScript">
+
 function onLoadScripts()
+
 {
+
   onFLUPSourceChange();
+
   onFileSelected();
+
   // Set initial active tab
+
   document.querySelector('.device-tab-item').classList.add('active');
+
   // Initialize scroll spy
+
   initScrollSpy();
+
 }
+
 function onOKClick(form)
+
 {
+
   form.submit();
+
 }
+
 function onSecurityOKClick(form)
+
 {
+
   //disable all OK buttons after clicking to avoid sending 'OK' to the web server
+
   document.getElementById("device_security_ok").disabled = true;
+
   document.getElementById("device_security_cancel").disabled = true;
+
   onOKClick(form);
+
 }
+
 function onSWUpdateOKClick(form)
+
 {
+
   //disable all OK buttons after clicking to avoid sending 'OK' to the web server
+
   document.getElementById("device_swupdate_ok").disabled = true;
+
   document.getElementById("device_swupdate_cancel").disabled = true;
+
   onOKClick(form);
+
 }
+
 function onFLUPSourceChange()
+
 {
+
   var source = document.getElementById("flupgrade_source").value;
+
   document.getElementById("flupgrade_host").disabled = (source != 'FTP');
+
   document.getElementById("flupgrade_login").disabled = (source != 'FTP');
+
   document.getElementById("flupgrade_password").disabled = (source != 'FTP');
+
   document.getElementById("flupgrade_filename").disabled = (source != 'FTP');
+
 }
+
 function onFileSelected()
+
 {
+
   var fileInput = document.getElementById("flupgrade_file");
+
   var fileName = fileInput.value;
+
   if (fileName) {
+
     document.getElementById("flupgrade_filename").value = fileName.split('\\').pop().split('/').pop();
+
   }
+
 }
+
 </script>
+
 <meta http-equiv="Pragma" content="no-cache">
+
 <meta http-equiv="Cache-Control" content="no-cache">
+
 <meta http-equiv="Expires" content="Mon, 06 Jan 1990 00:00:01 GMT">
+
 <style>
+
 :root {
+
   --primary-color: #ff6a00;
+
   --primary-light: #ff922b;
+
   --primary-dark: #c43e00;
+
   --background-color: #fff7f0;
+
   --card-bg: #fff;
+
   --text-color: #222;
+
   --border-color: #ffb380;
+
   --input-border: #ff922b;
+
   --shadow: 0 2px 12px rgba(255,106,0,0.08);
+
   --radius: 12px;
+
 }
+
+
 
 body {
+
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+
   background: var(--background-color);
+
   color: var(--text-color);
+
   margin: 0;
+
   padding: 20px;
+
   min-height: 100vh;
+
   width: 100%;
+
   box-sizing: border-box;
+
 }
+
+
 
 .device-flex-container {
+
   display: flex;
+
   width: 100%;
+
   min-height: 100vh;
+
 }
+
+
 
 .device-sidebar {
+
   width: 220px;
+
   background: #f5f5f5;
+
   box-shadow: 2px 0 8px #e0e0e0;
+
   padding: 30px 0 0 0;
+
   display: flex;
+
   flex-direction: column;
+
   align-items: flex-start;
+
   position: sticky;
+
   top: 0;
+
   height: 100vh;
+
   overflow-y: auto;
+
   z-index: 1000;
+
 }
+
+
 
 .device-tab-list {
+
   list-style: none;
+
   padding: 0;
+
   margin: 0;
+
   width: 100%;
+
 }
+
+
 
 .device-tab-item {
+
   padding: 12px 24px;
+
   cursor: pointer;
+
   border-radius: 0 20px 20px 0;
+
   margin-bottom: 8px;
+
   font-weight: 500;
+
   font-size: 14px;
+
   color: #333;
+
   background: none;
+
   border: none;
+
   text-align: left;
+
   width: 100%;
+
   transition: background 0.2s, color 0.2s;
+
 }
+
+
 
 .device-tab-item.active,
+
 .device-tab-item:hover {
+
   background: var(--primary-color);
+
   color: #fff;
+
 }
+
+
 
 .device-tab-content {
+
   flex: 1;
+
   padding: 40px;
+
   width: 100%;
+
   background: #fff;
+
   min-height: 100vh;
+
   overflow-y: visible;
+
 }
+
+
 
 .section-container {
+
   background: var(--card-bg);
+
   border-radius: var(--radius);
+
   box-shadow: var(--shadow);
+
   margin-bottom: 40px;
+
   overflow: hidden;
+
   scroll-margin-top: 100px;
+
   max-width: 1200px;
+
   margin-left: auto;
+
   margin-right: auto;
+
 }
+
+
 
 .section-header {
+
   background: linear-gradient(90deg, var(--primary-color), var(--primary-light));
+
   color: white;
+
   padding: 15px 20px;
+
   font-size: 14px;
+
   font-weight: 500;
+
 }
+
+
 
 .section-content {
+
   padding: 24px;
+
 }
+
+
 
 .table {
+
   width: 100%;
+
   max-width: 100%;
+
   border-collapse: collapse;
+
   margin-bottom: 20px;
+
   background: var(--card-bg);
+
   border-radius: var(--radius);
+
   overflow: hidden;
+
   box-shadow: var(--shadow);
+
   border: 1.5px solid var(--border-color);
+
 }
+
+
 
 th, td {
+
   padding: 12px 16px;
+
   text-align: left;
+
   border-bottom: 1px solid var(--border-color);
+
 }
+
+
 
 tr:last-child td {
+
   border-bottom: none;
+
 }
+
+
 
 .table td:first-child {
+
   font-weight: 500;
+
   font-size: 14px;
+
   color: var(--text-color);
+
 }
+
+
 
 @media (max-width: 768px) {
+
   .device-sidebar {
+
     width: 180px;
+
   }
+
   
+
   .device-tab-content {
+
     margin-left: 180px;
+
     width: calc(100% - 180px);
+
     padding: 20px;
+
   }
+
   .section-container {
+
     margin: 0 10px 40px 10px;
+
   }
+
   .section-content {
+
     padding: 16px;
+
   }
+
 }
+
+
 
 /* Add/replace the following CSS to match ghn.html button theme */
+
 .button-group {
+
   display: flex;
+
   justify-content: flex-end;
+
   gap: 10px;
+
   margin-top: 20px;
+
 }
+
 button, input[type="button"], input[type="reset"] {
+
   padding: 8px 20px;
+
   border-radius: 4px;
+
   font-size: 14px;
+
   cursor: pointer;
+
   transition: background-color 0.2s;
+
 }
+
 input[type="button"] {
+
   background-color: var(--primary-color);
+
   color: white;
+
   border: none;
+
 }
+
 input[type="button"]:hover {
+
   background-color: var(--primary-light);
+
 }
+
 input[type="reset"] {
+
   background-color: white;
+
   color: var(--text-color);
+
   border: 1px solid var(--border-color);
+
 }
+
 input[type="reset"]:hover {
+
   background-color: #f5f5f5;
+
 }
+
 input[disabled] {
+
   opacity: 0.7;
+
   cursor: not-allowed;
+
 }
+
 input[type="text"], input[type="password"], select, input[type="file"] {
+
   width: 100%;
+
   max-width: 300px;
+
   padding: 8px 12px;
+
   border: 1px solid var(--border-color);
+
   border-radius: 4px;
+
   font-size: 14px;
+
   transition: border-color 0.2s, box-shadow 0.2s;
+
   background: #fff;
+
   color: var(--text-color);
+
   box-sizing: border-box;
+
 }
+
 input[type="text"]:focus, input[type="password"]:focus, select:focus, input[type="file"]:focus {
+
   outline: none;
+
   border-color: var(--primary-color);
+
   box-shadow: 0 0 0 2px rgba(0,102,204,0.1);
+
 }
+
 </style>
 
+
+
 <script>
+
 function getVisibleRatio(section) {
+
   const rect = section.getBoundingClientRect();
+
   const windowHeight = window.innerHeight || document.documentElement.clientHeight;
+
   if (rect.bottom <= 0 || rect.top >= windowHeight) return 0;
+
   const visibleTop = Math.max(rect.top, 0);
+
   const visibleBottom = Math.min(rect.bottom, windowHeight);
+
   const visibleHeight = Math.max(0, visibleBottom - visibleTop);
+
   return visibleHeight / rect.height;
+
 }
+
+
 
 function onScrollSpy() {
+
   const tabItems = document.querySelectorAll('.device-tab-item');
+
   const sections = [
+
     document.getElementById('device-info-section'),
+
     document.getElementById('system-info-section'),
+
     document.getElementById('network-info-section')
+
   ];
+
   let maxRatio = 0;
+
   let current = 0;
+
   for (let i = 0; i < sections.length; i++) {
+
     const ratio = getVisibleRatio(sections[i]);
+
     if (ratio > 0.5 && ratio > maxRatio) {
+
       maxRatio = ratio;
+
       current = i;
+
     }
+
   }
+
   tabItems.forEach((tab, idx) => {
+
     if (idx === current) {
+
       tab.classList.add('active');
+
     } else {
+
       tab.classList.remove('active');
+
     }
+
   });
+
 }
+
+
 
 function initScrollSpy() {
+
   window.addEventListener('scroll', onScrollSpy);
+
 }
+
+
 
 function switchTab(tabId) {
+
   // Update active tab
+
   document.querySelectorAll('.device-tab-item').forEach(tab => {
+
     tab.classList.remove('active');
+
   });
+
   document.querySelector(`[onclick="switchTab('${tabId}')"]`).classList.add('active');
+
   // Smooth scroll to section
+
   const section = document.getElementById(tabId);
+
   if (section) {
+
     const headerOffset = 40;
+
     const elementPosition = section.getBoundingClientRect().top;
+
     const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+
     window.scrollTo({
+
       top: offsetPosition,
+
       behavior: 'smooth'
+
     });
+
   }
+
 }
+
 </script>
+
 </head>
+
 <body onLoad="onLoadScripts()">
+
 <script language="JavaScript">
+
 printErrorMsg("$$LASTERRORMESSAGE$$");
+
 </script>
+
+
 
 <div class="device-flex-container">
+
   <div class="device-sidebar">
+
     <ul class="device-tab-list">
+
       <li><button class="device-tab-item" onclick="switchTab('device-info-section')">Device Information</button></li>
+
       <li><button class="device-tab-item" onclick="switchTab('system-info-section')">System Information</button></li>
+
       <li><button class="device-tab-item" onclick="switchTab('network-info-section')">Network Information</button></li>
+
     </ul>
+
   </div>
+
+
 
   <div class="device-tab-content">
+
     <div id="device-info-section" class="section-container">
+
       <div class="section-header">
+
         <span class="section-title">Device Information</span>
+
       </div>
+
       <div class="section-content">
+
         <table class="table">
+
           <tr>
+
             <td colspan="2"><b>System Information</b></td>
+
           </tr>
+
           <tr>
+
             <td>Device Name</td>
-            <td><span class="text-sm">$$SYSTEM.PRODUCTION.DEVICE_NAME$$</span></td>
+
+            <td>
+
+              <form name="DEVICE_NAME_FORM" method="POST" style="display: flex; gap: 10px; align-items: center;">
+
+                <input type="hidden" name="CSRFTOKEN" value="$$CSRFTOKEN$$">
+
+                <input type="hidden" name="REDIRECT" value="device.html" target="content">
+
+                <input type="text" name="SYSTEM.PRODUCTION.DEVICE_NAME" value="$$SYSTEM.PRODUCTION.DEVICE_NAME$$" class="form-control" style="flex: 1;">
+
+                <input type="submit" value="Save" class="form-control" style="background: var(--primary-color); color: #fff; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer;">
+
+              </form>
+
+            </td>
+
           </tr>
+
           <tr>
+
             <td>Serial Number</td>
+
             <td><span class="text-sm">$$SYSTEM.PRODUCTION.SERIAL_NUMBER$$</span></td>
+
           </tr>
+
           <tr>
+
             <td>Hardware Version</td>
+
             <td><span class="text-sm">$$SYSTEM.PRODUCTION.HW_REVISION$$</span></td>
+
           </tr>
+
         </table>
+
       </div>
+
     </div>
+
+
 
     <div id="system-info-section" class="section-container">
+
       <div class="section-header">
+
         <span class="section-title">System Information</span>
+
       </div>
+
       <div class="section-content">
+
         <form name="SECURITY_FORM" method="POST">
+
           <input type="hidden" name="CSRFTOKEN" value="$$CSRFTOKEN$$">
+
           <input type="hidden" name="REDIRECT" value="device.html" target="content">
+
           
+
           <table class="table">
+
             <tr>
+
               <td colspan="2"><b>Password Configuration</b></td>
+
             </tr>
+
             <tr>
+
               <td>Current Password</td>
+
               <td>
+
                 <input type="password" name="SYSTEM.GENERAL.PASSWORD_CONFIG" class="form-control">
+
               </td>
+
             </tr>
+
             <tr>
+
               <td>New Password</td>
+
               <td>
+
                 <input type="password" name="SYSTEM.GENERAL.PASSWORD_NEW" class="form-control">
+
               </td>
+
             </tr>
+
             <tr>
+
               <td>Confirm New Password</td>
+
               <td>
+
                 <input type="password" name="SYSTEM.GENERAL.PASSWORD_CONFIRM" class="form-control">
+
               </td>
+
             </tr>
+
           </table>
+
           <div class="button-group">
+
             <input name="CANCEL" value="Cancel" type="reset" id="device_security_cancel">
+
             <input name="OK" value="Save Changes" type="button" id="device_security_ok" onClick="onSecurityOKClick(this.form)">
+
           </div>
+
         </form>
+
       </div>
+
     </div>
+
+
 
     <div id="network-info-section" class="section-container">
+
       <div class="section-header">
+
         <span class="section-title">Network Information</span>
+
       </div>
+
       <div class="section-content">
+
         <form name="SWUPDATE_FORM" method="POST" enctype="multipart/form-data">
+
           <input type="hidden" name="CSRFTOKEN" value="$$CSRFTOKEN$$">
+
           <input type="hidden" name="REDIRECT" value="device.html" target="content">
+
           
+
           <table class="table">
+
             <tr>
+
               <td colspan="2"><b>Firmware Update</b></td>
+
             </tr>
+
             <tr>
+
               <td>Update Source</td>
+
               <td>
+
                 <select name="FLUPGRADE.GENERAL.SOURCE" id="flupgrade_source" onChange="onFLUPSourceChange()" class="form-control">
+
                   <script language="JavaScript">
+
                   var source='$$FLUPGRADE.GENERAL.SOURCE$$';
+
                   var sourcep=source;
+
                   var sourcet=new Array('LOCAL','FTP');
+
                   var sourceo=new Array('LOCAL','FTP');
+
                   selectOptionsWithText(sourcep,sourcet,sourceo);
+
                   </script>
+
                 </select>
+
               </td>
+
             </tr>
+
             <tr>
+
               <td>FTP Server</td>
+
               <td>
+
                 <input type="text" name="FLUPGRADE.GENERAL.HOST" value="$$FLUPGRADE.GENERAL.HOST$$" id="flupgrade_host" class="form-control">
+
               </td>
+
             </tr>
+
             <tr>
+
               <td>FTP Login</td>
+
               <td>
+
                 <input type="text" name="FLUPGRADE.GENERAL.FTP_LOGIN" value="$$FLUPGRADE.GENERAL.FTP_LOGIN$$" id="flupgrade_login" class="form-control">
+
               </td>
+
             </tr>
+
             <tr>
+
               <td>FTP Password</td>
+
               <td>
+
                 <input type="password" name="FLUPGRADE.GENERAL.FTP_PASSWORD" value="$$FLUPGRADE.GENERAL.FTP_PASSWORD$$" id="flupgrade_password" class="form-control">
+
               </td>
+
             </tr>
+
             <tr>
+
               <td>Firmware File</td>
+
               <td>
+
                 <input type="file" name="FLUPGRADE.GENERAL.FILE" id="flupgrade_file" onChange="onFileSelected()" class="form-control">
+
                 <input type="hidden" name="FLUPGRADE.GENERAL.FILENAME" id="flupgrade_filename" value="$$FLUPGRADE.GENERAL.FILENAME$$">
+
               </td>
+
             </tr>
+
           </table>
+
           <div class="button-group">
+
             <input name="CANCEL" value="Cancel" type="reset" id="device_swupdate_cancel">
+
             <input name="OK" value="Update Firmware" type="button" id="device_swupdate_ok" onClick="onSWUpdateOKClick(this.form)">
+
           </div>
+
         </form>
+
       </div>
+
     </div>
+
   </div>
+
 </div>
 
+
+
 </body>
+
 </html>
+
